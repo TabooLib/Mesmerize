@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
+  <component name="FacetManager">
+    <facet type="minecraft" name="Minecraft">
+      <configuration>
+        <autoDetectTypes>
+          <platformType>SPIGOT</platformType>
+        </autoDetectTypes>
+      </configuration>
+    </facet>
+  </component>
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
+    <output url="file://$MODULE_DIR$/target/classes" />
+    <output-test url="file://$MODULE_DIR$/target/test-classes" />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test/resources" type="java-test-resource" />
+      <excludeFolder url="file://$MODULE_DIR$/target" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Maven: me.clip:placeholderapi:2.8.2" level="project" />
+    <orderEntry type="module-library">
+      <library name="Maven: ru.endlesscode.rpginventory:RPGInventory:2.1.5">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/RPGInventory-2.1.5.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="Maven: me.dpohvar.powernbt:PowerNBT:0.8.9.2">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/PowerNBT.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="library" name="Maven: net.citizensnpcs:citizens:2.0.22-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: net.citizensnpcs:citizens-main:2.0.22-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: net.citizensnpcs:citizens-v1_10_R1:2.0.22-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: net.citizensnpcs:citizens-v1_11_R1:2.0.22-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: net.citizensnpcs:citizens-v1_12_R1:2.0.22-SNAPSHOT" level="project" />
+    <orderEntry type="module-library">
+      <library name="Maven: com.sucy.skill:SkillAPI:3.103">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/SkillAPI.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="Maven: org.spigotmc:spigot-api:1.9.4-R0.1-SNAPSHOT">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/spigot-1.9.4.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="Maven: org.spigotmc:spigot:1.8-R0.1-SNAPSHOT">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/spigot-1.8.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+  </component>
+</module>

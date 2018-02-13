@@ -1,0 +1,23 @@
+name: Mesmerize
+version: ${project.version}
+main: it.alian.gun.mesmerize.Mesmerize
+author: Italiangun
+softdepend:
+  - RPGInventory
+  - PowerNBT
+  - PlaceholderAPI
+  - Citizens
+commands:
+  mes:
+    usage: /mes
+    description: /mes
+  mesmerize:
+    usage: /mes
+    description: /mes
+permissions:
+  mesmerize.showstats:
+    default: true
+  mesmerize.evaluate:
+    default: true
+  mesmerize.config:
+    default: op
