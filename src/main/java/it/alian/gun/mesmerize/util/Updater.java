@@ -28,7 +28,7 @@ public class Updater implements Listener {
     }
 
     private static void sendMessages(CommandSender sender) {
-        if (MConfig.checkUpdate) {
+        if (MConfig.checkUpdate && !packet.version.equals(Mesmerize.instance.getDescription().getVersion())) {
             MLocale.UPDATER_HEADER.player(sender, packet.version, packet.releaseDate);
             for (String s : packet.description) {
                 MLocale.UPDATER_BODY.player(sender, s);
