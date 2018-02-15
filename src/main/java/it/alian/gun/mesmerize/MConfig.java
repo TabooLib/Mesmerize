@@ -20,6 +20,7 @@ public class MConfig {
             .excludeFieldsWithModifiers(Modifier.TRANSIENT).create();
 
     public static boolean debug = false;
+    public static boolean checkUpdate = true;
     private static Prefixes prefix = new Prefixes();
     private static CombatMessage combatMessage = new CombatMessage();
     private static General general = new General();

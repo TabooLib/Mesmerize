@@ -1,0 +1,11 @@
+[
+  {
+    "version": "1.1.7",
+    "releaseDate": "2018.2.15",
+    "description": [
+      "添加更新检测系统",
+      "修复与其他安全保护插件搭配时的越权操作",
+      "支持 HolographicDisplays 的实体判断"
+    ]
+  }
+]

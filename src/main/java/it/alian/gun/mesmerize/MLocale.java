@@ -31,7 +31,10 @@ public enum MLocale {
     GENERAL_CONFIG_SAVE("§a配置文件已保存。"),
     CONFIG_LIST("§a配置项 {0} 包含以下 {1} 个配置项："),
     CONFIG_LIST_1("§e  名称 {0}  §b可以继续列出"),
-    CONFIG_LIST_2("§e  名称 {0}  §b类型 {1}  §a值 {2}");
+    CONFIG_LIST_2("§e  名称 {0}  §b类型 {1}  §a值 {2}"),
+    UPDATER_HEADER("§aMesmerize 有新的版本 {0} ，发布于 {1} ，更新内容："),
+    UPDATER_BODY("§a    {0}"),
+    UPDATER_FOOTER("§a前往 {0} 下载。");
 
     private String msg, default_;
 

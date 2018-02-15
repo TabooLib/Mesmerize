@@ -9,6 +9,7 @@ import it.alian.gun.mesmerize.listeners.ItemListener;
 import it.alian.gun.mesmerize.listeners.MiscListener;
 import it.alian.gun.mesmerize.lore.LoreCalculator;
 import it.alian.gun.mesmerize.lore.LoreParser;
+import it.alian.gun.mesmerize.util.Updater;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.text.DecimalFormat;
@@ -40,6 +41,7 @@ public final class Mesmerize extends JavaPlugin {
         SplashParticle.init();
         MiscListener.init();
         ShieldBlocking.init();
+        Updater.start();
         new Metrics(this);
         MLocale.GENERAL_LOAD.console(new DecimalFormat("0.00")
                 .format(((double) System.currentTimeMillis() - (double) time) / 1000D));

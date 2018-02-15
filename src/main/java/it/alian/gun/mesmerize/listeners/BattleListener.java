@@ -9,6 +9,7 @@ import it.alian.gun.mesmerize.Mesmerize;
 import it.alian.gun.mesmerize.compat.AttackSpeed;
 import it.alian.gun.mesmerize.compat.Compat;
 import it.alian.gun.mesmerize.compat.ShieldBlocking;
+import it.alian.gun.mesmerize.compat.hook.MesmerizeHolograph;
 import it.alian.gun.mesmerize.lore.LoreCalculator;
 import it.alian.gun.mesmerize.lore.LoreInfo;
 import it.alian.gun.mesmerize.lore.LoreParser;
@@ -45,11 +46,13 @@ public class BattleListener implements Listener {
     public void onAttack(EntityDamageByEntityEvent event) {
         long nano = System.nanoTime();
         // TODO
+        /*
         {
             if (event.getDamager() instanceof Player) {
                 System.out.println(new Gson().toJson(((Player) event.getDamager()).getEquipment().getItemInMainHand()));
             }
         }
+        */
         performAttack(event);
         if (MConfig.debug)
             System.out.println(event.getEventName() + " processed in " + (System.nanoTime() - nano) * 1E-6 + " ms.");
@@ -105,18 +108,21 @@ public class BattleListener implements Listener {
                 list.stream().findFirst().ifPresent(integer -> MTasks.runLater(() -> {
                     LivingEntity other = ((LivingEntity) Compat.getByEntityId(integer, world));
                     Player player = Objects.requireNonNull((Player) Compat.getByEntityId(playerId, world));
-                    if (other != null && !other.hasMetadata("NPC") && player.hasLineOfSight(other)) {
+                    if (other != null && !other.hasMetadata("NPC") && player.hasLineOfSight(other) &&
+                            MesmerizeHolograph.isHolographEntity(other)) {
                         EntityDamageByEntityEvent e = new EntityDamageByEntityEvent(player,
                                 Compat.getByEntityId(integer, world), EntityDamageEvent.DamageCause.ENTITY_ATTACK,
                                 new EnumMap<>(ImmutableMap.of(EntityDamageEvent.DamageModifier.BASE, 1.0)),
                                 new EnumMap<>(ImmutableMap.of(EntityDamageEvent.DamageModifier.BASE, Functions.constant(0.0))));
-                        performAttack(e);
-                        other.setLastDamageCause(e);
-                        other.setLastDamage(e.getDamage());
-                        other.setHealth(it.alian.gun.mesmerize.util.Math.constraint(other.getMaxHealth(), 0,
-                                other.getHealth() - e.getDamage()));
-                        Vector vector = player.getLocation().getDirection().normalize().multiply(0.3).setY(0.2);
-                        other.setVelocity(vector);
+                        Bukkit.getPluginManager().callEvent(e);
+                        if (!e.isCancelled()) {
+                            other.setLastDamageCause(e);
+                            other.setLastDamage(e.getDamage());
+                            other.setHealth(it.alian.gun.mesmerize.util.Math.constraint(other.getMaxHealth(), 0,
+                                    other.getHealth() - e.getDamage()));
+                            Vector vector = player.getLocation().getDirection().normalize().multiply(0.3).setY(0.2);
+                            other.setVelocity(vector);
+                        }
                     }
                 }));
             });
@@ -140,6 +146,8 @@ public class BattleListener implements Listener {
             if (source == null)
                 return;
             if (source instanceof Player && AttackSpeed.check((Player) source))
+                return;
+            if (MesmerizeHolograph.isHolographEntity(entity))
                 return;
             // 攻击
             LoreInfo[] info = new LoreInfo[]{LoreParser.getByEntityId(source.getEntityId()),
