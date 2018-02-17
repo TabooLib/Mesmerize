@@ -1,5 +1,6 @@
 package it.alian.gun.mesmerize.compat;
 
+import it.alian.gun.mesmerize.MConfig;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -26,7 +27,7 @@ public abstract class ShieldBlocking {
 
         @Override
         public boolean checkShield(Player player) {
-            return player.getEquipment().getItemInMainHand().getType() == Material.SHIELD && player.isBlocking();
+            return player.getEquipment().getItemInMainHand().getType() == Material.SHIELD && player.isBlocking() && MConfig.General.ignoreShieldBlocking;
         }
 
     }

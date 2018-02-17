@@ -163,6 +163,7 @@ public class MConfig {
         public static Stats suddenDeath = new Stats("会心一击", "§c", 6, false);
         public static Stats dodge = new Stats("闪避", "§b", 4, true);
         public static Stats accuracy = new Stats("命中", "§b", 4, true);
+        public static Stats knockback = new Stats("击退", "§b", 4, true);
     }
 
     public static class Stats {

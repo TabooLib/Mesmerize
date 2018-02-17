@@ -34,7 +34,15 @@ public enum MLocale {
     CONFIG_LIST_2("§e  名称 {0}  §b类型 {1}  §a值 {2}"),
     UPDATER_HEADER("§aMesmerize 有新的版本 {0} ，发布于 {1} ，更新内容："),
     UPDATER_BODY("§a    {0}"),
-    UPDATER_FOOTER("§a前往 {0} 下载。");
+    UPDATER_FOOTER("§a前往 {0} 下载。"),
+    COMMAND_HELP_LIST("§a===== Mesmerize 帮助列表 =====\n" +
+            "§3/mes stats §f- §e模拟一次攻击后解析的属性，用于评估自身属性\n" +
+            "§3/mes evaluate §f- §e评估手中物品的价值\n" +
+            "§3/mes config load §f- §e从磁盘加载配置\n" +
+            "§3/mes config save §f- §e保存现在内存中的配置\n" +
+            "§3/mes config reload §f- §e加载并保存配置\n" +
+            "§3/mes config set <配置项> <配置值> §f- §e设置一个配置的值\n" +
+            "§3/mes config list <配置项> §f- §e列出一个配置项中所有子项的值，使用 §3/mes config list . §e列出默认的");
 
     private String msg, default_;
 

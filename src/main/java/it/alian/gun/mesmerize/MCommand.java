@@ -134,12 +134,19 @@ public class MCommand implements CommandExecutor {
                     } catch (ReflectiveOperationException e) {
                         MLocale.WARN_CONFIG_SET.player(sender, args[2]);
                     }
+                    return;
                 }
+                help(sender);
             });
             return true;
         }
-        MLocale.COMMAND_ERROR.player(sender);
+        help(sender);
         return true;
+    }
+
+    private static void help(CommandSender sender) {
+        MLocale.COMMAND_ERROR.player(sender);
+        sender.sendMessage(MLocale.COMMAND_HELP_LIST.msg().split("\n"));
     }
 
     public static void init() {

@@ -1,5 +1,7 @@
 package it.alian.gun.mesmerize;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import it.alian.gun.mesmerize.compat.AttackSpeed;
 import it.alian.gun.mesmerize.compat.Dependency;
 import it.alian.gun.mesmerize.compat.ShieldBlocking;
@@ -10,6 +12,10 @@ import it.alian.gun.mesmerize.listeners.MiscListener;
 import it.alian.gun.mesmerize.lore.LoreCalculator;
 import it.alian.gun.mesmerize.lore.LoreParser;
 import it.alian.gun.mesmerize.util.Updater;
+import me.dpohvar.powernbt.PowerNBT;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.text.DecimalFormat;

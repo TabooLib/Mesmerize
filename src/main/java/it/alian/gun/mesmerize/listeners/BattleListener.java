@@ -2,10 +2,10 @@ package it.alian.gun.mesmerize.listeners;
 
 import com.google.common.base.Functions;
 import com.google.common.collect.ImmutableMap;
-import com.google.gson.Gson;
 import it.alian.gun.mesmerize.MConfig;
 import it.alian.gun.mesmerize.MTasks;
 import it.alian.gun.mesmerize.Mesmerize;
+import it.alian.gun.mesmerize.compat.AttackDamage;
 import it.alian.gun.mesmerize.compat.AttackSpeed;
 import it.alian.gun.mesmerize.compat.Compat;
 import it.alian.gun.mesmerize.compat.ShieldBlocking;
@@ -45,14 +45,6 @@ public class BattleListener implements Listener {
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onAttack(EntityDamageByEntityEvent event) {
         long nano = System.nanoTime();
-        // TODO
-        /*
-        {
-            if (event.getDamager() instanceof Player) {
-                System.out.println(new Gson().toJson(((Player) event.getDamager()).getEquipment().getItemInMainHand()));
-            }
-        }
-        */
         performAttack(event);
         if (MConfig.debug)
             System.out.println(event.getEventName() + " processed in " + (System.nanoTime() - nano) * 1E-6 + " ms.");
@@ -61,11 +53,11 @@ public class BattleListener implements Listener {
     @EventHandler
     public void onInteract(PlayerInteractEntityEvent event) {
         long nano = System.nanoTime();
-        if (MConfig.General.ignoreShieldBlocking && event.getRightClicked() instanceof Player && ShieldBlocking.check((Player) event.getRightClicked())) {
+        if (event.getRightClicked() instanceof Player && ShieldBlocking.check((Player) event.getRightClicked())) {
             Player other = (Player) event.getRightClicked();
             EntityDamageByEntityEvent e = new EntityDamageByEntityEvent(event.getPlayer(),
                     event.getRightClicked(), EntityDamageEvent.DamageCause.ENTITY_ATTACK,
-                    new EnumMap<>(ImmutableMap.of(EntityDamageEvent.DamageModifier.BASE, 1.0)),
+                    new EnumMap<>(ImmutableMap.of(EntityDamageEvent.DamageModifier.BASE, AttackDamage.getAttackSpeed(other.getEquipment().getItemInHand()))),
                     new EnumMap<>(ImmutableMap.of(EntityDamageEvent.DamageModifier.BASE, Functions.constant(0.0))));
             performAttack(e);
             other.setLastDamageCause(e);
