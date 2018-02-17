@@ -344,23 +344,25 @@ public class LoreParser {
     }
 
     public static void init() {
-        Bukkit.getScheduler().runTaskTimerAsynchronously(Mesmerize.instance, () -> {
+        Bukkit.getScheduler().runTaskTimer(Mesmerize.instance, () -> {
             Map<Integer, Future<LoreInfo>> map = new HashMap<>();
             for (World world : Bukkit.getWorlds()) {
                 for (LivingEntity livingEntity : world.getLivingEntities()) {
                     map.put(livingEntity.getEntityId(), MTasks.submit(new ParseEntityTask((livingEntity))));
                 }
             }
-            synchronized (infoMap) {
-                infoMap.clear();
-                for (Map.Entry<Integer, Future<LoreInfo>> entry : map.entrySet()) {
-                    try {
-                        infoMap.put(entry.getKey(), entry.getValue().get());
-                    } catch (InterruptedException | ExecutionException e) {
-                        e.printStackTrace();
+            MTasks.execute(() -> {
+                synchronized (infoMap) {
+                    infoMap.clear();
+                    for (Map.Entry<Integer, Future<LoreInfo>> entry : map.entrySet()) {
+                        try {
+                            infoMap.put(entry.getKey(), entry.getValue().get());
+                        } catch (InterruptedException | ExecutionException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
-            }
+            });
         }, 0, MConfig.Performance.loreUpdateInterval);
     }
 
