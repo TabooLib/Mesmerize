@@ -6,7 +6,7 @@
 
     <groupId>it.alian.gun</groupId>
     <artifactId>Mesmerize</artifactId>
-    <version>1.1.8</version>
+    <version>1.1.9</version>
     <packaging>jar</packaging>
 
     <name>Mesmerize</name>
@@ -78,6 +78,10 @@
             <id>citizens</id>
             <url>http://repo.citizensnpcs.co/</url>
         </repository>
+        <repository>
+            <id>vault-repo</id>
+            <url>http://nexus.hc.to/content/repositories/pub_releases</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -133,6 +137,11 @@
             <version>api</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/libs/HolographicDisplaysAPI.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>net.milkbowl.vault</groupId>
+            <artifactId>VaultAPI</artifactId>
+            <version>1.6</version>
         </dependency>
     </dependencies>
 </project>

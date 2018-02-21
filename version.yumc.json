@@ -1,5 +1,28 @@
 [
   {
+    "version": "1.1.9",
+    "releaseDate": "2018.2.21",
+    "description": [
+      "修復在 1.8 及以下的版本中属性失效的问题",
+      "修复自动更新的乱码显示",
+      "修复了无效的 ignoreShieldBlocking 配置",
+      "添加了两个配置项，位于 misc 下，用于防止特效显示对 1.8- 的服务器造成影响",
+      "修复了自动更新不会提示进入服务器的管理员",
+      "添加了自定义 Placeholder 和 stats 命令的输出的格式，位于 misc.customDecimalFormat 配置项",
+      "添加 /mes sell 指令用于卖出物品，现在需要依赖 Vault"
+    ]
+  },
+  {
+    "version": "1.1.8",
+    "releaseDate": "2018.2.17",
+    "description": [
+      "修了个隐藏bug",
+      "修了一个ConcurrentModificationException（低估了 Bukkit 对异步的支持能力）",
+      "放出一个假的击退属性来吊胃口",
+      "加了一个输错指令会显示所有可用命令的功能"
+    ]
+  },
+  {
     "version": "1.1.7",
     "releaseDate": "2018.2.15",
     "description": [

@@ -8,6 +8,7 @@ softdepend:
   - PowerNBT
   - PlaceholderAPI
   - Citizens
+  - Vault
 commands:
   mes:
     usage: /mes
@@ -22,3 +23,5 @@ permissions:
     default: true
   mesmerize.config:
     default: op
+  mesmerize.sell:
+    default: true

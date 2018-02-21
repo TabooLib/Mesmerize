@@ -1,11 +1,14 @@
 package it.alian.gun.mesmerize;
 
+import it.alian.gun.mesmerize.compat.hook.MesmerizeVault;
 import it.alian.gun.mesmerize.lore.LoreInfo;
 import it.alian.gun.mesmerize.lore.LoreParser;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.yaml.snakeyaml.Yaml;
 
 import java.lang.reflect.Field;
@@ -14,7 +17,7 @@ import java.text.DecimalFormat;
 
 public class MCommand implements CommandExecutor {
 
-    private static final DecimalFormat format = new DecimalFormat("0.##");
+    private static final DecimalFormat format = new DecimalFormat(MConfig.Misc.customDecimalFormat);
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -39,21 +42,13 @@ public class MCommand implements CommandExecutor {
         // Evaluate item
         if (args.length == 1 && args[0].equalsIgnoreCase("evaluate") && sender instanceof Player &&
                 sender.hasPermission("mesmerize.evaluate")) {
-            MTasks.execute(() -> {
-                LoreInfo info = LoreParser.parseSingleItem(((Player) sender).getInventory().getItemInHand());
-                double price = 0;
-                for (Field field : info.getClass().getDeclaredFields()) {
-                    try {
-                        field.setAccessible(true);
-                        double value = (double) field.get(info);
-                        MConfig.Stats stats = (MConfig.Stats) MConfig.Prefixes.class.getDeclaredField(field.getName()).get(null);
-                        price += stats.getValuePerPercentage() * value * 100D;
-                    } catch (Throwable ignored) {
-                    }
-                }
-                price *= ((Player) sender).getInventory().getItemInHand().getAmount();
-                sender.sendMessage(String.format(MConfig.Message.onPriceEvaluate, price));
-            });
+            MTasks.execute(MCommand.evaluateOrSell(false, (Player) sender));
+            return true;
+        }
+        // Sell item
+        if (args.length == 1 && args[0].equalsIgnoreCase("sell") && sender instanceof Player &&
+                sender.hasPermission("mesmerize.sell")) {
+            MTasks.execute(MCommand.evaluateOrSell(true, (Player) sender));
             return true;
         }
         // Config save load
@@ -153,6 +148,29 @@ public class MCommand implements CommandExecutor {
         MCommand instance = new MCommand();
         Mesmerize.instance.getCommand("mes").setExecutor(instance);
         Mesmerize.instance.getCommand("mesmerize").setExecutor(instance);
+    }
+
+    private static Runnable evaluateOrSell(boolean sell, Player sender) {
+        return () -> {
+            LoreInfo info = LoreParser.parseSingleItem(sender.getInventory().getItemInHand());
+            double price = 0;
+            for (Field field : info.getClass().getDeclaredFields()) {
+                try {
+                    field.setAccessible(true);
+                    double value = (double) field.get(info);
+                    MConfig.Stats stats = (MConfig.Stats) MConfig.Prefixes.class.getDeclaredField(field.getName()).get(null);
+                    price += stats.getValuePerPercentage() * value * 100D;
+                } catch (Throwable ignored) {
+                }
+            }
+            price *= sender.getInventory().getItemInHand().getAmount();
+            if (!sell)
+                sender.sendMessage(String.format(MConfig.Message.onPriceEvaluate, price));
+            else if (MesmerizeVault.give(sender, price)) {
+                sender.getEquipment().setItemInHand(new ItemStack(Material.AIR));
+                sender.sendMessage(String.format(MConfig.Message.onItemSell, price));
+            }
+        };
     }
 
 }

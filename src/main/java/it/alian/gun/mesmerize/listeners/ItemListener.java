@@ -126,9 +126,8 @@ public class ItemListener implements Listener {
 
     public static void init() {
         Bukkit.getPluginManager().registerEvents(new ItemListener(), Mesmerize.instance);
-        Bukkit.getScheduler().runTaskTimer(Mesmerize.instance, () -> {
-            Bukkit.getPluginManager().callEvent(new TickEvent());
-        }, 10, MConfig.General.regenInterval);
+        Bukkit.getScheduler().runTaskTimer(Mesmerize.instance, () ->
+                Bukkit.getPluginManager().callEvent(new TickEvent()), 10, MConfig.General.regenInterval);
         Bukkit.getScheduler().runTaskTimer(Mesmerize.instance, () -> {
             for (Player livingEntity : Compat.getOnlinePlayers()) {
                 LoreInfo info = LoreParser.getByEntityId(livingEntity.getEntityId());

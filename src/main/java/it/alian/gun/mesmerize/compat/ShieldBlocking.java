@@ -27,7 +27,7 @@ public abstract class ShieldBlocking {
 
         @Override
         public boolean checkShield(Player player) {
-            return player.getEquipment().getItemInMainHand().getType() == Material.SHIELD && player.isBlocking() && MConfig.General.ignoreShieldBlocking;
+            return (player.getEquipment().getItemInMainHand().getType() != Material.SHIELD || !player.isBlocking()) && MConfig.General.ignoreShieldBlocking;
         }
 
     }

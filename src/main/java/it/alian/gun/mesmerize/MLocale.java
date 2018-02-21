@@ -42,7 +42,8 @@ public enum MLocale {
             "§3/mes config save §f- §e保存现在内存中的配置\n" +
             "§3/mes config reload §f- §e加载并保存配置\n" +
             "§3/mes config set <配置项> <配置值> §f- §e设置一个配置的值\n" +
-            "§3/mes config list <配置项> §f- §e列出一个配置项中所有子项的值，使用 §3/mes config list . §e列出默认的");
+            "§3/mes config list <配置项> §f- §e列出一个配置项中所有子项的值，使用 §3/mes config list . §e列出默认的\n" +
+            "§3/mes sell §f- §e以评估的价格卖出手中物品");
 
     private String msg, default_;
 

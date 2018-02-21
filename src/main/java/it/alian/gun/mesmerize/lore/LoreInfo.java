@@ -1,7 +1,6 @@
 package it.alian.gun.mesmerize.lore;
 
 import it.alian.gun.mesmerize.MConfig;
-import org.bukkit.entity.Entity;
 
 import java.lang.reflect.Field;
 
@@ -29,7 +28,8 @@ public class LoreInfo {
                     }
                 }
             }
-        } catch (ReflectiveOperationException ignored) {
+        } catch (ReflectiveOperationException e) {
+            e.printStackTrace();
         }
         return info;
     }

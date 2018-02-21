@@ -91,6 +91,9 @@ public class MConfig {
                 "SNOW_SHOVEL", "PORTAL", "LAVA_POP", "PARTICLE_SMOKE", "LARGE_SMOKE"};
         public static int particleAmount = 200;
         public static int particleVisibleRange = 36;
+        public static boolean removeOnDeath = true;
+        public static int removeDelay = 0;
+        public static String customDecimalFormat = "0.##";
     }
 
     public static class Performance {
@@ -112,6 +115,7 @@ public class MConfig {
         public static String onDurabilityWarn = "§c你的物品 %s 耐久已不足 %.2f%% 。";
         public static String onPriceEvaluate = "§a你手中的物品的价值为§d %.2f §a。";
         public static String onLevelCheck = "§c你的等级没有达到 %d 级，所以你不能使用这件物品！";
+        public static String onItemSell = "§a你手中的物品卖出了 %.2f 的价格。";
     }
 
     public static class CombatMessage {

@@ -1,5 +1,6 @@
 package it.alian.gun.mesmerize.compat.hook;
 
+import it.alian.gun.mesmerize.MConfig;
 import it.alian.gun.mesmerize.lore.LoreInfo;
 import it.alian.gun.mesmerize.lore.LoreParser;
 import me.clip.placeholderapi.external.EZPlaceholderHook;
@@ -11,7 +12,7 @@ import java.text.DecimalFormat;
 
 public class MesmerizePlaceholder extends EZPlaceholderHook {
 
-    private static final DecimalFormat format = new DecimalFormat("0.##");
+    private static final DecimalFormat format = new DecimalFormat(MConfig.Misc.customDecimalFormat);
 
     public MesmerizePlaceholder(Plugin plugin, String identifier) {
         super(plugin, identifier);

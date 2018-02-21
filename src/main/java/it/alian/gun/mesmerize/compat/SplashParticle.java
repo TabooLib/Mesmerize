@@ -27,8 +27,8 @@ public abstract class SplashParticle implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onDeath(EntityDeathEvent event) {
-        if (!(event.getEntity() instanceof Player)) {
-            Bukkit.getScheduler().runTaskLater(Mesmerize.instance, () -> event.getEntity().remove(), 0);
+        if (!(event.getEntity() instanceof Player) && MConfig.Misc.removeOnDeath) {
+            Bukkit.getScheduler().runTaskLater(Mesmerize.instance, () -> event.getEntity().remove(), MConfig.Misc.removeDelay);
             ExperienceOrb orb = event.getEntity().getWorld().spawn(event.getEntity().getLocation(), ExperienceOrb.class);
             orb.setExperience(event.getDroppedExp());
         }

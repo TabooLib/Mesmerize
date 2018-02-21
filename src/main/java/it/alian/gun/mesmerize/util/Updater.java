@@ -44,7 +44,7 @@ public class Updater implements Listener {
                 URL url = new URL(UPDATER_API);
                 HttpURLConnection connection = ((HttpURLConnection) url.openConnection());
                 connection.connect();
-                UpdatePacket[] packets = new Gson().fromJson(new InputStreamReader(connection.getInputStream()), UpdatePacket[].class);
+                UpdatePacket[] packets = new Gson().fromJson(new InputStreamReader(connection.getInputStream(), "utf-8"), UpdatePacket[].class);
                 if (packets.length > 0) {
                     packet = packets[0];
                     sendMessages(Bukkit.getConsoleSender());
@@ -52,6 +52,7 @@ public class Updater implements Listener {
             } catch (IOException ignored) {
             }
         }, 1000 * 60 * 60);
+        Bukkit.getPluginManager().registerEvents(new Updater(), Mesmerize.instance);
     }
 
     private static class UpdatePacket {

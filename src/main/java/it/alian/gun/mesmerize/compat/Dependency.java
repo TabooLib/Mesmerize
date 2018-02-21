@@ -6,6 +6,7 @@ import it.alian.gun.mesmerize.Mesmerize;
 import it.alian.gun.mesmerize.compat.hook.MesmerizeHolograph;
 import it.alian.gun.mesmerize.compat.hook.MesmerizePlaceholder;
 import it.alian.gun.mesmerize.compat.hook.MesmerizeSkillApi;
+import it.alian.gun.mesmerize.compat.hook.MesmerizeVault;
 import org.bukkit.Bukkit;
 
 public class Dependency {
@@ -30,6 +31,10 @@ public class Dependency {
         MesmerizeHolograph.init();
         if (Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays")) {
             MLocale.GENERAL_HOOK.console("HolographicDisplays");
+        }
+        MesmerizeVault.init();
+        if (Bukkit.getPluginManager().isPluginEnabled("Vault")) {
+            MLocale.GENERAL_HOOK.console("Vault");
         }
     }
 
