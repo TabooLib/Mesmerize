@@ -109,7 +109,6 @@ public class BattleListener implements Listener {
         if (event.getEntity() instanceof LivingEntity) {
             if (event.getEntity().hasMetadata("NPC"))
                 return;
-            System.out.println(1);
             LivingEntity entity = (LivingEntity) event.getEntity();
             LivingEntity source = null;
             boolean bow = false;
