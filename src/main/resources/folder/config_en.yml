@@ -1,0 +1,239 @@
+general:
+  breakOnDurabilityOff: true
+  useRPGInventory: true
+  useSkillApi: true
+  enableHealthControl: true
+  healthScaled: true
+  healthScale: 20.0
+  minimalHealth: 1.0
+  maximumHealth: 2.147483647E9
+  minimalMovespeed: 0.03
+  minimalFlyspeed: 0.03
+  baseMovespeed: 0.2
+  baseFlyspeed: 0.3
+  baseHealth: 20.0
+  regenInterval: 10.0
+  baseAttackSpeed: 18.0
+  baseAttackRange: 6.0
+  baseAccuracy: 0.98
+  baseDodge: 0.02
+  durabilityWarnThreshold:
+  - 0.25
+  - 0.5
+  - 0.75
+  - 0.9
+  - 0.95
+  ignoreShieldBlocking: false
+debug: true
+performance:
+  loreUpdateInterval: 10.0
+  maxAttackRange: 128.0
+  enableLongerRange: true
+  workerThreads: 8.0
+advanced:
+  enableCustomAttackExpression: false
+  customAttackExpression: |-
+    function max(a, b) { return a > b ? a : b; }
+    max((base + damage - armor), attack.getRealDamage());
+prefix:
+  damage:
+    name: Damage
+    color: §c
+    valuePerPercentage: 4.0
+    sumUp: true
+  playerDamage:
+    name: PVP Damage
+    color: §c
+    valuePerPercentage: 4.0
+    sumUp: true
+  entityDamage:
+    name: PVE Damage
+    color: §c
+    valuePerPercentage: 4.0
+    sumUp: true
+  bowDamage:
+    name: Arrow Damage
+    color: §c
+    valuePerPercentage: 4.0
+    sumUp: true
+  realDamage:
+    name: Real Damage
+    color: §c
+    valuePerPercentage: 4.0
+    sumUp: true
+  criticalDamage:
+    name: Critical Damage
+    color: §c
+    valuePerPercentage: 4.0
+    sumUp: false
+  criticalChance:
+    name: Critical Chance
+    color: §c
+    valuePerPercentage: 4.0
+    sumUp: false
+  defense:
+    name: Defense
+    color: §e
+    valuePerPercentage: 4.0
+    sumUp: true
+  playerDefense:
+    name: PVP Defense
+    color: §e
+    valuePerPercentage: 4.0
+    sumUp: true
+  entityDefense:
+    name: PVE Defense
+    color: §e
+    valuePerPercentage: 4.0
+    sumUp: true
+  bowDefense:
+    name: Arrow Defense
+    color: §e
+    valuePerPercentage: 4.0
+    sumUp: true
+  reflect:
+    name: Reflection
+    color: §3
+    valuePerPercentage: 4.0
+    sumUp: false
+  meleeReflect:
+    name: Melee Reflection
+    color: §3
+    valuePerPercentage: 4.0
+    sumUp: false
+  rangeReflect:
+    name: Range Reflection
+    color: §3
+    valuePerPercentage: 4.0
+    sumUp: false
+  reflectChance:
+    name: Reflection Chance
+    color: §3
+    valuePerPercentage: 4.0
+    sumUp: false
+  lifeSteal:
+    name: LifeSteal
+    color: §a
+    valuePerPercentage: 4.0
+    sumUp: false
+  lifeStealChance:
+    name: LifeSteal Chance
+    color: §a
+    valuePerPercentage: 4.0
+    sumUp: false
+  health:
+    name: Health
+    color: §c
+    valuePerPercentage: 4.0
+    sumUp: true
+  regeneration:
+    name: Regeneration
+    color: §c
+    valuePerPercentage: 4.0
+    sumUp: true
+  attackExpModifier:
+    name: Attack Exp
+    color: §c
+    valuePerPercentage: 4.0
+    sumUp: true
+  otherExpModifier:
+    name: Experience
+    color: §b
+    valuePerPercentage: 4.0
+    sumUp: true
+  moveSpeed:
+    name: Move Speed
+    color: §b
+    valuePerPercentage: 4.0
+    sumUp: true
+  flySpeed:
+    name: Fly Speed
+    color: §b
+    valuePerPercentage: 4.0
+    sumUp: true
+  attackSpeed:
+    name: Attack Speed
+    color: §c
+    valuePerPercentage: 4.0
+    sumUp: true
+  soulbound:
+    name: Soulbound
+    color: §d
+    valuePerPercentage: 4.0
+    sumUp: true
+  unbreakable:
+    name: Unbreakable
+    color: §d
+    valuePerPercentage: 4.0
+    sumUp: true
+  levelCap:
+    name: LevelCap
+    color: §a
+    valuePerPercentage: 4.0
+    sumUp: true
+  attackRange:
+    name: Attack Range
+    color: §3
+    valuePerPercentage: 6.0
+    sumUp: false
+  suddenDeath:
+    name: Sudden Death
+    color: §c
+    valuePerPercentage: 6.0
+    sumUp: false
+  dodge:
+    name: Dodge
+    color: §b
+    valuePerPercentage: 4.0
+    sumUp: true
+  accuracy:
+    name: Accuracy
+    color: §b
+    valuePerPercentage: 4.0
+    sumUp: true
+  knockback:
+    name: Knockback
+    color: §b
+    valuePerPercentage: 4.0
+    sumUp: true
+checkUpdate: true
+combatMessage:
+  showOnDamage: true
+  showOnCritical: true
+  showOnLifeSteal: true
+  showOnReflect: true
+  showOnSuddenDeath: true
+  showOnDodge: true
+  showOnMiss: true
+  onDamage: §eYou attacked %s with %.2f damage.
+  onCritical: §eYou attacked %s with %.2f critdamage.
+  onLifeSteal: §eLifeSteal activated! Target: %s Health: %.2f .
+  onReflect: §eThorn activated! Target: %.2f Damage: %s 。
+  onSuddenDeath: §cCriticalDamage! Target: %s Damage: %.2f
+  onDodge: §bYou dodged the attack from %s .
+  onMiss: §cYou didnot hit your target %s
+message:
+  omSoulboundCheck: §cYou are not the owner, you cannot do that!
+  onDurabilityItemDrop: §cThe durability of %s has run out! and it droped on the ground.
+  onDurabilityWarn: §cThe durability of %s is less than %.2f%% .
+  onPriceEvaluate: §aThe item you hold worths §d %.2f §a。
+  onLevelCheck: §cYour level is less than %d , you cannot use this!
+  onItemSell: §aYou sold the item you are holding and earn %.2f .
+misc:
+  enableSplashParticles: true
+  splashParticles:
+  - CRIT
+  - MAGIC_CRIT
+  - MOBSPAWNER_FLAMES
+  - COLOURED_DUST
+  - FLAME
+  - SNOW_SHOVEL
+  - PORTAL
+  - LAVA_POP
+  - PARTICLE_SMOKE
+  - LARGE_SMOKE
+  particleAmount: 200.0
+  particleVisibleRange: 36.0
+  removeOnDeath: true
+  removeDelay: 0.0
+  customDecimalFormat: 0.##

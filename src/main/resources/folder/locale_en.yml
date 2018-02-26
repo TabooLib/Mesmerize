@@ -1,0 +1,36 @@
+PREFIX: §3[Mesmerize] §f
+GENERAL_LOAD: §eLoading done in {0} second(s).
+WARN_ERROR_OCCUR: §cAn error occured! {0}
+GENERAL_DISABLE: §eUnloading done in {0} second(s).
+CANNOT_CONSOLE_USE: §cThis command cannot be issued in console.
+USAGE: §eType '§a{0} §efor help.'
+PERMISSION_DENIED: §cYou have no permission to do this!
+GENERAL_HOOK: §aSuccessfully enabled function with plugin {0}.
+WARN_DEPENDENCY_MISSING: §cMissing dependency {0} , plugin cannot work properly!
+GENERAL_VERSION: §aRunning on Bukkit {0}, Mesmerize version {1}
+COMMAND_SHOW_STATS: §b----- {0} Simulated attack result are as follow -----
+COMMAND_ERROR: §cCommand executing failed or syntax error, or you donot have permission to use this command.
+ERROR_LOADING_CUSTOM_SCRIPT: §cLoading custom damage expression failed, plugin will use default damage calculator.
+GENERAL_CUSTOM_SCRIPT_LOAD: §aSuccessfully loaded custom damage expression.
+GENERAL_CONFIG_LOAD: §aConfiguration file loaded.
+WARN_CONFIG_LOAD: §cConfiguration file loaded but failed.
+WARN_CONFIG_SET: §cConfiguration node {0} set failed. Please set this value manully in config.yml file.
+CONFIG_SET: §aConfig node {0} changeed from {1} to {2}, use /mes save to save this change.
+GENERAL_CONFIG_SAVE: §aConfiguration file saved.
+CONFIG_LIST: '§aConfiguration node {0} contains these {1} node(s):'
+CONFIG_LIST_1: §e  Name {0}  §bHave sub config nodes.
+CONFIG_LIST_2: §e  Name {0}  §bType {1}  §aValue {2}
+UPDATER_HEADER: '§aMesmerize detected a new version, released at {1}, descriptions
+  are listed below:'
+UPDATER_BODY: §a    {0}
+UPDATER_FOOTER: §aGoto {0} to download this new version.
+COMMAND_HELP_LIST: |-
+  §a===== Mesmerize help list =====
+  §3/mes stats §f- §eSimulate an attack and print the lore results.
+  §3/mes evaluate §f- §eEvaluate value of item in main hand.
+  §3/mes config load §f- §eLoad config from disk.
+  §3/mes config save §f- §eSave config to disk.
+  §3/mes config reload §f- §eLoad and save the config.
+  §3/mes config set <Node> <Value> §f- §eSet a config node to specific value
+  §3/mes config list <Node> §f- §eList every config node and value in specific node. Use §3/mes config list . §elist the root nodes.
+  §3/mes sell §f- §eSell item in evaluated value.
