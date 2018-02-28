@@ -1,5 +1,14 @@
 [
   {
+    "version": "1.1.A",
+    "releaseDate": "2018.2.28",
+    "description": [
+      "修复在 1.7.10 启动时提示 NoClassDefFoundError 的报错问题",
+      "修复在 1.7.10 时攻击报错 ClassCastException 的问题",
+      "修复了可能出现的 java.util.concurrent.RejectedExecutionException"
+    ]
+  },
+  {
     "version": "1.1.9",
     "releaseDate": "2018.2.21",
     "description": [

@@ -1,10 +1,9 @@
 package it.alian.gun.mesmerize.listeners;
 
-import com.google.common.base.Functions;
-import com.google.common.collect.ImmutableMap;
 import it.alian.gun.mesmerize.MConfig;
 import it.alian.gun.mesmerize.MTasks;
 import it.alian.gun.mesmerize.Mesmerize;
+import it.alian.gun.mesmerize.compat.AttackDamage;
 import it.alian.gun.mesmerize.compat.AttackSpeed;
 import it.alian.gun.mesmerize.compat.Compat;
 import it.alian.gun.mesmerize.compat.ShieldBlocking;
@@ -88,8 +87,7 @@ public class BattleListener implements Listener {
                             !MesmerizeHolograph.isHolographEntity(other)) {
                         EntityDamageByEntityEvent e = new EntityDamageByEntityEvent(player,
                                 Compat.getByEntityId(integer, world), EntityDamageEvent.DamageCause.ENTITY_ATTACK,
-                                new EnumMap<>(ImmutableMap.of(EntityDamageEvent.DamageModifier.BASE, 1.0)),
-                                new EnumMap<>(ImmutableMap.of(EntityDamageEvent.DamageModifier.BASE, Functions.constant(0.0))));
+                                AttackDamage.getAttackDamage(player.getEquipment().getItemInHand()));
                         Bukkit.getPluginManager().callEvent(e);
                         if (!e.isCancelled()) {
                             other.setLastDamageCause(e);
@@ -129,7 +127,7 @@ public class BattleListener implements Listener {
             LoreInfo[] info = new LoreInfo[]{LoreParser.getByEntityId(source.getEntityId()),
                     LoreParser.getByEntityId(entity.getEntityId())};
             // 攻击范围
-            if ((info[0].getAttackRange() + MConfig.General.baseAttackRange) * (info[0].getAttackRange() + MConfig.General.baseAttackRange)
+            if ((!bow) && (info[0].getAttackRange() + MConfig.General.baseAttackRange) * (info[0].getAttackRange() + MConfig.General.baseAttackRange)
                     < source.getLocation().distanceSquared(entity.getLocation())) {
                 event.setCancelled(true);
                 return;

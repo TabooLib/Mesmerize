@@ -1,19 +1,14 @@
 package it.alian.gun.mesmerize.compat;
 
-import com.google.common.collect.ImmutableMap;
 import me.dpohvar.powernbt.PowerNBT;
 import me.dpohvar.powernbt.api.NBTCompound;
 import me.dpohvar.powernbt.api.NBTList;
 import me.dpohvar.powernbt.nbt.NBTTagCompound;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.EnumMap;
-import java.util.Map;
 
 public class AttackDamage {
 
-    public static double getAttackSpeed(ItemStack itemStack) {
+    public static double getAttackDamage(ItemStack itemStack) {
         try {
             NBTCompound compound = PowerNBT.getApi().read(itemStack);
             if (compound != null) {
@@ -30,7 +25,7 @@ public class AttackDamage {
                     }
                 }
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
             return 2;
         }
         return 2;

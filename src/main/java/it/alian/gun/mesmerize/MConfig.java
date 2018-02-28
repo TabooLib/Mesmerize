@@ -100,7 +100,7 @@ public class MConfig {
         public static long loreUpdateInterval = 10;
         public static int maxAttackRange = 128;
         public static boolean enableLongerRange = true;
-        public static int workerThreads = Runtime.getRuntime().availableProcessors();
+        public static int workerThreads = Math.max(Runtime.getRuntime().availableProcessors(), 1);
     }
 
     public static class Advanced {
