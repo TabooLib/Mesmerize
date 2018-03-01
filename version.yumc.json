@@ -1,5 +1,12 @@
 [
   {
+    "version": "1.1.B",
+    "releaseDate": "2018.3.1",
+    "description": [
+      "修复在 1.7.10 时攻击报错 java.lang.NoSuchMethodError org.bukkit.entity.LivingEntity.getName()Ljava/lang/String 的问题"
+    ]
+  },
+  {
     "version": "1.1.A",
     "releaseDate": "2018.2.28",
     "description": [

@@ -3,10 +3,7 @@ package it.alian.gun.mesmerize.listeners;
 import it.alian.gun.mesmerize.MConfig;
 import it.alian.gun.mesmerize.MTasks;
 import it.alian.gun.mesmerize.Mesmerize;
-import it.alian.gun.mesmerize.compat.AttackDamage;
-import it.alian.gun.mesmerize.compat.AttackSpeed;
-import it.alian.gun.mesmerize.compat.Compat;
-import it.alian.gun.mesmerize.compat.ShieldBlocking;
+import it.alian.gun.mesmerize.compat.*;
 import it.alian.gun.mesmerize.compat.hook.MesmerizeHolograph;
 import it.alian.gun.mesmerize.lore.LoreCalculator;
 import it.alian.gun.mesmerize.lore.LoreInfo;
@@ -137,21 +134,11 @@ public class BattleListener implements Listener {
                 event.setCancelled(true);
                 if (MConfig.CombatMessage.showOnMiss) {
                     LivingEntity finalSource = source;
-                    MTasks.execute(() -> {
-                        if (entity instanceof Player)
-                            finalSource.sendMessage(String.format(MConfig.CombatMessage.onMiss, ((Player) entity).getDisplayName()));
-                        else
-                            finalSource.sendMessage(String.format(MConfig.CombatMessage.onMiss, entity.getName()));
-                    });
+                    MTasks.execute(() -> finalSource.sendMessage(String.format(MConfig.CombatMessage.onMiss, EntityName.get(entity))));
                 }
                 if (MConfig.CombatMessage.showOnDodge) {
                     LivingEntity finalSource = source;
-                    MTasks.execute(() -> {
-                        if (finalSource instanceof Player)
-                            entity.sendMessage(String.format(MConfig.CombatMessage.onDodge, ((Player) finalSource).getDisplayName()));
-                        else
-                            entity.sendMessage(String.format(MConfig.CombatMessage.onDodge, finalSource.getName()));
-                    });
+                    MTasks.execute(() -> entity.sendMessage(String.format(MConfig.CombatMessage.onDodge, EntityName.get(finalSource))));
                 }
                 return;
             }
@@ -161,14 +148,8 @@ public class BattleListener implements Listener {
                 event.setDamage(entity.getHealth());
                 if (MConfig.CombatMessage.showOnSuddenDeath) {
                     LivingEntity finalSource = source;
-                    MTasks.execute(() -> {
-                        if (entity instanceof Player)
-                            finalSource.sendMessage(String.format(MConfig.CombatMessage.onSuddenDeath, ((Player) entity).getDisplayName()
-                                    , event.getDamage()));
-                        else
-                            finalSource.sendMessage(String.format(MConfig.CombatMessage.onSuddenDeath, entity.getName()
-                                    , event.getDamage()));
-                    });
+                    MTasks.execute(() -> finalSource.sendMessage(String.format(MConfig.CombatMessage.onSuddenDeath, EntityName.get(entity)
+                            , event.getDamage())));
                 }
                 return;
             } else {
@@ -176,14 +157,8 @@ public class BattleListener implements Listener {
             }
             if (MConfig.CombatMessage.showOnDamage) {
                 LivingEntity finalSource = source;
-                MTasks.execute(() -> {
-                    if (entity instanceof Player)
-                        finalSource.sendMessage(String.format(MConfig.CombatMessage.onDamage, ((Player) entity).getDisplayName()
-                                , event.getDamage()));
-                    else
-                        finalSource.sendMessage(String.format(MConfig.CombatMessage.onDamage, entity.getName()
-                                , event.getDamage()));
-                });
+                MTasks.execute(() -> finalSource.sendMessage(String.format(MConfig.CombatMessage.onDamage, EntityName.get(entity)
+                        , event.getDamage())));
             }
             // 反弹
             {
@@ -194,15 +169,8 @@ public class BattleListener implements Listener {
                 if (MConfig.CombatMessage.showOnReflect && (prev - health) > 1E-6) {
                     LivingEntity finalSource = source;
                     double finalHealth = health;
-                    MTasks.execute(() -> {
-                        if (finalSource instanceof Player) {
-                            entity.sendMessage(String.format(MConfig.CombatMessage.onReflect, prev - finalHealth,
-                                    ((Player) finalSource).getDisplayName()));
-                        } else {
-                            entity.sendMessage(String.format(MConfig.CombatMessage.onReflect, prev - finalHealth,
-                                    finalSource.getName()));
-                        }
-                    });
+                    MTasks.execute(() -> entity.sendMessage(String.format(MConfig.CombatMessage.onReflect, prev - finalHealth,
+                            EntityName.get(finalSource))));
                 }
             }
             // 吸血
@@ -215,14 +183,8 @@ public class BattleListener implements Listener {
                 if (MConfig.CombatMessage.showOnLifeSteal && (health - prev) > 1E-6) {
                     LivingEntity finalSource = source;
                     double finalHealth = health;
-                    MTasks.execute(() -> {
-                        if (entity instanceof Player)
-                            finalSource.sendMessage(String.format(MConfig.CombatMessage.onLifeSteal, ((Player) entity).getDisplayName(),
-                                    finalHealth - prev));
-                        else
-                            finalSource.sendMessage(String.format(MConfig.CombatMessage.onLifeSteal, entity.getName(),
-                                    finalHealth - prev));
-                    });
+                    MTasks.execute(() -> finalSource.sendMessage(String.format(MConfig.CombatMessage.onLifeSteal, EntityName.get(entity),
+                            finalHealth - prev)));
                 }
             }
             // 刷新攻击速度

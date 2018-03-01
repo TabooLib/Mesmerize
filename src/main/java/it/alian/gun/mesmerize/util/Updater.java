@@ -43,6 +43,8 @@ public class Updater implements Listener {
             try {
                 URL url = new URL(UPDATER_API);
                 HttpURLConnection connection = ((HttpURLConnection) url.openConnection());
+                connection.setConnectTimeout(10000);
+                connection.setReadTimeout(10000);
                 connection.connect();
                 UpdatePacket[] packets = new Gson().fromJson(new InputStreamReader(connection.getInputStream(), "utf-8"), UpdatePacket[].class);
                 if (packets.length > 0) {
