@@ -36,6 +36,7 @@ public class Dependency {
         if (Bukkit.getPluginManager().isPluginEnabled("Vault")) {
             MLocale.GENERAL_HOOK.console("Vault");
         }
+        EntityName.init();
     }
 
 }
