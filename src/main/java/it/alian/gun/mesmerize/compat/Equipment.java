@@ -8,7 +8,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import ru.endlesscode.rpginventory.api.InventoryAPI;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public abstract class Equipment {
 
@@ -68,12 +70,17 @@ public abstract class Equipment {
 
         @Override
         List<ItemStack> collectOf(Entity player) {
-            Set<ItemStack> rev = new HashSet<>(equipment.collectOf(player));
+            List<ItemStack> rev = equipment.collectOf(player);
             if (MConfig.General.useRPGInventory && player instanceof Player) {
                 rev.addAll(InventoryAPI.getPassiveItems((Player) player));
                 rev.addAll(InventoryAPI.getActiveItems((Player) player));
             }
-            return new ArrayList<>(rev);
+            List<ItemStack> filtered = new ArrayList<>();
+            rev.forEach(itemStack -> {
+                if (filtered.stream().noneMatch(i -> i.isSimilar(itemStack)))
+                    filtered.add(itemStack);
+            });
+            return filtered;
         }
     }
 

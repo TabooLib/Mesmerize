@@ -63,6 +63,10 @@ public class LoreParser {
             info.levelCap = (int) Number.of(value).get();
             return;
         }
+        if (MConfig.Prefixes.permissionCap.getName().endsWith(key)) {
+            info.permission = value;
+            return;
+        }
     }
 
     /**
@@ -80,8 +84,14 @@ public class LoreParser {
             cancel = true;
         }
         if (user instanceof Player && itemInfo.levelCap > ((Player) user).getLevel()) {
-            user.sendMessage(String.format(MConfig.Message.onLevelCheck, itemInfo.levelCap));
+            MTasks.execute(() -> user.sendMessage(String.format(MConfig.Message.onLevelCheck, itemInfo.levelCap)));
             cancel = true;
+        }
+        if (itemInfo.permission != null && user instanceof Player) {
+            if (!user.hasPermission(MConfig.General.permissionAlias.getOrDefault(itemInfo.permission, itemInfo.permission))) {
+                MTasks.execute(() -> user.sendMessage(String.format(MConfig.Message.onPermissionCheck, itemInfo.permission)));
+                cancel = true;
+            }
         }
         return cancel;
     }

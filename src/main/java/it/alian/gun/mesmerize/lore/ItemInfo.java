@@ -2,7 +2,7 @@ package it.alian.gun.mesmerize.lore;
 
 public class ItemInfo {
 
-    String soulbound;
+    String soulbound, permission;
 
     double unbreakable;
     int levelCap;
@@ -21,5 +21,9 @@ public class ItemInfo {
 
     public static ItemInfo empty() {
         return new ItemInfo();
+    }
+
+    public String getPermission() {
+        return permission;
     }
 }

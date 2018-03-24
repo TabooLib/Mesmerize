@@ -103,23 +103,21 @@ public class Metrics {
         // Load the data
         serverUUID = config.getString("serverUuid");
         logFailedRequests = config.getBoolean("logFailedRequests", false);
-        if (config.getBoolean("enabled", true)) {
-            boolean found = false;
-            // Search for all other bStats Metrics classes to see if we are the first one
-            for (Class<?> service : Bukkit.getServicesManager().getKnownServices()) {
-                try {
-                    service.getField("B_STATS_VERSION"); // Our identifier :)
-                    found = true; // We aren't the first
-                    break;
-                } catch (NoSuchFieldException ignored) {
-                }
+        boolean found = false;
+        // Search for all other bStats Metrics classes to see if we are the first one
+        for (Class<?> service : Bukkit.getServicesManager().getKnownServices()) {
+            try {
+                service.getField("B_STATS_VERSION"); // Our identifier :)
+                found = true; // We aren't the first
+                break;
+            } catch (NoSuchFieldException ignored) {
             }
-            // Register our service
-            Bukkit.getServicesManager().register(Metrics.class, this, plugin, ServicePriority.Normal);
-            if (!found) {
-                // We are the first!
-                startSubmitting();
-            }
+        }
+        // Register our service
+        Bukkit.getServicesManager().register(Metrics.class, this, plugin, ServicePriority.Normal);
+        if (!found) {
+            // We are the first!
+            startSubmitting();
         }
     }
 

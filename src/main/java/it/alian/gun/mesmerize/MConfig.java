@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.nio.charset.Charset;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class MConfig {
@@ -83,6 +84,7 @@ public class MConfig {
         public static double baseDodge = 0.02;
         public static double[] durabilityWarnThreshold = {0.25, 0.5, 0.75, 0.9, 0.95};
         public static boolean ignoreShieldBlocking = false;
+        public static Map<String, String> permissionAlias = new LinkedHashMap<>();
     }
 
     public static class Misc {
@@ -97,6 +99,7 @@ public class MConfig {
     }
 
     public static class Performance {
+        public static boolean enableAttackRange = true;
         public static long loreUpdateInterval = 10;
         public static int maxAttackRange = 128;
         public static boolean enableLongerRange = true;
@@ -116,6 +119,7 @@ public class MConfig {
         public static String onPriceEvaluate = "§a你手中的物品的价值为§d %.2f §a。";
         public static String onLevelCheck = "§c你的等级没有达到 %d 级，所以你不能使用这件物品！";
         public static String onItemSell = "§a你手中的物品卖出了 %.2f 的价格。";
+        public static String onPermissionCheck = "§c你没有权限 %s 来使用此物品。";
     }
 
     public static class CombatMessage {
@@ -168,6 +172,7 @@ public class MConfig {
         public static Stats dodge = new Stats("闪避", "§b", 4, true);
         public static Stats accuracy = new Stats("命中", "§b", 4, true);
         public static Stats knockback = new Stats("击退", "§b", 4, true);
+        public static Stats permissionCap = new Stats("权限限制", "§e", 4, false);
     }
 
     public static class Stats {

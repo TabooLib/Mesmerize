@@ -1,5 +1,18 @@
 [
   {
+    "version": "1.1.C",
+    "releaseDate": "2018.3.24",
+    "description": [
+      "添加 performance.enableAttackRange 配置项用于关闭攻击距离的检查",
+      "§c添加权限检查 Lore，可用于职业检查",
+      "添加 general.permissionAlias 用于权限别名",
+      "优化了物品的灵魂绑定、等级限制检测的性能",
+      "修复了 RPGInventory 中如果拓展背包为空时多次计算 Lore 的问题",
+      "将默认的下载地址更改为 Jenkins",
+      "修复在 1.7.10 攻击报错的某个问题"
+    ]
+  },
+  {
     "version": "1.1.B",
     "releaseDate": "2018.3.1",
     "description": [

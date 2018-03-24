@@ -2,6 +2,7 @@ package it.alian.gun.mesmerize.lore;
 
 import it.alian.gun.mesmerize.MConfig;
 import it.alian.gun.mesmerize.MLocale;
+import it.alian.gun.mesmerize.MTasks;
 import it.alian.gun.mesmerize.compat.EntityName;
 import jdk.nashorn.api.scripting.NashornScriptEngineFactory;
 import org.bukkit.entity.LivingEntity;
@@ -27,7 +28,8 @@ public abstract class LoreCalculator {
         if (bow)
             damage = damage > attack.bowDamage ? damage : attack.bowDamage;
         if (MConfig.CombatMessage.showOnCritical && Math.abs(attack.criticalDamage) > 1E-6) {
-            source.sendMessage(String.format(MConfig.CombatMessage.onCritical, EntityName.get(entity), damage * attack.criticalDamage));
+            double finalDamage = damage;
+            MTasks.execute(() -> source.sendMessage(String.format(MConfig.CombatMessage.onCritical, EntityName.get(entity), finalDamage * attack.criticalDamage)));
         }
         damage += damage * attack.criticalDamage;
         double armor;

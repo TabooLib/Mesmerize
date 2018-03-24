@@ -124,8 +124,9 @@ public class BattleListener implements Listener {
             LoreInfo[] info = new LoreInfo[]{LoreParser.getByEntityId(source.getEntityId()),
                     LoreParser.getByEntityId(entity.getEntityId())};
             // 攻击范围
-            if ((!bow) && (info[0].getAttackRange() + MConfig.General.baseAttackRange) * (info[0].getAttackRange() + MConfig.General.baseAttackRange)
-                    < source.getLocation().distanceSquared(entity.getLocation())) {
+            if (MConfig.Performance.enableAttackRange && (!bow) &&
+                    (info[0].getAttackRange() + MConfig.General.baseAttackRange) * (info[0].getAttackRange() + MConfig.General.baseAttackRange)
+                            < source.getLocation().distanceSquared(entity.getLocation())) {
                 event.setCancelled(true);
                 return;
             }
