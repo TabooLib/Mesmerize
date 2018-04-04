@@ -1,5 +1,12 @@
 [
   {
+    "version": "1.1.D",
+    "releaseDate": "2018.4.5",
+    "description": [
+      "修复用 RPGInventory 报错 NullPointerException 的问题"
+    ]
+  },
+  {
     "version": "1.1.C",
     "releaseDate": "2018.3.24",
     "description": [

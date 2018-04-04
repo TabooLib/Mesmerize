@@ -77,7 +77,7 @@ public abstract class Equipment {
             }
             List<ItemStack> filtered = new ArrayList<>();
             rev.forEach(itemStack -> {
-                if (filtered.stream().noneMatch(i -> i.isSimilar(itemStack)))
+                if (filtered.stream().noneMatch(itemStack::isSimilar))
                     filtered.add(itemStack);
             });
             return filtered;
