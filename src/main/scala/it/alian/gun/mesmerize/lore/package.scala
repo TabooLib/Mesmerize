@@ -4,6 +4,7 @@ import java.util.{HashMap => JMap}
 
 import it.alian.gun.mesmerize.scalaapi.Prelude.config
 
+import scala.collection.generic.FilterMonadic
 import scala.collection.mutable
 
 package object lore {
@@ -24,6 +25,8 @@ package object lore {
     def str(x: String): String = map(x).right.get
 
     def foreach[U](f: ((String, Either[Between, String])) => U): Unit = map.foreach[U](f)
+
+    def withFilter(p: ((String, Either[Between, String])) => Boolean): FilterMonadic[(String, Either[Between, String]), mutable.Map[String, Either[Between, String]]] = map.withFilter(p)
 
     override def toString: String = map.toString()
   }

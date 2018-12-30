@@ -14,7 +14,7 @@ import it.alian.gun.mesmerize.scalaapi.Prelude._
 import scala.collection.JavaConverters._
 
 object Updater {
-  private val UPDATER_API = "https://raw.githubusercontent.com/PluginsCDTribe/Mesmerize/master/version.yumc.json"
+  private val UPDATER_API = "https://raw.githubusercontent.com/PluginsCDTribe/Mesmerize/scala/version.yumc.json"
   private var packet: UpdatePacket = _
 
   runTask(20 * 60 * 60, 20 * 60 * 60) {
