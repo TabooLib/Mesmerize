@@ -4,7 +4,7 @@ import java.util
 
 import it.alian.gun.mesmerize.MesmerizeDelegate._
 import it.alian.gun.mesmerize.scalaapi.Prelude._
-import org.bukkit.Effect
+import org.bukkit.{Effect, Particle}
 import org.bukkit.entity.{Entity, ExperienceOrb, LivingEntity, Player}
 import org.bukkit.event.entity.{EntityDamageByEntityEvent, EntityDeathEvent}
 import org.bukkit.event.{EventHandler, EventPriority, Listener}
@@ -13,8 +13,12 @@ import scala.collection.JavaConverters._
 
 object SplashParticle extends Listener {
 
-  private val impl = if (config("misc.enableSplashParticles", true)) new PlayEffectImpl else new AbstractImpl
-  private val effects = config[util.List[String]]("misc.splashParticles").asScala.map(Effect.valueOf).toArray
+  private val impl = if (config("misc.enableSplashParticles", true)) {
+    try Effect.valueOf("CRIT") catch {
+      case _: Throwable =>
+    }
+    new PlayEffectImpl
+  } else new AbstractImpl
 
   @EventHandler(priority = EventPriority.HIGHEST)
   def onDeath(event: EntityDeathEvent): Unit = {
@@ -26,7 +30,24 @@ object SplashParticle extends Listener {
     impl(event.getEntity)
   }
 
+  private class PlayEffect_1_13_Impl extends (Entity => Unit) {
+    private val effects = config[util.List[String]]("misc.splashParticles").asScala.map(Particle.valueOf).toArray
+    override def apply(entity: Entity): Unit = entity match {
+      case _: LivingEntity => entity.getLastDamageCause match {
+        case event: EntityDamageByEntityEvent => event.getDamager match {
+          case _: Player =>
+            val effect = effects((math.random() * effects.length).toInt)
+            entity.getWorld.spawnParticle(effect, entity.getLocation, config("misc.particleAmount", 100), 0.75F, 0.75F, 0.75F)
+          case _ =>
+        }
+        case _ =>
+      }
+      case _ =>
+    }
+  }
+
   private class PlayEffectImpl extends (Entity => Unit) {
+    private val effects = config[util.List[String]]("misc.splashParticles").asScala.map(Effect.valueOf).toArray
     override def apply(entity: Entity): Unit = entity match {
       case _: LivingEntity => entity.getLastDamageCause match {
         case event: EntityDamageByEntityEvent => event.getDamager match {
