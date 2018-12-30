@@ -1,0 +1,44 @@
+plugins {
+    id 'java'
+    id 'scala'
+}
+
+group 'it.alian.gun.mes'
+version = '1.2.0'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+defaultTasks 'clean', 'build'
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+tasks.withType(ScalaCompile) {
+    options.encoding = 'UTF-8'
+    scalaCompileOptions.optimize = true
+}
+
+repositories {
+    maven { url 'https://jitpack.io' }
+    maven { url 'https://bkm016.github.io/TabooLib/repo/' }
+    maven { url 'https://hub.spigotmc.org/nexus/content/groups/public/' }
+    mavenCentral()
+    maven { url 'http://repo.extendedclip.com/content/repositories/placeholderapi/' }
+}
+
+dependencies {
+    compile 'com.github.Bkm016:TabooLib:1b54ca4544'
+    compile 'org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT'
+    compile group: 'org.scala-lang', name: 'scala-library', version: '2.12.7'
+    compile fileTree(dir:'libs',includes:['*jar'])
+}
+
+import org.apache.tools.ant.filters.ReplaceTokens
+
+processResources {
+    from(sourceSets.main.resources.srcDirs) {
+        filter ReplaceTokens, tokens: [version: version]
+    }
+}

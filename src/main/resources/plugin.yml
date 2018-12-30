@@ -1,0 +1,28 @@
+main: it.alian.gun.mesmerize.Mesmerize
+name: Mesmerize
+version: @version@
+authors: [IzzelAliz]
+depend:
+  - TabooLib
+softdepend:
+  - RPGInventory
+  - PowerNBT
+  - PlaceholderAPI
+  - Citizens
+  - Vault
+commands:
+  mes:
+    usage: /mes
+    description: /mes
+  mesmerize:
+    usage: /mes
+    description: /mes
+permissions:
+  mesmerize.showstats:
+    default: true
+  mesmerize.evaluate:
+    default: true
+  mesmerize.config:
+    default: op
+  mesmerize.sell:
+    default: true

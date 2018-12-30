@@ -1,0 +1,261 @@
+general:
+  breakOnDurabilityOff: true
+  useRPGInventory: true
+  useSkillApi: true
+  enableHealthControl: true
+  healthScaled: true
+  healthScale: 20.0
+  minimalHealth: 1.0
+  maximumHealth: 2.147483647E9
+  minimalMovespeed: 0.03
+  minimalFlyspeed: 0.03
+  regenInterval: 10
+  baseAttackSpeed: 18.0
+  baseAttackRange: 6.0
+  baseAccuracy: 0.98
+  baseDodge: 0.02
+  durabilityWarnThreshold:
+    - 0.25
+    - 0.5
+    - 0.75
+    - 0.9
+    - 0.95
+  ignoreShieldBlocking: false
+  permissionAlias: {}
+debug: false
+performance:
+  enableAttackRange: true
+  maxAttackRange: 128.0
+  enableLongerRange: true
+  loreUpdateInterval: 10
+advanced:
+  enableCustomAttackExpression: false
+  customAttackExpression: |-
+    function max(a, b) { return a > b ? a : b; }
+    attack.defense = attack.attr("generic.armor") * 40;
+    //print(attack.attr("generic.attackDamage"))
+    //print(attack.attributes)
+    max((base + damage - armor), attack.realDamage);
+  collectAttributes: false
+  attributeCollect:
+    generic_attackDamage: sum
+    generic_armor: sum
+prefix:
+  damage:
+    name: 伤害
+    color: §c
+    valuePerPercentage: 4.0
+    collect: sum
+  playerDamage:
+    name: PVP伤害
+    color: §c
+    valuePerPercentage: 4.0
+    collect: sum
+  entityDamage:
+    name: PVE伤害
+    color: §c
+    valuePerPercentage: 4.0
+    collect: sum
+  bowDamage:
+    name: 弓箭伤害
+    color: §c
+    valuePerPercentage: 4.0
+    collect: sum
+  realDamage:
+    name: 真实伤害
+    color: §c
+    valuePerPercentage: 4.0
+    collect: sum
+  criticalDamage:
+    name: 暴击加成
+    color: §c
+    valuePerPercentage: 4.0
+    collect: sum
+  criticalChance:
+    name: 暴击几率
+    color: §c
+    valuePerPercentage: 4.0
+    collect: max
+  defense:
+    name: 护甲
+    color: §e
+    valuePerPercentage: 4.0
+    collect: sum
+  playerDefense:
+    name: PVP护甲
+    color: §e
+    valuePerPercentage: 4.0
+    collect: sum
+  entityDefense:
+    name: PVE护甲
+    color: §e
+    valuePerPercentage: 4.0
+    collect: sum
+  bowDefense:
+    name: 弓箭护甲
+    color: §e
+    valuePerPercentage: 4.0
+    collect: sum
+  reflect:
+    name: 反弹
+    color: §3
+    valuePerPercentage: 4.0
+    collect: sum
+  meleeReflect:
+    name: 近战反弹
+    color: §3
+    valuePerPercentage: 4.0
+    collect: sum
+  rangeReflect:
+    name: 远程反弹
+    color: §3
+    valuePerPercentage: 4.0
+    collect: sum
+  reflectChance:
+    name: 反弹几率
+    color: §3
+    valuePerPercentage: 4.0
+    collect: sum
+  lifeSteal:
+    name: 吸血
+    color: §a
+    valuePerPercentage: 4.0
+    collect: sum
+  lifeStealChance:
+    name: 吸血几率
+    color: §a
+    valuePerPercentage: 4.0
+    collect: sum
+  health:
+    name: 生命
+    color: §c
+    valuePerPercentage: 4.0
+    base: 20.0
+    collect: sum
+  regeneration:
+    name: 再生
+    color: §c
+    valuePerPercentage: 4.0
+    collect: sum
+  attackExpModifier:
+    name: 战斗经验加成
+    color: §c
+    valuePerPercentage: 4.0
+    collect: sum
+  otherExpModifier:
+    name: 经验加成
+    color: §b
+    valuePerPercentage: 4.0
+    collect: sum
+  moveSpeed:
+    name: 移动速度
+    color: §b
+    valuePerPercentage: 4.0
+    base: 0.2
+    collect: sum
+  flySpeed:
+    name: 飞行速度
+    color: §b
+    valuePerPercentage: 4.0
+    base: 0.3
+    collect: sum
+  attackSpeed:
+    name: 攻击速度
+    color: §c
+    valuePerPercentage: 4.0
+    base: 18.0
+    collect: sum
+  soulbound:
+    name: 灵魂绑定
+    color: §d
+    valuePerPercentage: -10.0
+    collect: replace
+    type: string
+  unbreakable:
+    name: 不灭
+    color: §d
+    valuePerPercentage: 4.0
+    base: 0.0
+    collect: sum
+  levelCap:
+    name: 等级限制
+    color: §a
+    valuePerPercentage: 4.0
+    collect: max
+  attackRange:
+    name: 攻击距离
+    color: §3
+    valuePerPercentage: 6.0
+    base: 6.0
+    collect: sum
+  suddenDeath:
+    name: 会心一击
+    color: §c
+    valuePerPercentage: 6.0
+    base: 0.0
+    collect: sum
+  dodge:
+    name: 闪避
+    color: §b
+    valuePerPercentage: 4.0
+    base: 0.02
+    collect: sum
+  accuracy:
+    name: 命中
+    color: §b
+    valuePerPercentage: 4.0
+    base: 0.98
+    collect: sum
+  knockback:
+    name: 击退
+    color: §b
+    valuePerPercentage: 4.0
+    collect: sum
+  permissionCap:
+    name: 权限限制
+    color: §e
+    valuePerPercentage: 4.0
+    collect: replace
+    type: string
+checkUpdate: true
+combatMessage:
+  showOnDamage: true
+  showOnCritical: true
+  showOnLifeSteal: true
+  showOnReflect: true
+  showOnSuddenDeath: true
+  showOnDodge: true
+  showOnMiss: true
+  onDamage: §e你对 %s 造成了 %.2f 点伤害。
+  onCritical: §e你对 %s 造成了 %.2f 的暴击伤害。
+  onLifeSteal: §e你吸取了 %s 的 %.2f 点生命值。
+  onReflect: §e你将 %.2f 伤害反弹给了 %s 。
+  onSuddenDeath: §c你对 %s 造成了 %.2f 的会心一击！
+  onDodge: §b你闪避了 %s 的攻击！
+  onMiss: §c你没有命中 %s ！
+message:
+  omSoulboundCheck: §c你不是这件物品的主人，所以你不能这样做！
+  onDurabilityItemDrop: §c物品 %s 耐久耗尽，已经掉落在原地！
+  onDurabilityWarn: §c你的物品 %s 耐久已不足 %.2f%% 。
+  onPriceEvaluate: §a你手中的物品的价值为§d %.2f §a。
+  onLevelCheck: §c你的等级没有达到 %d 级，所以你不能使用这件物品！
+  onItemSell: §a你手中的物品卖出了 %.2f 的价格。
+  onPermissionCheck: §c你没有权限 %s 来使用此物品。
+misc:
+  enableSplashParticles: true
+  splashParticles:
+    - CRIT
+    - MAGIC_CRIT
+    - MOBSPAWNER_FLAMES
+    - COLOURED_DUST
+    - FLAME
+    - SNOW_SHOVEL
+    - PORTAL
+    - LAVA_POP
+    - PARTICLE_SMOKE
+    - LARGE_SMOKE
+  particleAmount: 200
+  particleVisibleRange: 36
+  removeOnDeath: true
+  removeDelay: 0
+  customDecimalFormat: 0.##
