@@ -8,6 +8,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.entity.{EntityDeathEvent, EntityPickupItemEvent, PlayerDeathEvent}
 import org.bukkit.event.inventory.InventoryClickEvent
+import org.bukkit.event.inventory.InventoryType.SlotType
 import org.bukkit.event.player.{PlayerInteractEvent, PlayerItemDamageEvent, PlayerItemHeldEvent}
 import org.bukkit.event.{EventHandler, Listener}
 import org.bukkit.inventory.ItemStack
@@ -55,6 +56,7 @@ object ItemListener extends Listener {
 
   @EventHandler
   def onItemChange(event: PlayerItemHeldEvent): Unit = {
+    runTaskAsync(LoreParser.update(event.getPlayer): Unit)
     if (!check(event.getPlayer.getInventory.getItem(event.getPreviousSlot), event.getPlayer))
       event.setCancelled(true)
   }
@@ -73,11 +75,11 @@ object ItemListener extends Listener {
       val prev = event.getItem.getDurability.toDouble / event.getItem.getType.getMaxDurability.toDouble
       val now = (event.getItem.getDurability + event.getDamage).toDouble / event.getItem.getType.getMaxDurability.toDouble
       for (v <- config.getDoubleList("general.durabilityWarnThreshold").asScala if v > prev && v <= now) {
-          event.getPlayer.sendMessage(config("message.onDurabilityWarn", "").format(
-            if (event.getItem.hasItemMeta)
-              if (event.getItem.getItemMeta.hasDisplayName) event.getItem.getItemMeta.getDisplayName
-              else event.getItem.getType.name
-            else event.getItem.getType.name, (1D - prev) * 100D))
+        event.getPlayer.sendMessage(config("message.onDurabilityWarn", "").format(
+          if (event.getItem.hasItemMeta)
+            if (event.getItem.getItemMeta.hasDisplayName) event.getItem.getItemMeta.getDisplayName
+            else event.getItem.getType.name
+          else event.getItem.getType.name, (1D - prev) * 100D))
       }
     }
   }
@@ -90,7 +92,8 @@ object ItemListener extends Listener {
 
   @EventHandler
   def onClick(event: InventoryClickEvent): Unit = {
-
+    if (event.getRawSlot == event.getWhoClicked.getInventory.getHeldItemSlot || event.getSlotType == SlotType.ARMOR)
+      runTaskAsync(LoreParser.update(event.getWhoClicked): Unit)
   }
 
   runTask(10, config("general.regenInterval", 10)) {

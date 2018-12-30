@@ -5,7 +5,6 @@ import java.util.concurrent.TimeUnit
 import com.google.common.cache.{Cache, CacheBuilder}
 import it.alian.gun.mesmerize.Between
 import it.alian.gun.mesmerize.scalaapi.Prelude._
-import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.entity.{LivingEntity, Player}
 import org.bukkit.inventory.ItemStack
 
@@ -17,13 +16,13 @@ import scala.util.matching.Regex
 object LoreParser {
 
   private val name = """(?<name>[a-zA-Z0-9_\u4e00-\u9fa5]+)"""
-  private val range = """(?<low>[\+\-]?\d+(\.\d+)?)(\s?\-\s?(?<high>[\+\-]?\d+(\.\d+)?))?"""
+  private val range = """(?<low>[\+\-]?\d+(\.\d+)?%?)(\s?\-\s?(?<high>[\+\-]?\d+(\.\d+)?%?))?"""
   private val str = """(?<str>.*)"""
   private val pattern = f"$name\\s?:\\s*($range|$str)".r
 
   lazy val names: Map[String, String] = {
     val res = mutable.Map[String, String]()
-    val section = config[ConfigurationSection]("prefix", null)
+    val section = config.getConfigurationSection("prefix")
     for (key: String <- section.getKeys(false).asScala) {
       res += section.getConfigurationSection(key).getString("name") -> key
     }
@@ -63,7 +62,6 @@ object LoreParser {
       case _ => newInfo
     })
 
-
   private def merge(name: String, a: Either[Between, String], b: Either[Between, String]): Either[Between, String] = {
     (a, b) match {
       case (Left(x), Left(y)) => config(s"prefix.$name.collect", "sum") match {
@@ -83,11 +81,13 @@ object LoreParser {
 
   def parse(item: ItemStack): LoreInfo = {
 
+    def toDouble(x: String): Double = if (x.last == '%') x.init.toDouble * 0.01D else x.toDouble
+
     def rangeOf(reg: Regex.Match): Between = {
       val high = reg.group("high")
       val low = reg.group("low")
-      if (high != null) Between(low.toDouble, high.toDouble)
-      else if (low != null) low.toDouble
+      if (high != null) Between(toDouble(low), toDouble(high))
+      else if (low != null) toDouble(low)
       else 0
     }
 
