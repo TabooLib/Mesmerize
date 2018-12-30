@@ -4,7 +4,9 @@
     "releaseDate": "2018.12.30",
     "description": [
       "更新至 1.2，§c如果先前的版本用着尚好请不用更新",
-      "新版本需要前置插件 §eTabooLib，可以在 https://github.com/Bkm016/TabooLib/releases 下载"
+      "新版本需要前置插件 §eTabooLib，可以在 https://github.com/Bkm016/TabooLib/releases 下载",
+      "新版特性",
+      "1. 完全支持自定义属性并自定义伤害方式，不再受限于默认的二十几种属性"
     ]
   },
   {

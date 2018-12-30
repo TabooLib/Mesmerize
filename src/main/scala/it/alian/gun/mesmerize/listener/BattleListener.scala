@@ -108,7 +108,7 @@ object BattleListener extends Listener {
             runTaskAsync(source.sendMessage(config("combatMessage.onSuddenDeath", "").format(entity.getDisplayName, entity.getHealth)))
           ()
         } else
-          event.setDamage(LoreCalculator.finalDamage(event.getDamage, atk, dfs, source, entity, bow))
+          event.setDamage(LoreCalculator.finalDamage(event.getDamage, atk, dfs, source, entity, bow, event))
         if (config("combatMessage.showOnDamage", true))
           runTaskAsync(source.sendMessage(config("combatMessage.onDamage", "").format(entity.getDisplayName, event.getDamage)))
 

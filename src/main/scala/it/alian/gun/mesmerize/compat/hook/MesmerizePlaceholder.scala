@@ -15,14 +15,11 @@ object MesmerizePlaceholder {
 class MesmerizePlaceholder(val plugin: Plugin, val identifier: String) extends EZPlaceholderHook(plugin, identifier) {
   override def onPlaceholderRequest(player: Player, s: String): String =
     if (s.startsWith("stats_")) {
-      val key = s.substring("stats_".length)
+      val name = s.substring("stats_".length)
       val info = LoreParser.parse(player)
-      try {
-        val field = info.getClass.getDeclaredField(key)
-        field.setAccessible(true)
-        MesmerizePlaceholder.format.format(field.get(info))
-      } catch {
-        case _: Exception => "NoElem"
+      config(s"prefix.$name.type", "number") match {
+        case "number" => MesmerizePlaceholder.format.format(info.num(name))
+        case "string" => info.str(name)
       }
     } else ""
 

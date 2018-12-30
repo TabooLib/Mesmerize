@@ -32,10 +32,7 @@ advanced:
   enableCustomAttackExpression: false
   customAttackExpression: |-
     function max(a, b) { return a > b ? a : b; }
-    attack.defense = attack.attr("generic.armor") * 40;
-    //print(attack.attr("generic.attackDamage"))
-    //print(attack.attributes)
-    max((base + damage - armor), attack.realDamage);
+    max((base + damage - armor), attack.num("realDamage"));
   collectAttributes: false
   attributeCollect:
     generic_attackDamage: sum

@@ -5,11 +5,12 @@ import it.alian.gun.mesmerize.scalaapi.Prelude._
 import javax.script._
 import jdk.nashorn.api.scripting.NashornScriptEngineFactory
 import org.bukkit.entity.{LivingEntity, Player}
+import org.bukkit.event.entity.EntityDamageByEntityEvent
 
 object LoreCalculator {
   private val impl = if (config("advanced.enableCustomAttackExpression", false)) new JavaScriptImpl else new DefaultImpl
 
-  def finalDamage(baseDamage: Double, attack: LoreInfo, defense: LoreInfo, source: LivingEntity, entity: LivingEntity, bow: Boolean): Double = {
+  def finalDamage(baseDamage: Double, attack: LoreInfo, defense: LoreInfo, source: LivingEntity, entity: LivingEntity, bow: Boolean, event: EntityDamageByEntityEvent): Double = {
     var damage = attack.num("damage") max
       (if (entity.isInstanceOf[Player]) attack.num("playerDamage") else attack.num("entityDamage"))
     if (bow) damage = damage max attack.num("bowDamage")
@@ -19,7 +20,7 @@ object LoreCalculator {
     var armor = defense.num("defense") max
       (if (source.isInstanceOf[Player]) defense.num("playerDefense") else defense.num("entityDefense"))
     if (bow) armor = armor max defense.num("bowDefense")
-    impl.calculateDamage(baseDamage, damage, armor, attack, defense)
+    impl.calculateDamage(baseDamage, damage, armor, attack, defense, event)
   }
 
   def finalReflect(baseDamage: Double, defense: LoreInfo): Double = {
@@ -29,13 +30,13 @@ object LoreCalculator {
 }
 
 private abstract class LoreCalculator {
-  def calculateDamage(baseDamage: Double, damage: Double, armor: Double, attack: LoreInfo, defense: LoreInfo): Double
+  def calculateDamage(baseDamage: Double, damage: Double, armor: Double, attack: LoreInfo, defense: LoreInfo, event: EntityDamageByEntityEvent): Double
 
   def calculateReflect(baseDamage: Double, ref: Double, defense: LoreInfo): Double
 }
 
 private class DefaultImpl extends LoreCalculator {
-  override def calculateDamage(baseDamage: Double, damage: Double, armor: Double, attack: LoreInfo, defense: LoreInfo): Double =
+  override def calculateDamage(baseDamage: Double, damage: Double, armor: Double, attack: LoreInfo, defense: LoreInfo, event: EntityDamageByEntityEvent): Double =
     Math.max(baseDamage + damage - armor, attack.num("realDamage"))
 
   override def calculateReflect(baseDamage: Double, ref: Double, defense: LoreInfo): Double = baseDamage * ref
@@ -54,13 +55,14 @@ private class JavaScriptImpl extends LoreCalculator {
   val scriptEngine: ScriptEngine = factory.getScriptEngine("-doe", "--global-per-engine")
   private val script = scriptEngine.asInstanceOf[Compilable].compile(config("advanced.customAttackExpression", ""))
 
-  override def calculateDamage(baseDamage: Double, damage: Double, armor: Double, attack: LoreInfo, defense: LoreInfo): Double = {
+  override def calculateDamage(baseDamage: Double, damage: Double, armor: Double, attack: LoreInfo, defense: LoreInfo, event: EntityDamageByEntityEvent): Double = {
     val bindings = new SimpleBindings
     bindings.put("base", baseDamage)
     bindings.put("damage", damage)
     bindings.put("armor", armor)
     bindings.put("attack", attack)
     bindings.put("defense", defense)
+    bindings.put("event", event)
     try script.eval(bindings).toString.toDouble
     catch {
       case _: Exception => 0
