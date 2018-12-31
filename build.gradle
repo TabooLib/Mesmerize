@@ -30,6 +30,7 @@ repositories {
 
 dependencies {
     compile 'com.github.Bkm016:TabooLib:1b54ca4544'
+    implementation 'com.github.tr7zw.Item-NBT-API:item-nbt-api:be4dfa593b'
     compile 'org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT'
     compile group: 'org.scala-lang', name: 'scala-library', version: '2.12.7'
     compile fileTree(dir:'libs',includes:['*jar'])

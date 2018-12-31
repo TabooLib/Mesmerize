@@ -214,6 +214,17 @@ prefix:
     valuePerPercentage: 4.0
     collect: replace
     type: string
+  maxInlay:
+    name: 镶嵌槽位
+    color: §d
+    valuePerPercentage: 100.0
+    collect: max
+  canInlay:
+    name: 可镶嵌
+    color: §3
+    valuePerPercentage: 10.0
+    type: string
+    collect: replace
 checkUpdate: true
 combatMessage:
   showOnDamage: true

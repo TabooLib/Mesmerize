@@ -1,8 +1,11 @@
 package it.alian.gun.mesmerize.scalaapi.runtime
 
 import me.skymc.taboolib.anvil.AnvilContainerAPI
+import me.skymc.taboolib.database.PlayerDataManager
 import me.skymc.taboolib.scoreboard.ScoreboardUtil
 import org.bukkit.entity.Player
+import it.alian.gun.mesmerize.MesmerizeDelegate._
+import it.alian.gun.mesmerize.scalaapi.Prelude._
 
 import scala.collection.JavaConverters._
 
@@ -17,6 +20,8 @@ class RichPlayer(private val player: Player) extends RichOfflinePlayer(player) {
   def displaySidebarUnranked(title: String, elements: String*): Unit = ScoreboardUtil.unrankedSidebarDisplay(player, elements: _*)
 
   def openAnvil(): Unit = AnvilContainerAPI.openAnvil(player)
+
+  def saveData(): Unit = runTaskAsync(PlayerDataManager.savePlayerData(player.getName, false))
 
 }
 

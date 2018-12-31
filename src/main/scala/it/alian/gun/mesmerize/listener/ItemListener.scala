@@ -19,7 +19,7 @@ object ItemListener extends Listener {
 
   private def check(stack: ItemStack, player: Player): Boolean = {
     val info = LoreParser.parse(stack)
-    if (info.str("soulbound") != player.getName) {
+    if (info.str("soulbound").nonEmpty && info.str("soulbound") != player.getName) {
       runTaskAsync(player.sendMessage(config("message.omSoulboundCheck", "")))
       return false
     }
@@ -27,8 +27,9 @@ object ItemListener extends Listener {
       runTaskAsync(player.sendMessage(config("message.onLevelCheck", "").format(info.num("levelCap"))))
       return false
     }
-    if (!player.hasPermission(config("general.permissionAlias." + info.str("permission"), info.str("permission")))) {
-      runTaskAsync(player.sendMessage(config("message.onPermissionCheck", "").format(info.str("permission"))))
+    val cap = info.str("permissionCap")
+    if (cap.nonEmpty && !player.hasPermission(config("general.permissionAlias." + cap, cap))) {
+      runTaskAsync(player.sendMessage(config("message.onPermissionCheck", "").format(cap)))
       return false
     }
     true
@@ -57,14 +58,14 @@ object ItemListener extends Listener {
   @EventHandler
   def onItemChange(event: PlayerItemHeldEvent): Unit = {
     runTaskAsync(LoreParser.update(event.getPlayer): Unit)
-    if (!check(event.getPlayer.getInventory.getItem(event.getPreviousSlot), event.getPlayer))
+    if (!event.getPlayer.getInventory.getItem(event.getNewSlot).empty && !check(event.getPlayer.getInventory.getItem(event.getNewSlot), event.getPlayer))
       event.setCancelled(true)
   }
 
   @EventHandler
   def onItemUse(event: PlayerItemDamageEvent): Unit = {
     val info = LoreParser.parse(event.getItem)
-    if (Math.random < info.num("unbreakable")) event.setDamage(0)
+    if (math.random < info.num("unbreakable")) event.setDamage(0)
     if (event.getItem.getDurability == (event.getItem.getType.getMaxDurability - 1) && !config("general.breakOnDurabilityOff", true)) {
       val itemStack = event.getItem.clone
       event.getPlayer.getWorld.dropItemNaturally(event.getPlayer.getLocation, itemStack)
@@ -96,14 +97,14 @@ object ItemListener extends Listener {
       runTaskAsync(LoreParser.update(event.getWhoClicked): Unit)
   }
 
-  runTask(10, config("general.regenInterval", 10)) {
+  runTask(10, config.getLong("general.regenInterval", 10)) {
     for (player <- Compat.getOnlinePlayers if !player.isDead && player.isValid) {
       val health = (LoreParser.parse(player).num("regeneration") + player.getHealth) min player.getMaxHealth
       player.setHealth(health)
     }
   }
 
-  runTask(5, config("performance.loreUpdateInterval", 5)) {
+  runTask(5, config.getLong("performance.loreUpdateInterval", 5)) {
     for (livingEntity <- Compat.getOnlinePlayers) {
       val info = LoreParser.parse(livingEntity)
       if (config("general.enableHealthControl", true)) {

@@ -1,13 +1,17 @@
 package it.alian.gun.mesmerize.scalaapi
 
 import it.alian.gun.mesmerize.scalaapi.runtime._
+import me.skymc.taboolib.database.PlayerDataManager
 import org.bukkit.command.CommandSender
+import org.bukkit.configuration.Configuration
 import org.bukkit.entity.{Entity, Player}
 import org.bukkit.inventory.ItemStack
 import org.bukkit.util.{Vector => Vec}
 import org.bukkit.{Location, OfflinePlayer, World}
 
 abstract class Implicits {
+
+  implicit def player2data(player: Player): Configuration = PlayerDataManager.getPlayerData(player)
 
   implicit def item2rich(item: ItemStack): RichItem = RichItem item2rich item
 

@@ -23,6 +23,16 @@ CONFIG_LIST_2: '&e  名称 {0}  &b类型 {1}  &a值 {2}'
 UPDATER_HEADER: '&aMesmerize 有新的版本 {0} ，发布于 {1} ，更新内容：'
 UPDATER_BODY: '&a    {0}'
 UPDATER_FOOTER: '&a前往 {0} 下载。'
+item-view: '{0} &3物品界面'
+inlay:
+  name: '镶嵌'
+  desc:
+    - ''
+  ui-name: '&9&l镶嵌 {0} &c&l可用 {1} &f/ &d&l总空间 {2}'
+  unavailable-slot: '&c槽位不可用'
+  click-unmount: '&c&l按住 SHIFT 点击取下镶嵌'
+  unmount-notify: '&a成功取下镶嵌'
+  empty-hand: '&c使用此命令需手持相应物品'
 COMMAND_HELP_LIST:
   - '&a===== Mesmerize 帮助列表 ====='
   - '&3/mes stats &f- &e模拟一次攻击后解析的属性，用于评估自身属性'

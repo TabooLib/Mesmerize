@@ -2,9 +2,10 @@ package it.alian.gun.mesmerize.scalaapi
 
 import com.ilummc.tlib.resources.TLocale.Logger
 import it.alian.gun.mesmerize.MesmerizeDelegate
+import it.alian.gun.mesmerize.MesmerizeDelegate._
 import me.skymc.taboolib.common.configuration.TConfiguration
 import org.bukkit.Bukkit
-import org.bukkit.event.{Event, EventException, EventPriority, Listener}
+import org.bukkit.event._
 import org.bukkit.plugin.{EventExecutor, Plugin}
 
 object Prelude extends Implicits {
@@ -13,12 +14,24 @@ object Prelude extends Implicits {
                          ignoreCancelled: Boolean = true,
                          priority: EventPriority = EventPriority.NORMAL)
                         (handler: T => Unit)
-                        (implicit plugin: Plugin): Unit = {
+                        (implicit plugin: Plugin): Listener = {
     val listener = new SingleListener(handler)
+    Bukkit.getPluginManager.registerEvent(clazz, listener, priority, listener, plugin, ignoreCancelled)
+    listener
+  }
+
+  def listenOnce[T <: Event](clazz: Class[T],
+                             ignoreCancelled: Boolean = true,
+                             priority: EventPriority = EventPriority.NORMAL)
+                            (handler: T => Unit)
+                            (implicit plugin: Plugin): Unit = {
+    val listener = new OnceListener(handler)
     Bukkit.getPluginManager.registerEvent(clazz, listener, priority, listener, plugin, ignoreCancelled)
   }
 
   def listen(listener: Listener)(implicit plugin: Plugin): Unit = Bukkit.getPluginManager.registerEvents(listener, plugin)
+
+  def unlisten(): Unit = throw new UnlistenException
 
   def runTask(task: => Unit)(implicit plugin: Plugin): Unit = Task(task)
 
@@ -54,10 +67,21 @@ object Prelude extends Implicits {
 
 }
 
+private[this] class UnlistenException extends Exception
+
 private[this] class SingleListener[T <: Event](handler: T => Any) extends Listener with EventExecutor {
   override def execute(listener: Listener, event: Event): Unit = {
     try handler(event.asInstanceOf[T]) catch {
+      case _: UnlistenException => Prelude.runTask(HandlerList.unregisterAll(this))
       case e: Throwable => throw new EventException(e)
     }
+  }
+}
+
+private[this] class OnceListener[T <: Event](handler: T => Any) extends Listener with EventExecutor {
+  override def execute(listener: Listener, event: Event): Unit = {
+    try handler(event.asInstanceOf[T]) catch {
+      case e: Throwable => throw new EventException(e)
+    } finally Prelude.runTask(HandlerList.unregisterAll(this))
   }
 }

@@ -9,7 +9,7 @@ import scala.collection.mutable
 
 package object lore {
 
-  class Info(map: mutable.Map[String, Either[Between, String]]) {
+  class Info private[lore](map: mutable.Map[String, Either[Between, String]]) {
 
     private val calculatedNums = new JMap[String, Double](32)
 
@@ -23,6 +23,8 @@ package object lore {
     }
 
     def str(x: String): String = map(x).right.get
+
+    def has(key: String): Boolean = map.contains(key)
 
     def foreach[U](f: ((String, Either[Between, String])) => U): Unit = map.foreach[U](f)
 

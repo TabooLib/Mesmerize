@@ -1,7 +1,7 @@
 package it.alian.gun.mesmerize
 
 import it.alian.gun.mesmerize.compat.{Dependency, SplashParticle}
-import it.alian.gun.mesmerize.listener.{BattleListener, ItemListener}
+import it.alian.gun.mesmerize.listener.{BattleListener, ItemListener, ItemView}
 import it.alian.gun.mesmerize.lore.LoreCalculator
 import it.alian.gun.mesmerize.scalaapi.Prelude._
 import it.alian.gun.mesmerize.util.Updater
@@ -20,11 +20,14 @@ object MesmerizeDelegate {
     val time = System.currentTimeMillis()
     info("GENERAL_VERSION", instance.getServer.getClass.getName.split("\\.")(3), instance.getDescription.getVersion)
     instance.getCommand("mes").setExecutor(MesCommand)
+    instance.getCommand("mes").setTabCompleter(MesCommand)
     instance.getCommand("mesmerize").setExecutor(MesCommand)
+    instance.getCommand("mesmerize").setTabCompleter(MesCommand)
     Dependency.init()
     listen(SplashParticle)
     listen(BattleListener)
     listen(ItemListener)
+    listen(ItemView)
     try {
       LoreCalculator
       if (config("advanced.enableCustomAttackExpression", false))

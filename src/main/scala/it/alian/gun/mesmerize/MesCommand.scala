@@ -1,19 +1,22 @@
 package it.alian.gun.mesmerize
 
+import java.util.{List => JList}
+
 import it.alian.gun.mesmerize.MesmerizeDelegate._
+import it.alian.gun.mesmerize.listener.ItemView
 import it.alian.gun.mesmerize.lore.LoreParser
-import it.alian.gun.mesmerize.scalaapi.Prelude._
-import org.bukkit.command.{Command, CommandExecutor, CommandSender}
+import it.alian.gun.mesmerize.scalaapi.Prelude.{config, _}
+import org.bukkit.command.{Command, CommandExecutor, CommandSender, TabCompleter}
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.entity.Player
 
 import scala.collection.JavaConverters._
 
-object MesCommand extends CommandExecutor {
+object MesCommand extends CommandExecutor with TabCompleter {
 
   override def onCommand(sender: CommandSender, command: Command, label: String, args: Array[String]): Boolean = {
     args.map(_.toLowerCase) match {
-      case Array("stats") if sender.isInstanceOf[Player] && sender.hasPermission("mesmerize.showstats") =>
+      case Array("stats" | "s") if sender.isInstanceOf[Player] && sender.hasPermission("mesmerize.showstats") =>
         sender.locale("COMMAND_SHOW_STATS", sender.getName)
         runTask {
           LoreParser.parse(sender.asInstanceOf[Player]).foreach({
@@ -25,7 +28,7 @@ object MesCommand extends CommandExecutor {
               config(s"prefix.$name.name", name), str)
           })
         }
-      case Array("config", _*) if sender.hasPermission("mesmerize.config") =>
+      case Array("config" | "c", _*) if sender.hasPermission("mesmerize.config") =>
         val conf = MesmerizeDelegate.conf
         args.tail match {
           case Array("reload") =>
@@ -59,18 +62,33 @@ object MesCommand extends CommandExecutor {
 
             updateConfig()
           case Array("list", path) =>
-            val sec = if (path == ".") conf else conf.getConfigurationSection(path)
-            sender.locale("CONFIG_LIST", path, sec.getKeys(false).size().toString)
-            sec.getValues(false).asScala.foreach({
-              case (name, _: ConfigurationSection) => sender.locale("CONFIG_LIST_1", name)
-              case (name, value) => sender.locale("CONFIG_LIST_2", name, value.getClass.getSimpleName, value.toString)
-              case _ =>
-            })
+            (if (path == ".") conf else conf.get(path)) match {
+              case sec: ConfigurationSection =>
+                sender.locale("CONFIG_LIST", path, sec.getKeys(false).size().toString)
+                sec.getValues(false).asScala.foreach({
+                  case (name, _: ConfigurationSection) => sender.locale("CONFIG_LIST_1", name)
+                  case (name, value) => sender.locale("CONFIG_LIST_2", name, value.getClass.getSimpleName, value.toString)
+                  case _ =>
+                })
+              case value => sender << s"$path : $value"
+            }
           case _ =>
         }
+      case Array("item" | "i") if sender.isInstanceOf[Player] =>
+        val player = sender.asInstanceOf[Player]
+        if (player.getInventory.getItemInHand.empty) player.locale("inlay.empty-hand")
+        else ItemView.openView(player.getInventory.getItemInHand, player)
       case _ => sender.locale("COMMAND_HELP_LIST")
     }
     true
   }
 
+  override def onTabComplete(sender: CommandSender, command: Command, alias: String, args: Array[String]): JList[String] = {
+    args.map(_.toLowerCase) match {
+      case Array(_) => List("item", "i", "stats", "s", "config", "c").asJava
+      case Array("config", _) => List("reload", "load", "save", "set", "list").asJava
+      case Array("config", "set" | "list", pref) => config.getKeys(true).asScala.filter(_.startsWith(pref)).toList.asJava
+      case _ => null
+    }
+  }
 }

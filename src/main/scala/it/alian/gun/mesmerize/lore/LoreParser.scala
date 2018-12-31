@@ -55,12 +55,16 @@ object LoreParser {
         val equips = equipments(player)
         val res = parse(equips.head)
         for (item <- equips.tail;
-             info = parse(item);
-             (k, v) <- info)
-          res(k) = merge(k, res(k), v)
+             info = parse(item))
+          merge(res, info)
         res
       case _ => newInfo
     })
+
+  def merge(master: LoreInfo, slave: LoreInfo): LoreInfo = {
+    for ((k, v) <- slave) master(k) = merge(k, v, master(k))
+    master
+  }
 
   private def merge(name: String, a: Either[Between, String], b: Either[Between, String]): Either[Between, String] = {
     (a, b) match {
@@ -71,7 +75,7 @@ object LoreParser {
         case "replace" => b
         case _ => Left(0)
       }
-      case (Right(x), Right(y)) => config[String](s"prefix.$name.collect") match {
+      case (Right(x), Right(y)) => config(s"prefix.$name.collect", "replace") match {
         case "replace" => b
         case _ => Right("")
       }
@@ -79,7 +83,15 @@ object LoreParser {
     }
   }
 
-  def parse(item: ItemStack): LoreInfo = {
+  private val itemCache: Cache[ItemStack, LoreInfo] = CacheBuilder.newBuilder().asInstanceOf[CacheBuilder[ItemStack, LoreInfo]]
+    .concurrencyLevel(1).expireAfterAccess(120, TimeUnit.SECONDS).build()
+
+  def update(item: ItemStack): LoreInfo = {
+    itemCache.invalidate(item)
+    parse(item)
+  }
+
+  def parse(item: ItemStack): LoreInfo = itemCache.get(item, () => {
 
     def toDouble(x: String): Double = if (x.last == '%') x.init.toDouble * 0.01D else x.toDouble
 
@@ -104,7 +116,15 @@ object LoreParser {
         }
       }
     }
+
+    for (elem <- item.getInlayItems if !elem.empty && elem != item) {
+      val sub = try parse(elem) catch {
+        case _: Throwable => newInfo
+      }
+      merge(info, sub)
+    }
+
     info
-  }
+  })
 
 }
