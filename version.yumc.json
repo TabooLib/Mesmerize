@@ -1,13 +1,14 @@
 [
   {
-    "version": "1.2.0",
-    "releaseDate": "2018.12.31",
+    "version": "1.2.1",
+    "releaseDate": "2019.1.1",
     "description": [
       "更新至 1.2.1，§c如果 1.1.X 的版本用着尚好请不用更新",
       "新版本需要前置插件 §eTabooLib，可以在 https://github.com/Bkm016/TabooLib/releases 下载",
       "新版特性：",
       "  1. 1.13 支持，如果你需要升级到 1.13 需要§c关闭 Splash Particle 功能§f或§a自行更改 particle 的粒子名称为 1.13 的",
-      "  2. 添加 Tab Complete，输入命令在 1.13 上可以显示补全"
+      "  2. 添加 Tab Complete，输入命令在 1.13 上可以显示补全",
+      "  3. 新的开箱即用的镶嵌系统"
     ]
   },
   {
