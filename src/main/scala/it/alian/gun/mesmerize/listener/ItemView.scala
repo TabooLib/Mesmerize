@@ -95,8 +95,6 @@ object ItemView extends Listener {
     // return to father menu
     listen(classOf[InventoryCloseEvent]) { event =>
       if (event.getInventory == inv) {
-        if (player.getInventory.getItemInHand == item)
-          runTask(openView(item, player))
         HandlerList.unregisterAll(listener)
         unlisten()
       }
@@ -104,7 +102,7 @@ object ItemView extends Listener {
     player.openInventory(inv)
   }
 
-  def canInlay(inlaying: ItemStack, to: ItemStack): Boolean = inlaying.loreInfo().has("canInlay")
+  def canInlay(inlaying: ItemStack, to: ItemStack): Boolean = inlaying.loreInfo().has("canInlay") && to.loreInfo().num("maxInlay").toInt > getInlayingItems(to).size
 
   def inlayInto(inlaying: ItemStack, to: ItemStack): ItemStack = {
     if (canInlay(inlaying, to))
