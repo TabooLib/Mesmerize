@@ -11,6 +11,8 @@ package object lore {
 
   class Info private[lore](map: mutable.Map[String, Either[Between, String]]) {
 
+    private var lastTick: Long = System.currentTimeMillis()
+
     private val calculatedNums = new JMap[String, Double](32)
 
     def apply(x: String): Either[Between, String] = map(x)
@@ -18,6 +20,10 @@ package object lore {
     def update(x: String, v: Either[Between, String]): Unit = map(x) = v
 
     def num(x: String): Double = {
+      if (System.currentTimeMillis() > lastTick + 50) {
+        lastTick = System.currentTimeMillis()
+        calculatedNums.clear()
+      }
       calculatedNums.putIfAbsent(x, map(x).left.get.random)
       calculatedNums.get(x)
     }
