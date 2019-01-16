@@ -2,16 +2,23 @@ package it.alian.gun.mesmerize
 
 import java.util.{HashMap => JMap}
 
-import it.alian.gun.mesmerize.scalaapi.Prelude.config
+import it.alian.gun.mesmerize.MesmerizeDelegate._
+import it.alian.gun.mesmerize.scalaapi.Prelude.{config, _}
 
 import scala.collection.generic.FilterMonadic
 import scala.collection.mutable
 
 package object lore {
 
+  object Ticker {
+    var tick: Long = 0
+
+    runTask(0, 1)(tick += 1)
+  }
+
   class Info private[lore](map: mutable.Map[String, Either[Between, String]]) {
 
-    private var lastTick: Long = System.currentTimeMillis()
+    private var lastTick: Long = Ticker.tick
 
     private val calculatedNums = new JMap[String, Double](32)
 
@@ -20,8 +27,8 @@ package object lore {
     def update(x: String, v: Either[Between, String]): Unit = map(x) = v
 
     def num(x: String): Double = {
-      if (System.currentTimeMillis() > lastTick + 50) {
-        lastTick = System.currentTimeMillis()
+      if (lastTick != Ticker.tick) {
+        lastTick = Ticker.tick
         calculatedNums.clear()
       }
       calculatedNums.putIfAbsent(x, map(x).left.get.random)
