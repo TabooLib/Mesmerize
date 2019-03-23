@@ -8,10 +8,6 @@ import org.bukkit.Bukkit
 
 object Dependency {
   def init(): Unit = {
-    if (!Bukkit.getPluginManager.isPluginEnabled("PowerNBT")) {
-      error("WARN_DEPENDENCY_MISSING", "PowerNBT")
-      throw new RuntimeException(TLocale.asString("WARN_DEPENDENCY_MISSING", "PowerNBT"))
-    }
     if (Bukkit.getPluginManager.isPluginEnabled("PlaceholderAPI")) {
       new MesmerizePlaceholder(instance, "mesmerize").hook
       info("GENERAL_HOOK", "PlaceholderAPI")

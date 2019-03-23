@@ -7,7 +7,6 @@ depend:
   - TabooLib
 softdepend:
   - RPGInventory
-  - PowerNBT
   - PlaceholderAPI
   - Citizens
   - Vault
