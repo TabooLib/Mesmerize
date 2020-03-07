@@ -1,10 +1,9 @@
-main: it.alian.gun.mesmerize.Mesmerize
+main: it.alian.gun.mesmerize.boot.ScalaLoader
+scalaMain: it.alian.gun.mesmerize.Mesmerize
 name: Mesmerize
-version: @version@
+version: ${version}
 authors: [IzzelAliz]
 website: www.mcbbs.net/thread-779975-1-1.html
-depend:
-  - TabooLib
 softdepend:
   - RPGInventory
   - PlaceholderAPI
