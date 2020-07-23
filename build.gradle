@@ -1,7 +1,5 @@
 plugins {
     id 'java'
-    id 'scala'
-    id 'com.github.johnrengelman.shadow' version '4.0.4'
 }
 
 group 'it.alian.gun.mesmerize'
@@ -12,26 +10,31 @@ targetCompatibility = 1.8
 
 defaultTasks 'clean', 'build'
 
-tasks.withType(ScalaCompile) {
+tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
-    scalaCompileOptions.encoding = 'UTF-8'
-    scalaCompileOptions.optimize = true
+}
+
+sourceSets {
+    api
+    main {
+        compileClasspath += api.output
+    }
 }
 
 repositories {
     maven { url "http://ptms.ink:8081/repository/maven-releases/" }
-    maven { url 'https://jitpack.io' }
     maven { url 'https://hub.spigotmc.org/nexus/content/groups/public/' }
     mavenCentral()
     maven { url 'http://repo.extendedclip.com/content/repositories/placeholderapi/' }
 }
 
 dependencies {
-    compile 'io.izzel.taboolib:TabooLib:5.18:all'
-    implementation 'com.github.TabooLib:TabooScalaLoader:1.2'
-    compile 'org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT'
-    compile group: 'org.scala-lang', name: 'scala-library', version: '2.13.1'
-    shadow fileTree(dir:'libs',includes:['*jar'])
+    apiImplementation 'org.spigotmc:spigot-api:1.14.4-R0.1-SNAPSHOT'
+    apiImplementation 'org.jetbrains:annotations:19.0.0'
+    implementation 'org.spigotmc:spigot-api:1.14.4-R0.1-SNAPSHOT'
+    implementation 'io.izzel.taboolib:TabooLib:5.18:all'
+    implementation 'org.jetbrains:annotations:19.0.0'
+    implementation fileTree(dir:'libs',includes:['*jar'])
 }
 
 processResources {
@@ -40,9 +43,14 @@ processResources {
     }
 }
 
-shadowJar {
-    dependencies {
-        include dependency('com.github.TabooLib:TabooScalaLoader:.*')
-    }
-    relocate 'io.izzel.taboolib.loader', "${project.group}.boot"
+jar {
+    from sourceSets.api.output
 }
+
+task apiJar(type: Jar) {
+    classifier = 'api'
+    from sourceSets.api.allSource
+    from sourceSets.api.output
+}
+
+jar.dependsOn(apiJar)

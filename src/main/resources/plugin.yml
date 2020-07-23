@@ -1,5 +1,4 @@
-main: it.alian.gun.mesmerize.boot.ScalaLoader
-scalaMain: it.alian.gun.mesmerize.Mesmerize
+main: io.izzel.mesmerize.impl.Mesmerize
 name: Mesmerize
 version: ${version}
 authors: [IzzelAliz]
