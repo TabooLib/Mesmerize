@@ -35,7 +35,7 @@ public interface StatsHolder {
         return ((Modifiable) this);
     }
 
-    interface Modifiable extends StatsHolder, StatsVisitor {
+    interface Modifiable extends StatsHolder {
 
         <T> Iterator<StatsValue<T>> iterator(Stats<T> stats);
 

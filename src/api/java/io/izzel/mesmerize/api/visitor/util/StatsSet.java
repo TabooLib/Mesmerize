@@ -1,56 +1,63 @@
-package io.izzel.mesmerize.api.visitor.impl;
+package io.izzel.mesmerize.api.visitor.util;
 
-import com.google.common.collect.ListMultimap;
-import com.google.common.collect.MultimapBuilder;
 import io.izzel.mesmerize.api.Stats;
 import io.izzel.mesmerize.api.visitor.InfoVisitor;
 import io.izzel.mesmerize.api.visitor.StatsHolder;
 import io.izzel.mesmerize.api.visitor.StatsValue;
 import io.izzel.mesmerize.api.visitor.StatsValueVisitor;
 import io.izzel.mesmerize.api.visitor.StatsVisitor;
+import io.izzel.mesmerize.api.visitor.impl.AbstractInfoVisitor;
+import io.izzel.mesmerize.api.visitor.impl.AbstractStatsValueVisitor;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-public class StatsDataSet implements StatsVisitor, StatsHolder.Modifiable {
+public class StatsSet implements StatsVisitor, StatsHolder.Modifiable {
 
-    private final ListMultimap<Stats<?>, StatsValue<?>> multimap = MultimapBuilder.hashKeys().arrayListValues().build();
+    private final Map<Stats<?>, StatsValue<?>> map = new HashMap<>();
 
     @Override
     public <T> Optional<StatsValue<T>> get(Stats<T> stats) {
-        List<StatsValue<T>> values = getAll(stats);
-        return values.isEmpty() ? Optional.empty() : Optional.of(values.get(0));
+        List<StatsValue<T>> list = getAll(stats);
+        return list.isEmpty() ? Optional.empty() : Optional.of(list.get(0));
     }
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
+    @SuppressWarnings("unchecked")
     @Override
     public <T> List<StatsValue<T>> getAll(Stats<T> stats) {
-        return (List) multimap.get(stats);
+        ArrayList<StatsValue<T>> list = new ArrayList<>();
+        StatsValue<?> value = map.get(stats);
+        if (value != null) {
+            list.add((StatsValue<T>) value);
+        }
+        return list;
     }
 
     @Override
     public Set<Stats<?>> keySet() {
-        return multimap.keySet();
+        return map.keySet();
     }
 
     @Override
     public Collection<Map.Entry<Stats<?>, StatsValue<?>>> entrySet() {
-        return multimap.entries();
+        return map.entrySet();
     }
 
     @Override
     public boolean containsKey(Stats<?> stats) {
-        return multimap.containsKey(stats);
+        return map.containsKey(stats);
     }
 
     @Override
     public void accept(StatsVisitor visitor) {
-        for (Map.Entry<Stats<?>, StatsValue<?>> entry : multimap.entries()) {
+        for (Map.Entry<Stats<?>, StatsValue<?>> entry : entrySet()) {
             StatsValueVisitor stats = visitor.visitStats(entry.getKey());
             entry.getValue().accept(stats);
         }
@@ -64,7 +71,7 @@ public class StatsDataSet implements StatsVisitor, StatsHolder.Modifiable {
 
     @Override
     public void clear() {
-        multimap.clear();
+        map.clear();
     }
 
     @Override
@@ -74,11 +81,15 @@ public class StatsDataSet implements StatsVisitor, StatsHolder.Modifiable {
 
     @Override
     public <T> StatsValueVisitor visitStats(@NotNull Stats<T> stats) {
-        return new AdaptiveStatsValue() {
+        return new AbstractStatsValueVisitor(stats.newValue()) {
+            @SuppressWarnings("unchecked")
             @Override
             public void visitEnd() {
                 super.visitEnd();
-                multimap.put(stats, this);
+                StatsValue<T> value = (StatsValue<T>) this.visitor;
+                Optional<StatsValue<T>> optional = get(stats);
+                StatsValue<T> merged = optional.isPresent() ? stats.mergeValue(optional.get(), value) : value;
+                map.put(stats, merged);
             }
         };
     }

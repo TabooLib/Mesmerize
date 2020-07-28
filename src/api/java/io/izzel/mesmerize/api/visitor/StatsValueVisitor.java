@@ -4,6 +4,8 @@ public interface StatsValueVisitor {
 
     void visitKey(String key);
 
+    void visitIndex(int index);
+
     void visitBoolean(boolean b);
 
     void visitInt(int i);

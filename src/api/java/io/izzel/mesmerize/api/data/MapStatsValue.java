@@ -5,13 +5,14 @@ import io.izzel.mesmerize.api.Stats;
 import io.izzel.mesmerize.api.visitor.StatsHolder;
 import io.izzel.mesmerize.api.visitor.StatsValue;
 import io.izzel.mesmerize.api.visitor.StatsValueVisitor;
+import io.izzel.mesmerize.api.visitor.impl.AbstractStatsValue;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-public class MapStatsValue implements StatsValue<Map<String, StatsValue<?>>> {
+public class MapStatsValue extends AbstractStatsValue<Map<String, StatsValue<?>>> {
 
     private final Map<String, Supplier<StatsValue<?>>> dataTypes;
     private final Map<String, StatsValue<?>> underlying = new HashMap<>();

@@ -22,6 +22,11 @@ public abstract class AbstractStatsValue<T> implements StatsValue<T> {
     }
 
     @Override
+    public void visitIndex(int index) {
+        throw new IllegalArgumentException("index");
+    }
+
+    @Override
     public void visitBoolean(boolean b) {
         throw new IllegalArgumentException("boolean");
     }

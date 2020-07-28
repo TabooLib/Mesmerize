@@ -1,6 +1,5 @@
 package io.izzel.mesmerize.api.data;
 
-import io.izzel.mesmerize.api.visitor.StatsHolder;
 import io.izzel.mesmerize.api.visitor.StatsValueVisitor;
 import io.izzel.mesmerize.api.visitor.impl.AbstractStatsValue;
 

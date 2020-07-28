@@ -19,6 +19,13 @@ public class AbstractStatsValueVisitor implements StatsValueVisitor {
     }
 
     @Override
+    public void visitIndex(int index) {
+        if (visitor != null) {
+            visitor.visitIndex(index);
+        }
+    }
+
+    @Override
     public void visitBoolean(boolean b) {
         if (visitor != null) {
             visitor.visitBoolean(b);
