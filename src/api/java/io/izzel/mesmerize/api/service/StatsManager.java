@@ -1,4 +1,4 @@
-package io.izzel.mesmerize.api.event;
+package io.izzel.mesmerize.api.service;
 
 import io.izzel.mesmerize.api.visitor.StatsHolder;
 

@@ -4,7 +4,7 @@ import java.util.{Optional, function}
 
 import com.google.common.reflect.TypeToken
 import io.izzel.mesmerize.api.visitor.StatsVisitor
-import io.izzel.mesmerize.api.event.StatsRegistry
+import io.izzel.mesmerize.api.service.StatsRegistry
 import io.izzel.mesmerize.api.{Stats, StatsSerializer}
 
 class SimpleRegistry extends StatsRegistry {

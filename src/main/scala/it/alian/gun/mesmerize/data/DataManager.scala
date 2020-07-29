@@ -3,7 +3,7 @@ package it.alian.gun.mesmerize.data
 import java.util.Optional
 
 import io.izzel.mesmerize.api.StatsSet
-import io.izzel.mesmerize.api.event.StatsManager
+import io.izzel.mesmerize.api.service.StatsManager
 import it.alian.gun.mesmerize.Mesmerize
 import org.bukkit.configuration.file.YamlConfiguration
 

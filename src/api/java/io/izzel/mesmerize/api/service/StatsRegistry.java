@@ -1,4 +1,4 @@
-package io.izzel.mesmerize.api.event;
+package io.izzel.mesmerize.api.service;
 
 import io.izzel.mesmerize.api.Stats;
 
@@ -8,5 +8,5 @@ public interface StatsRegistry {
 
     void registerStats(Stats<?> stats);
 
-    Optional<Stats<?>> getStat(String id);
+    Optional<Stats<?>> getStats(String id);
 }
