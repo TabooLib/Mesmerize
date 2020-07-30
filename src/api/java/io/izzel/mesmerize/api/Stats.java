@@ -1,25 +1,39 @@
 package io.izzel.mesmerize.api;
 
+import com.google.common.base.Preconditions;
 import io.izzel.mesmerize.api.visitor.StatsValue;
+import org.bukkit.Keyed;
+import org.bukkit.NamespacedKey;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
+import java.util.regex.Pattern;
 
-public class Stats<T> {
+public class Stats<T> implements Keyed {
 
-    private final String id;
+    private static final Pattern PATTERN = Pattern.compile(".+\\.\\d+$");
+
+    private final NamespacedKey key;
     private final BiFunction<StatsValue<T>, StatsValue<T>, StatsValue<T>> onMerge;
     private final Supplier<StatsValue<T>> supplier;
 
-    protected Stats(String id, BiFunction<StatsValue<T>, StatsValue<T>, StatsValue<T>> onMerge, Supplier<StatsValue<T>> supplier) {
-        this.id = id;
+    protected Stats(NamespacedKey key, BiFunction<StatsValue<T>, StatsValue<T>, StatsValue<T>> onMerge, Supplier<StatsValue<T>> supplier) {
+        Preconditions.checkArgument(!PATTERN.matcher(key.toString()).matches());
+        this.key = key;
         this.onMerge = onMerge;
         this.supplier = supplier;
     }
 
     public String getId() {
-        return id;
+        return key.toString();
+    }
+
+    @Override
+    @NotNull
+    public NamespacedKey getKey() {
+        return key;
     }
 
     public StatsValue<T> mergeValue(StatsValue<T> oldVal, StatsValue<T> newVal) {
@@ -35,26 +49,26 @@ public class Stats<T> {
         if (this == o) return true;
         if (!(o instanceof Stats)) return false;
         Stats<?> stats = (Stats<?>) o;
-        return Objects.equals(id, stats.id);
+        return Objects.equals(key, stats.key);
     }
 
     @Override
     public final int hashCode() {
-        return Objects.hash(id);
+        return key.hashCode();
     }
 
     @Override
     public String toString() {
         return "Stats{" +
-            "id='" + id + '\'' +
+            "key=" + key +
             '}';
     }
 
-    public static <T> Stats<T> of(String id, Supplier<StatsValue<T>> supplier) {
-        return new Stats<>(id, (a, b) -> b, supplier);
+    public static <T> Stats<T> of(NamespacedKey key, Supplier<StatsValue<T>> supplier) {
+        return new Stats<>(key, (a, b) -> b, supplier);
     }
 
-    public static <T> Stats<T> of(String id, Supplier<StatsValue<T>> supplier, BiFunction<StatsValue<T>, StatsValue<T>, StatsValue<T>> onMerge) {
-        return new Stats<>(id, onMerge, supplier);
+    public static <T> Stats<T> of(NamespacedKey key, Supplier<StatsValue<T>> supplier, BiFunction<StatsValue<T>, StatsValue<T>, StatsValue<T>> onMerge) {
+        return new Stats<>(key, onMerge, supplier);
     }
 }

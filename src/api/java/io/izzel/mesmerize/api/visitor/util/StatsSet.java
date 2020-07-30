@@ -1,13 +1,12 @@
 package io.izzel.mesmerize.api.visitor.util;
 
 import io.izzel.mesmerize.api.Stats;
-import io.izzel.mesmerize.api.visitor.InfoVisitor;
 import io.izzel.mesmerize.api.visitor.StatsHolder;
 import io.izzel.mesmerize.api.visitor.StatsValue;
-import io.izzel.mesmerize.api.visitor.StatsValueVisitor;
+import io.izzel.mesmerize.api.visitor.ValueVisitor;
 import io.izzel.mesmerize.api.visitor.StatsVisitor;
-import io.izzel.mesmerize.api.visitor.impl.AbstractInfoVisitor;
-import io.izzel.mesmerize.api.visitor.impl.AbstractStatsValueVisitor;
+import io.izzel.mesmerize.api.visitor.impl.AbstractValueVisitor;
+import io.izzel.mesmerize.api.visitor.impl.AbstractStatsVisitor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -19,9 +18,17 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-public class StatsSet implements StatsVisitor, StatsHolder.Modifiable {
+public class StatsSet extends AbstractStatsVisitor implements StatsHolder.Modifiable {
 
     private final Map<Stats<?>, StatsValue<?>> map = new HashMap<>();
+
+    public StatsSet() {
+        this(null);
+    }
+
+    public StatsSet(StatsVisitor visitor) {
+        super(visitor);
+    }
 
     @Override
     public <T> Optional<StatsValue<T>> get(Stats<T> stats) {
@@ -58,7 +65,7 @@ public class StatsSet implements StatsVisitor, StatsHolder.Modifiable {
     @Override
     public void accept(StatsVisitor visitor) {
         for (Map.Entry<Stats<?>, StatsValue<?>> entry : entrySet()) {
-            StatsValueVisitor stats = visitor.visitStats(entry.getKey());
+            ValueVisitor stats = visitor.visitStats(entry.getKey());
             entry.getValue().accept(stats);
         }
         visitor.visitEnd();
@@ -75,13 +82,8 @@ public class StatsSet implements StatsVisitor, StatsHolder.Modifiable {
     }
 
     @Override
-    public InfoVisitor visitInfo() {
-        return AbstractInfoVisitor.EMPTY;
-    }
-
-    @Override
-    public <T> StatsValueVisitor visitStats(@NotNull Stats<T> stats) {
-        return new AbstractStatsValueVisitor(stats.newValue()) {
+    public <T> ValueVisitor visitStats(@NotNull Stats<T> stats) {
+        return new AbstractValueVisitor(stats.newValue()) {
             @SuppressWarnings("unchecked")
             @Override
             public void visitEnd() {
@@ -91,10 +93,11 @@ public class StatsSet implements StatsVisitor, StatsHolder.Modifiable {
                 StatsValue<T> merged = optional.isPresent() ? stats.mergeValue(optional.get(), value) : value;
                 map.put(stats, merged);
             }
-        };
-    }
 
-    @Override
-    public void visitEnd() {
+            @Override
+            public StatsVisitor visitStats() {
+                return StatsSet.this;
+            }
+        };
     }
 }

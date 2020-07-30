@@ -1,8 +1,7 @@
 package io.izzel.mesmerize.api.visitor.impl;
 
 import io.izzel.mesmerize.api.Stats;
-import io.izzel.mesmerize.api.visitor.InfoVisitor;
-import io.izzel.mesmerize.api.visitor.StatsValueVisitor;
+import io.izzel.mesmerize.api.visitor.ValueVisitor;
 import io.izzel.mesmerize.api.visitor.StatsVisitor;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,15 +14,7 @@ public class AbstractStatsVisitor implements StatsVisitor {
     }
 
     @Override
-    public InfoVisitor visitInfo() {
-        if (this.visitor != null) {
-            return this.visitor.visitInfo();
-        }
-        return null;
-    }
-
-    @Override
-    public <T> StatsValueVisitor visitStats(@NotNull Stats<T> stats) {
+    public <T> ValueVisitor visitStats(@NotNull Stats<T> stats) {
         if (this.visitor != null) {
             return this.visitor.visitStats(stats);
         }

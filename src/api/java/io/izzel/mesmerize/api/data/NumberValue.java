@@ -1,16 +1,15 @@
 package io.izzel.mesmerize.api.data;
 
 import com.google.common.base.Preconditions;
-import io.izzel.mesmerize.api.visitor.StatsValueVisitor;
-import io.izzel.mesmerize.api.visitor.impl.AbstractStatsValue;
-import org.bukkit.util.NumberConversions;
+import io.izzel.mesmerize.api.visitor.ValueVisitor;
+import io.izzel.mesmerize.api.visitor.impl.AbstractValue;
 
 import java.util.function.Consumer;
 
-public class NumberStatsValue extends AbstractStatsValue<Number> {
+public class NumberValue extends AbstractValue<Number> {
 
     private Number number;
-    Consumer<StatsValueVisitor> dumper;
+    Consumer<ValueVisitor> dumper;
     private boolean relative = false;
 
     @Override
@@ -23,7 +22,7 @@ public class NumberStatsValue extends AbstractStatsValue<Number> {
     }
 
     @Override
-    public void accept(StatsValueVisitor visitor) {
+    public void accept(ValueVisitor visitor) {
         dumper.accept(visitor);
         visitor.visitEnd();
     }

@@ -2,21 +2,19 @@ package io.izzel.mesmerize.api.data;
 
 import com.google.common.base.Preconditions;
 import io.izzel.mesmerize.api.visitor.StatsHolder;
-import io.izzel.mesmerize.api.visitor.StatsValueVisitor;
-import io.izzel.mesmerize.api.visitor.impl.AbstractStatsValue;
+import io.izzel.mesmerize.api.visitor.ValueVisitor;
+import io.izzel.mesmerize.api.visitor.impl.AbstractValue;
 import io.izzel.mesmerize.api.visitor.util.LazyStatsHolder;
 
 import java.util.Objects;
 
-public class ReferenceHolderValue extends AbstractStatsValue<StatsHolder> {
+public class ReferenceHolderValue extends AbstractValue<StatsHolder> {
 
     private LazyStatsHolder holder;
 
     @Override
-    public void accept(StatsValueVisitor visitor) {
-        Preconditions.checkNotNull(holder, "holder");
-        visitor.visitString(this.holder.getId());
-        visitor.visitEnd();
+    public void accept(ValueVisitor visitor) {
+        this.holder.accept(visitor.visitStats());
     }
 
     @Override

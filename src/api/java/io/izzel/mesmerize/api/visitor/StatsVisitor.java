@@ -5,9 +5,7 @@ import org.jetbrains.annotations.NotNull;
 
 public interface StatsVisitor {
 
-    InfoVisitor visitInfo();
-
-    <T> StatsValueVisitor visitStats(@NotNull Stats<T> stats);
+    <T> ValueVisitor visitStats(@NotNull Stats<T> stats);
 
     void visitEnd();
 }

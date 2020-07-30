@@ -3,7 +3,8 @@ package it.alian.gun.mesmerize.data
 import java.util
 import java.util.Optional
 
-import io.izzel.mesmerize.api.visitor.{InfoKey, StatsVisitor}
+import io.izzel.mesmerize.api.cause.ContextKey
+import io.izzel.mesmerize.api.visitor.StatsVisitor
 import io.izzel.mesmerize.api.visitor.StatsVisitor
 import io.izzel.mesmerize.api.{Stats, StatsSet}
 
@@ -25,11 +26,11 @@ class LazyStatsSet(private val id: String) extends StatsSet {
 
   override def accept(visitor: StatsVisitor): Unit = actualSet.accept(visitor)
 
-  override def visitInfo[T](info: InfoKey[T], infoValue: T): Unit = actualSet.visitInfo(info, infoValue)
+  override def visitInfo[T](info: ContextKey[T], infoValue: T): Unit = actualSet.visitInfo(info, infoValue)
 
-  override def visitInfoEnd[T](info: InfoKey[T]): Unit = actualSet.visitInfoEnd(info)
+  override def visitInfoEnd[T](info: ContextKey[T]): Unit = actualSet.visitInfoEnd(info)
 
-  override def getInfo[T](key: InfoKey[T]): util.List[T] = actualSet.getInfo(key)
+  override def getInfo[T](key: ContextKey[T]): util.List[T] = actualSet.getInfo(key)
 
   override def visitBegin(): Unit = actualSet.visitBegin()
 

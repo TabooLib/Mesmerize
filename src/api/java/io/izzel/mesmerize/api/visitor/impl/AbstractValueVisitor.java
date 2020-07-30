@@ -1,28 +1,16 @@
 package io.izzel.mesmerize.api.visitor.impl;
 
-import io.izzel.mesmerize.api.visitor.StatsHolder;
-import io.izzel.mesmerize.api.visitor.StatsValueVisitor;
+import io.izzel.mesmerize.api.visitor.ListVisitor;
+import io.izzel.mesmerize.api.visitor.MapVisitor;
+import io.izzel.mesmerize.api.visitor.StatsVisitor;
+import io.izzel.mesmerize.api.visitor.ValueVisitor;
 
-public class AbstractStatsValueVisitor implements StatsValueVisitor {
+public class AbstractValueVisitor implements ValueVisitor {
 
-    protected StatsValueVisitor visitor;
+    protected ValueVisitor visitor;
 
-    public AbstractStatsValueVisitor(StatsValueVisitor visitor) {
+    public AbstractValueVisitor(ValueVisitor visitor) {
         this.visitor = visitor;
-    }
-
-    @Override
-    public void visitKey(String key) {
-        if (visitor != null) {
-            visitor.visitKey(key);
-        }
-    }
-
-    @Override
-    public void visitIndex(int index) {
-        if (visitor != null) {
-            visitor.visitIndex(index);
-        }
     }
 
     @Override
@@ -68,10 +56,27 @@ public class AbstractStatsValueVisitor implements StatsValueVisitor {
     }
 
     @Override
-    public void visitStatsHolder(StatsHolder holder) {
+    public MapVisitor visitMap() {
         if (visitor != null) {
-            visitor.visitStatsHolder(holder);
+            return visitor.visitMap();
         }
+        return null;
+    }
+
+    @Override
+    public ListVisitor visitList() {
+        if (visitor != null) {
+            return visitor.visitList();
+        }
+        return null;
+    }
+
+    @Override
+    public StatsVisitor visitStats() {
+        if (visitor != null) {
+            return visitor.visitStats();
+        }
+        return null;
     }
 
     @Override
