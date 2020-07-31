@@ -7,6 +7,23 @@ import io.izzel.mesmerize.api.visitor.ValueVisitor;
 
 public class AbstractValueVisitor implements ValueVisitor {
 
+    public static final AbstractValueVisitor EMPTY = new AbstractValueVisitor(null) {
+        @Override
+        public ListVisitor visitList() {
+            return AbstractListVisitor.EMPTY;
+        }
+
+        @Override
+        public MapVisitor visitMap() {
+            return AbstractMapVisitor.EMPTY;
+        }
+
+        @Override
+        public StatsVisitor visitStats() {
+            return AbstractStatsVisitor.EMPTY;
+        }
+    };
+
     protected ValueVisitor visitor;
 
     public AbstractValueVisitor(ValueVisitor visitor) {

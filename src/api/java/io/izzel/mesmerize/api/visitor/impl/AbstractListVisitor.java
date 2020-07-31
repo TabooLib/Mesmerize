@@ -5,6 +5,13 @@ import io.izzel.mesmerize.api.visitor.ValueVisitor;
 
 public class AbstractListVisitor implements ListVisitor {
 
+    public static final AbstractListVisitor EMPTY = new AbstractListVisitor(null) {
+        @Override
+        public ValueVisitor visit(int index) {
+            return AbstractValueVisitor.EMPTY;
+        }
+    };
+
     protected ListVisitor visitor;
 
     public AbstractListVisitor(ListVisitor visitor) {

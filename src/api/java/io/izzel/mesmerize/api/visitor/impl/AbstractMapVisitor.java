@@ -5,6 +5,13 @@ import io.izzel.mesmerize.api.visitor.ValueVisitor;
 
 public class AbstractMapVisitor implements MapVisitor {
 
+    public static final AbstractMapVisitor EMPTY = new AbstractMapVisitor(null) {
+        @Override
+        public ValueVisitor visit(String key) {
+            return AbstractValueVisitor.EMPTY;
+        }
+    };
+
     protected MapVisitor visitor;
 
     public AbstractMapVisitor(MapVisitor visitor) {

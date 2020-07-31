@@ -7,6 +7,13 @@ import org.jetbrains.annotations.NotNull;
 
 public class AbstractStatsVisitor implements StatsVisitor {
 
+    public static final AbstractStatsVisitor EMPTY = new AbstractStatsVisitor(null) {
+        @Override
+        public <T> ValueVisitor visitStats(@NotNull Stats<T> stats) {
+            return AbstractValueVisitor.EMPTY;
+        }
+    };
+
     protected StatsVisitor visitor;
 
     public AbstractStatsVisitor(StatsVisitor visitor) {
