@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import io.izzel.mesmerize.api.visitor.StatsValue;
 import org.bukkit.Keyed;
 import org.bukkit.NamespacedKey;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -20,7 +21,6 @@ public class Stats<T> implements Keyed {
     private final Supplier<StatsValue<T>> supplier;
 
     protected Stats(NamespacedKey key, BiFunction<StatsValue<T>, StatsValue<T>, StatsValue<T>> onMerge, Supplier<StatsValue<T>> supplier) {
-        Preconditions.checkArgument(!PATTERN.matcher(key.toString()).matches());
         this.key = key;
         this.onMerge = onMerge;
         this.supplier = supplier;
@@ -64,11 +64,42 @@ public class Stats<T> implements Keyed {
             '}';
     }
 
-    public static <T> Stats<T> of(NamespacedKey key, Supplier<StatsValue<T>> supplier) {
-        return new Stats<>(key, (a, b) -> b, supplier);
+    public static StatsBuilder<?, ?> builder() {
+        return new StatsBuilder<>();
     }
 
-    public static <T> Stats<T> of(NamespacedKey key, Supplier<StatsValue<T>> supplier, BiFunction<StatsValue<T>, StatsValue<T>, StatsValue<T>> onMerge) {
-        return new Stats<>(key, onMerge, supplier);
+    public static class StatsBuilder<E, VAL extends StatsValue<E>> {
+
+        private NamespacedKey key;
+        private Supplier<VAL> valueSupplier;
+        private BiFunction<VAL, VAL, VAL> mergeFunction = (a, b) -> b;
+
+        @Contract("_ -> this")
+        public StatsBuilder<E, VAL> key(@NotNull NamespacedKey key) {
+            Preconditions.checkArgument(!PATTERN.matcher(key.toString()).matches());
+            this.key = key;
+            return this;
+        }
+
+        @SuppressWarnings({"unchecked", "rawtypes"})
+        @Contract("_ -> this")
+        public <T, V extends StatsValue<T>> StatsBuilder<T, V> supplying(@NotNull Supplier<V> valueSupplier) {
+            this.valueSupplier = (Supplier) valueSupplier;
+            return (StatsBuilder<T, V>) this;
+        }
+
+        @Contract("_ -> this")
+        public StatsBuilder<E, VAL> merging(@NotNull BiFunction<VAL, VAL, VAL> function) {
+            this.mergeFunction = function;
+            return this;
+        }
+
+        @SuppressWarnings({"unchecked", "rawtypes"})
+        public @NotNull Stats<E> build() {
+            Preconditions.checkNotNull(this.key, "key");
+            Preconditions.checkNotNull(this.valueSupplier, "valueSupplier");
+            Preconditions.checkNotNull(this.mergeFunction, "mergeFunction");
+            return new Stats<>(key, (BiFunction) mergeFunction, (Supplier) valueSupplier);
+        }
     }
 }
