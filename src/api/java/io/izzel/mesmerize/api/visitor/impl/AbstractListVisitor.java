@@ -19,9 +19,9 @@ public class AbstractListVisitor implements ListVisitor {
     }
 
     @Override
-    public ValueVisitor visit() {
+    public ValueVisitor visit(int index) {
         if (this.visitor != null) {
-            return this.visitor.visit();
+            return this.visitor.visit(index);
         }
         return null;
     }

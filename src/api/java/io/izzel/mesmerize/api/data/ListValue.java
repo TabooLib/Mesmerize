@@ -27,8 +27,9 @@ public class ListValue extends AbstractValue<List<StatsValue<?>>> {
     public void accept(ValueVisitor visitor) {
         ListVisitor listVisitor = visitor.visitList();
         listVisitor.visitLength(values.size());
-        for (StatsValue<?> value : values) {
-            value.accept(listVisitor.visit());
+        for (int i = 0; i < values.size(); i++) {
+            StatsValue<?> value = values.get(i);
+            value.accept(listVisitor.visit(i));
         }
         listVisitor.visitEnd();
     }
@@ -50,20 +51,18 @@ public class ListValue extends AbstractValue<List<StatsValue<?>>> {
 
     private class Vis extends AbstractListVisitor {
 
-        private int index = 0;
-
         public Vis(ListVisitor visitor) {
             super(visitor);
         }
 
         @Override
-        public ValueVisitor visit() {
+        public ValueVisitor visit(int index) {
             StatsValue<?> value = dataTypes.get(index).get();
             return new AbstractValueVisitor(value) {
                 @Override
                 public void visitEnd() {
                     super.visitEnd();
-                    values.set(index++, value);
+                    values.set(index, value);
                 }
             };
         }

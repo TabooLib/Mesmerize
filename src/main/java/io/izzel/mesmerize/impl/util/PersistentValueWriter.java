@@ -1,91 +1,60 @@
 package io.izzel.mesmerize.impl.util;
 
-import io.izzel.mesmerize.api.visitor.StatsHolder;
-import io.izzel.mesmerize.api.visitor.ValueVisitor;
+import io.izzel.mesmerize.api.visitor.ListVisitor;
+import io.izzel.mesmerize.api.visitor.MapVisitor;
+import io.izzel.mesmerize.api.visitor.impl.AbstractValueVisitor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
-public class PersistentValueWriter implements ValueVisitor {
+public class PersistentValueWriter extends AbstractValueVisitor {
 
-    protected final PersistentDataContainer container;
+    private final PersistentDataContainer container;
+    private final NamespacedKey key;
 
-    protected String lastKey = null;
-    protected int lastIndex = -1;
-
-    public PersistentValueWriter(PersistentDataContainer container) {
+    public PersistentValueWriter(PersistentDataContainer container, NamespacedKey key) {
+        super(null);
         this.container = container;
-    }
-
-    public PersistentDataContainer get() {
-        return this.container;
-    }
-
-    protected NamespacedKey currentKey() {
-        if (lastKey != null) {
-            if (lastIndex != -1) throw new IllegalStateException("close");
-            else return Util.fromString(lastKey);
-        }
-        throw new IllegalStateException("empty");
-    }
-
-    @Override
-    public void visitKey(String key) {
-        this.lastKey = key;
-    }
-
-    @Override
-    public void visitIndex(int index) {
-        this.lastIndex = index;
+        this.key = key;
     }
 
     @Override
     public void visitBoolean(boolean b) {
-        this.container.set(currentKey(), PersistentDataType.BYTE, (byte) (b ? 1 : 0));
+        this.container.set(key, PersistentDataType.BYTE, (byte) (b ? 1 : 0));
     }
 
     @Override
     public void visitInt(int i) {
-        this.container.set(currentKey(), PersistentDataType.INTEGER, i);
+        this.container.set(key, PersistentDataType.INTEGER, i);
     }
 
     @Override
     public void visitLong(long l) {
-        this.container.set(currentKey(), PersistentDataType.LONG, l);
+        this.container.set(key, PersistentDataType.LONG, l);
     }
 
     @Override
     public void visitFloat(float f) {
-        this.container.set(currentKey(), PersistentDataType.FLOAT, f);
+        this.container.set(key, PersistentDataType.FLOAT, f);
     }
 
     @Override
     public void visitDouble(double d) {
-        this.container.set(currentKey(), PersistentDataType.DOUBLE, d);
+        this.container.set(key, PersistentDataType.DOUBLE, d);
     }
 
     @Override
     public void visitString(String s) {
-        this.container.set(currentKey(), PersistentDataType.STRING, s);
+        this.container.set(key, PersistentDataType.STRING, s);
     }
 
     @Override
-    public ValueVisitor visitStatsValue() {
-        return new PersistentValueWriter(this.container.getAdapterContext().newPersistentDataContainer()) {
-            @Override
-            public void visitEnd() {
-                super.visitEnd();
-                PersistentValueWriter.this.container.set(currentKey(), PersistentDataType.TAG_CONTAINER, this.container);
-            }
-        };
+    public MapVisitor visitMap() {
+        return new PersistentTagWriter(this.container, this.key);
     }
 
     @Override
-    public Tristate visitStatsHolder(StatsHolder holder) {
-        return Tristate.UNDEFINED;
-    }
-
-    @Override
-    public void visitEnd() {
+    public ListVisitor visitList() {
+        return new PersistentListWriter(this.container, this.key);
     }
 }

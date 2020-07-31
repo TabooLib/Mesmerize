@@ -1,11 +1,9 @@
 package io.izzel.mesmerize.impl.util;
 
-import io.izzel.mesmerize.api.visitor.ValueVisitor;
 import io.izzel.taboolib.Version;
 import io.izzel.taboolib.util.UNSAFE;
 import org.bukkit.NamespacedKey;
 import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -13,6 +11,8 @@ import java.util.Map;
 
 public class Util {
 
+    @SuppressWarnings("deprecation")
+    public static final NamespacedKey ARRAY_LENGTH = new NamespacedKey("mesmerize", "array_length");
     private static final long RAW_OFFSET;
     private static final Map<Class<?>, Integer> NBT_TYPE;
 
@@ -52,39 +52,13 @@ public class Util {
         return 0;
     }
 
-    @SuppressWarnings("ConstantConditions")
-    public static void dump(PersistentDataContainer container, NamespacedKey key, ValueVisitor visitor) {
-        switch (Util.typeOfKey(container, key)) {
-            case 1:
-                visitor.visitBoolean(container.get(key, PersistentDataType.BYTE) != 0);
-                break;
-            case 2:
-                visitor.visitInt(container.get(key, PersistentDataType.SHORT));
-                break;
-            case 3:
-                visitor.visitInt(container.get(key, PersistentDataType.INTEGER));
-                break;
-            case 4:
-                visitor.visitLong(container.get(key, PersistentDataType.LONG));
-                break;
-            case 5:
-                visitor.visitFloat(container.get(key, PersistentDataType.FLOAT));
-                break;
-            case 6:
-                visitor.visitDouble(container.get(key, PersistentDataType.DOUBLE));
-                break;
-            case 8:
-                visitor.visitString(container.get(key, PersistentDataType.STRING));
-                break;
-            case 10:
-                new PersistentValueNode(container.get(key, PersistentDataType.TAG_CONTAINER)).accept(visitor);
-                break;
-        }
-    }
-
     @SuppressWarnings("deprecation")
     public static NamespacedKey fromString(String str) {
         int i = str.indexOf(':');
-        return new NamespacedKey(str.substring(0, i), str.substring(i + 1));
+        if (i == -1) {
+            return NamespacedKey.minecraft(str);
+        } else {
+            return new NamespacedKey(str.substring(0, i), str.substring(i + 1));
+        }
     }
 }

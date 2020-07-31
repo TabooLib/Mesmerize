@@ -26,9 +26,10 @@ public class IntArrayValue extends AbstractValue<int[]> {
     public void accept(ValueVisitor visitor) {
         ListVisitor list = visitor.visitList();
         list.visitLength(array.length);
-        for (int i : array) {
-            ValueVisitor valueVisitor = list.visit();
-            valueVisitor.visitInt(i);
+        for (int i = 0; i < array.length; i++) {
+            int v = array[i];
+            ValueVisitor valueVisitor = list.visit(i);
+            valueVisitor.visitInt(v);
             valueVisitor.visitEnd();
         }
     }
@@ -39,8 +40,6 @@ public class IntArrayValue extends AbstractValue<int[]> {
     }
 
     private class Vis extends AbstractListVisitor {
-
-        private int index = 0;
 
         public Vis(ListVisitor visitor) {
             super(visitor);
@@ -54,26 +53,26 @@ public class IntArrayValue extends AbstractValue<int[]> {
         }
 
         @Override
-        public ValueVisitor visit() {
+        public ValueVisitor visit(int index) {
             return new AbstractValueVisitor(null) {
                 @Override
                 public void visitInt(int i) {
-                    array[index++] = i;
+                    array[index] = i;
                 }
 
                 @Override
                 public void visitLong(long l) {
-                    array[index++] = (int) l;
+                    array[index] = (int) l;
                 }
 
                 @Override
                 public void visitFloat(float f) {
-                    array[index++] = (int) f;
+                    array[index] = (int) f;
                 }
 
                 @Override
                 public void visitDouble(double d) {
-                    array[index++] = (int) d;
+                    array[index] = (int) d;
                 }
             };
         }

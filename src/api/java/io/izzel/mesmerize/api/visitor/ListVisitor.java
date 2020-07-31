@@ -4,7 +4,7 @@ public interface ListVisitor {
 
     void visitLength(int size);
 
-    ValueVisitor visit();
+    ValueVisitor visit(int index);
 
     void visitEnd();
 }

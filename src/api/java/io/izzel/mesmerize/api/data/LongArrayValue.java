@@ -26,8 +26,9 @@ public class LongArrayValue extends AbstractValue<long[]> {
     public void accept(ValueVisitor visitor) {
         ListVisitor list = visitor.visitList();
         list.visitLength(array.length);
-        for (long l : array) {
-            ValueVisitor valueVisitor = list.visit();
+        for (int i = 0; i < array.length; i++) {
+            long l = array[i];
+            ValueVisitor valueVisitor = list.visit(i);
             valueVisitor.visitLong(l);
             valueVisitor.visitEnd();
         }
@@ -39,8 +40,6 @@ public class LongArrayValue extends AbstractValue<long[]> {
     }
 
     private class Vis extends AbstractListVisitor {
-
-        private int index = 0;
 
         public Vis(ListVisitor visitor) {
             super(visitor);
@@ -54,26 +53,26 @@ public class LongArrayValue extends AbstractValue<long[]> {
         }
 
         @Override
-        public ValueVisitor visit() {
+        public ValueVisitor visit(int index) {
             return new AbstractValueVisitor(null) {
                 @Override
                 public void visitInt(int i) {
-                    array[index++] = i;
+                    array[index] = i;
                 }
 
                 @Override
                 public void visitLong(long l) {
-                    array[index++] = l;
+                    array[index] = l;
                 }
 
                 @Override
                 public void visitFloat(float f) {
-                    array[index++] = (long) f;
+                    array[index] = (long) f;
                 }
 
                 @Override
                 public void visitDouble(double d) {
-                    array[index++] = (long) d;
+                    array[index] = (long) d;
                 }
             };
         }

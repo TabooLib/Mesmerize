@@ -8,5 +8,5 @@ public interface StatsRegistry {
 
     void registerStats(Stats<?> stats);
 
-    Optional<Stats<?>> getStats(String id);
+    <T> Optional<Stats<T>> getStats(String id);
 }
