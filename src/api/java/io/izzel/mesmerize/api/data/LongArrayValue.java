@@ -32,6 +32,8 @@ public class LongArrayValue extends AbstractValue<long[]> {
             valueVisitor.visitLong(l);
             valueVisitor.visitEnd();
         }
+        list.visitEnd();
+        visitor.visitEnd();
     }
 
     @Override

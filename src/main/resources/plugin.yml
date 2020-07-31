@@ -3,6 +3,7 @@ name: Mesmerize
 version: ${version}
 authors: [IzzelAliz]
 website: www.mcbbs.net/thread-779975-1-1.html
+api-version: '1.14'
 softdepend:
   - RPGInventory
   - PlaceholderAPI

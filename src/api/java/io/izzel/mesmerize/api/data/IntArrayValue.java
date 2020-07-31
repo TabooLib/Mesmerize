@@ -32,6 +32,8 @@ public class IntArrayValue extends AbstractValue<int[]> {
             valueVisitor.visitInt(v);
             valueVisitor.visitEnd();
         }
+        list.visitEnd();
+        visitor.visitEnd();
     }
 
     @Override

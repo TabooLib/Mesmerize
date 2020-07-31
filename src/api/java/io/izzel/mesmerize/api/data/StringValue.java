@@ -23,6 +23,7 @@ public class StringValue extends AbstractValue<String> {
     @Override
     public void accept(ValueVisitor visitor) {
         visitor.visitString(s);
+        visitor.visitEnd();
     }
 
     @Override

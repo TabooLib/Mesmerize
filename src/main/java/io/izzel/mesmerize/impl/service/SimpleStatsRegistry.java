@@ -3,6 +3,7 @@ package io.izzel.mesmerize.impl.service;
 import io.izzel.mesmerize.api.Stats;
 import io.izzel.mesmerize.api.service.StatsRegistry;
 import io.izzel.mesmerize.api.slot.StatsSlot;
+import io.izzel.mesmerize.api.slot.StatsSlots;
 import io.izzel.taboolib.module.inject.TInject;
 import io.izzel.taboolib.module.locale.TLocale;
 import io.izzel.taboolib.module.locale.logger.TLogger;
@@ -10,6 +11,7 @@ import io.izzel.taboolib.module.locale.logger.TLogger;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -19,7 +21,16 @@ public class SimpleStatsRegistry implements StatsRegistry {
     private static TLogger LOGGER;
 
     private final Map<String, Stats<?>> stats = new HashMap<>();
-    private final Map<String, StatsSlot> slots = new HashMap<>();
+    private final Map<String, StatsSlot> slots = new LinkedHashMap<>();
+
+    public SimpleStatsRegistry() {
+        this.registerSlot(StatsSlots.HELMET);
+        this.registerSlot(StatsSlots.CHESTPLATE);
+        this.registerSlot(StatsSlots.LEGGINGS);
+        this.registerSlot(StatsSlots.BOOTS);
+        this.registerSlot(StatsSlots.MAIN_HAND);
+        this.registerSlot(StatsSlots.OFF_HAND);
+    }
 
     @Override
     public void registerStats(Stats<?> stats) {

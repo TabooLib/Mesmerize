@@ -1,6 +1,5 @@
 package io.izzel.mesmerize.api.data;
 
-import com.google.common.collect.ImmutableList;
 import io.izzel.mesmerize.api.Stats;
 import io.izzel.mesmerize.api.visitor.ListVisitor;
 import io.izzel.mesmerize.api.visitor.StatsValue;
@@ -13,14 +12,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class ListValue extends AbstractValue<List<StatsValue<?>>> {
+public class MultiValue<E, V extends StatsValue<E>> extends AbstractValue<List<V>> {
 
-    private final List<Supplier<StatsValue<?>>> dataTypes;
-    private final List<StatsValue<?>> values;
+    private final Supplier<V> supplier;
+    private ArrayList<V> values;
 
-    public ListValue(List<Supplier<StatsValue<?>>> dataTypes) {
-        this.dataTypes = ImmutableList.copyOf(dataTypes);
-        this.values = new ArrayList<>(this.dataTypes.size());
+    public MultiValue(Supplier<V> supplier) {
+        this.supplier = supplier;
+    }
+
+    public MultiValue(Supplier<V> supplier, List<V> values) {
+        this.supplier = supplier;
+        this.values = new ArrayList<>(values);
     }
 
     @Override
@@ -28,26 +31,38 @@ public class ListValue extends AbstractValue<List<StatsValue<?>>> {
         ListVisitor listVisitor = visitor.visitList();
         listVisitor.visitLength(values.size());
         for (int i = 0; i < values.size(); i++) {
-            StatsValue<?> value = values.get(i);
-            value.accept(listVisitor.visit(i));
+            V value = values.get(i);
+            ValueVisitor valueVisitor = listVisitor.visit(i);
+            value.accept(valueVisitor);
         }
         listVisitor.visitEnd();
         visitor.visitEnd();
     }
 
     @Override
-    public List<StatsValue<?>> get() {
+    public List<V> get() {
         return this.values;
     }
 
-    @SuppressWarnings("unchecked")
-    public <T extends StatsValue<?>> T get(int i) {
-        return (T) this.values.get(i);
+    public V get(int index) {
+        return this.values.get(index);
+    }
+
+    public E getValue(int index) {
+        return this.values.get(index).get();
     }
 
     @Override
     public ListVisitor visitList() {
         return new Vis(null);
+    }
+
+    public static <E> Supplier<MultiValue<E, StatsValue<E>>> ofSupplier(Stats<E> stats) {
+        return ofSupplier(stats::newValue);
+    }
+
+    public static <E, V extends StatsValue<E>> Supplier<MultiValue<E, V>> ofSupplier(Supplier<V> supplier) {
+        return () -> new MultiValue<>(supplier);
     }
 
     private class Vis extends AbstractListVisitor {
@@ -57,8 +72,19 @@ public class ListValue extends AbstractValue<List<StatsValue<?>>> {
         }
 
         @Override
+        public void visitLength(int size) {
+            if (values == null || values.size() < size) {
+                ArrayList<V> list = new ArrayList<>(size);
+                if (values != null) {
+                    list.addAll(values);
+                }
+                values = list;
+            }
+        }
+
+        @Override
         public ValueVisitor visit(int index) {
-            StatsValue<?> value = dataTypes.get(index).get();
+            V value = supplier.get();
             return new AbstractValueVisitor(value) {
                 @Override
                 public void visitEnd() {
@@ -66,31 +92,6 @@ public class ListValue extends AbstractValue<List<StatsValue<?>>> {
                     values.set(index, value);
                 }
             };
-        }
-    }
-
-    public static ListStatsValueBuilder builder() {
-        return new ListStatsValueBuilder();
-    }
-
-    public static class ListStatsValueBuilder {
-
-        private final List<Supplier<StatsValue<?>>> list = new ArrayList<>();
-
-        public void add(Supplier<StatsValue<?>> supplier) {
-            this.list.add(supplier);
-        }
-
-        public void add(Stats<?> stats) {
-            this.list.add(stats::newValue);
-        }
-
-        public ListValue build() {
-            return new ListValue(this.list);
-        }
-
-        public Supplier<ListValue> buildSupplier() {
-            return this::build;
         }
     }
 }

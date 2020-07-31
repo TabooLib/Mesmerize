@@ -1,6 +1,7 @@
 PREFIX: '&3[Mesmerize] &f'
 load:
   name_override: '&e检测到属性名 {0} 冲突: {1} -> {2}，请使用它们的完整属性名'
+  count: '&a加载了 {0} 个属性集'
   fail:
     file: '&c读取文件 {0} 发生错误: {1}'
     node: '&c读取节点 {0} 发生错误: {1}'

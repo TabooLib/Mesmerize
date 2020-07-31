@@ -40,6 +40,7 @@ public class MapValue extends AbstractValue<Map<String, StatsValue<?>>> {
             entry.getValue().accept(valueVisitor);
         }
         mapVisitor.visitEnd();
+        visitor.visitEnd();
     }
 
     @Override

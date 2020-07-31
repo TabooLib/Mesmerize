@@ -1,5 +1,6 @@
 package io.izzel.mesmerize.impl.util;
 
+import io.izzel.mesmerize.api.visitor.ListVisitor;
 import io.izzel.mesmerize.api.visitor.ValueVisitor;
 import io.izzel.mesmerize.api.visitor.impl.AbstractValue;
 import org.bukkit.NamespacedKey;
@@ -52,6 +53,30 @@ public class PersistentValueReader extends AbstractValue<Object> {
                 } else {
                     new PersistentTagReader(container).accept(visitor);
                 }
+                break;
+            case 11:
+                int[] ints = this.container.get(this.key, PersistentDataType.INTEGER_ARRAY);
+                ListVisitor intArrayVisitor = visitor.visitList();
+                intArrayVisitor.visitLength(ints.length);
+                for (int j = 0; j < ints.length; j++) {
+                    ValueVisitor valueVisitor = intArrayVisitor.visit(j);
+                    valueVisitor.visitInt(ints[j]);
+                    valueVisitor.visitEnd();
+                }
+                intArrayVisitor.visitEnd();
+                visitor.visitEnd();
+                break;
+            case 12:
+                long[] longs = this.container.get(this.key, PersistentDataType.LONG_ARRAY);
+                ListVisitor longArrayVisitor = visitor.visitList();
+                longArrayVisitor.visitLength(longs.length);
+                for (int j = 0; j < longs.length; j++) {
+                    ValueVisitor valueVisitor = longArrayVisitor.visit(j);
+                    valueVisitor.visitLong(longs[j]);
+                    valueVisitor.visitEnd();
+                }
+                longArrayVisitor.visitEnd();
+                visitor.visitEnd();
                 break;
             default:
                 throw new IllegalArgumentException("Unknown data " + Util.mapOfContainer(this.container).get(this.key.toString()));

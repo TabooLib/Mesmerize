@@ -1,6 +1,7 @@
 package io.izzel.mesmerize.api.data;
 
 import com.google.common.base.Preconditions;
+import io.izzel.mesmerize.api.cause.ContextKeys;
 import io.izzel.mesmerize.api.visitor.StatsHolder;
 import io.izzel.mesmerize.api.visitor.ValueVisitor;
 import io.izzel.mesmerize.api.visitor.impl.AbstractValue;
@@ -14,7 +15,12 @@ public class ReferenceHolderValue extends AbstractValue<StatsHolder> {
 
     @Override
     public void accept(ValueVisitor visitor) {
-        this.holder.accept(visitor.visitStats());
+        if (visitor.context().containsKey(ContextKeys.SOURCE)) {
+            this.holder.accept(visitor.visitStats());
+        } else {
+            visitor.visitString(holder.getId());
+            visitor.visitEnd();
+        }
     }
 
     @Override

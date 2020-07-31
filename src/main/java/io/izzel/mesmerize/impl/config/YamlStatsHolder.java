@@ -80,5 +80,6 @@ public class YamlStatsHolder implements StatsHolder {
                 new YamlValueReader(entry.getValue()).accept(valueVisitor);
             }
         }
+        visitor.visitEnd();
     }
 }
