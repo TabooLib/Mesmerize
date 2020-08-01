@@ -68,28 +68,28 @@ public class Stats<T> implements Keyed {
         return new StatsBuilder<>();
     }
 
-    public static class StatsBuilder<E, VAL extends StatsValue<E>> {
+    public static class StatsBuilder<E, V extends StatsValue<E>> {
 
         private NamespacedKey key;
-        private Supplier<VAL> valueSupplier;
-        private BiFunction<VAL, VAL, VAL> mergeFunction = (a, b) -> b;
+        private Supplier<V> valueSupplier;
+        private BiFunction<V, V, V> mergeFunction = (a, b) -> b;
 
         @Contract("_ -> this")
-        public StatsBuilder<E, VAL> key(@NotNull NamespacedKey key) {
+        public StatsBuilder<E, V> key(@NotNull NamespacedKey key) {
             Preconditions.checkArgument(!PATTERN.matcher(key.toString()).matches());
             this.key = key;
             return this;
         }
 
-        @SuppressWarnings({"unchecked", "rawtypes"})
+        @SuppressWarnings({"unchecked"})
         @Contract("_ -> this")
-        public <T, V extends StatsValue<T>> StatsBuilder<T, V> supplying(@NotNull Supplier<V> valueSupplier) {
-            this.valueSupplier = (Supplier) valueSupplier;
-            return (StatsBuilder<T, V>) this;
+        public <N_E, N_V extends StatsValue<N_E>> StatsBuilder<N_E, N_V> supplying(@NotNull Supplier<N_V> valueSupplier) {
+            this.valueSupplier = (Supplier<V>) valueSupplier;
+            return (StatsBuilder<N_E, N_V>) this;
         }
 
         @Contract("_ -> this")
-        public StatsBuilder<E, VAL> merging(@NotNull BiFunction<VAL, VAL, VAL> function) {
+        public StatsBuilder<E, V> merging(@NotNull BiFunction<V, V, V> function) {
             this.mergeFunction = function;
             return this;
         }

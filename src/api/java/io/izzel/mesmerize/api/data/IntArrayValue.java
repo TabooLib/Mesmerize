@@ -6,6 +6,8 @@ import io.izzel.mesmerize.api.visitor.impl.AbstractListVisitor;
 import io.izzel.mesmerize.api.visitor.impl.AbstractValue;
 import io.izzel.mesmerize.api.visitor.impl.AbstractValueVisitor;
 
+import java.util.function.BiFunction;
+
 public class IntArrayValue extends AbstractValue<int[]> {
 
     private int[] array;
@@ -39,6 +41,15 @@ public class IntArrayValue extends AbstractValue<int[]> {
     @Override
     public ListVisitor visitList() {
         return new Vis(null);
+    }
+
+    public static BiFunction<IntArrayValue, IntArrayValue, IntArrayValue> concatMerger() {
+        return (a, b) -> {
+            int[] ints = new int[a.array.length + b.array.length];
+            System.arraycopy(a.array, 0, ints, 0, a.array.length);
+            System.arraycopy(b.array, 0, ints, a.array.length, b.array.length);
+            return new IntArrayValue(ints);
+        };
     }
 
     private class Vis extends AbstractListVisitor {

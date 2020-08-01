@@ -11,6 +11,7 @@ import io.izzel.mesmerize.api.visitor.impl.AbstractValueVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 public class ListValue extends AbstractValue<List<StatsValue<?>>> {
@@ -19,8 +20,13 @@ public class ListValue extends AbstractValue<List<StatsValue<?>>> {
     private final List<StatsValue<?>> values;
 
     public ListValue(List<Supplier<StatsValue<?>>> dataTypes) {
-        this.dataTypes = ImmutableList.copyOf(dataTypes);
+        this.dataTypes = dataTypes instanceof ImmutableList ? dataTypes : ImmutableList.copyOf(dataTypes);
         this.values = new ArrayList<>(this.dataTypes.size());
+    }
+
+    public ListValue(List<Supplier<StatsValue<?>>> dataTypes, List<StatsValue<?>> values) {
+        this.dataTypes = dataTypes instanceof ImmutableList ? dataTypes : ImmutableList.copyOf(dataTypes);
+        this.values = values;
     }
 
     @Override
@@ -71,6 +77,13 @@ public class ListValue extends AbstractValue<List<StatsValue<?>>> {
 
     public static ListStatsValueBuilder builder() {
         return new ListStatsValueBuilder();
+    }
+
+    public static BiFunction<ListValue, ListValue, ListValue> concatMerger() {
+        return (a, b) -> new ListValue(
+            ImmutableList.<Supplier<StatsValue<?>>>builder().addAll(a.dataTypes).addAll(b.dataTypes).build(),
+            ImmutableList.<StatsValue<?>>builder().addAll(a.values).addAll(b.values).build()
+        );
     }
 
     public static class ListStatsValueBuilder {

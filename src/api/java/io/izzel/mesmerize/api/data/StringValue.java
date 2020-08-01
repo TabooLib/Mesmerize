@@ -4,6 +4,8 @@ import com.google.common.base.Preconditions;
 import io.izzel.mesmerize.api.visitor.ValueVisitor;
 import io.izzel.mesmerize.api.visitor.impl.AbstractValue;
 
+import java.util.function.BiFunction;
+
 public class StringValue extends AbstractValue<String> {
 
     private String s;
@@ -35,5 +37,9 @@ public class StringValue extends AbstractValue<String> {
     @Override
     public void visitEnd() {
         Preconditions.checkArgument(this.s != null, "empty");
+    }
+
+    public static BiFunction<StringValue, StringValue, StringValue> joiningMerger(String separator) {
+        return (a, b) -> new StringValue(a.s + separator + b.s);
     }
 }

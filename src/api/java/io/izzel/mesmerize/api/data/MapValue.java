@@ -11,15 +11,22 @@ import io.izzel.mesmerize.api.visitor.impl.AbstractValueVisitor;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 public class MapValue extends AbstractValue<Map<String, StatsValue<?>>> {
 
-    private final Map<String, Supplier<StatsValue<?>>> dataTypes;
-    private final Map<String, StatsValue<?>> values = new HashMap<>();
+    protected final Map<String, Supplier<StatsValue<?>>> dataTypes;
+    protected final Map<String, StatsValue<?>> values;
 
     public MapValue(Map<String, Supplier<StatsValue<?>>> dataTypes) {
-        this.dataTypes = ImmutableMap.copyOf(dataTypes);
+        this.dataTypes = dataTypes instanceof ImmutableMap ? dataTypes : ImmutableMap.copyOf(dataTypes);
+        values = new HashMap<>();
+    }
+
+    public MapValue(Map<String, Supplier<StatsValue<?>>> dataTypes, Map<String, StatsValue<?>> values) {
+        this.dataTypes = dataTypes instanceof ImmutableMap ? dataTypes : ImmutableMap.copyOf(dataTypes);
+        this.values = values;
     }
 
     @Override
@@ -69,6 +76,13 @@ public class MapValue extends AbstractValue<Map<String, StatsValue<?>>> {
 
     public static MapStatsValueBuilder builder() {
         return new MapStatsValueBuilder();
+    }
+
+    public static BiFunction<MapValue, MapValue, MapValue> defaultMerger() {
+        return (a, b) -> new MapValue(
+            ImmutableMap.<String, Supplier<StatsValue<?>>>builder().putAll(a.dataTypes).putAll(b.dataTypes).build(),
+            ImmutableMap.<String, StatsValue<?>>builder().putAll(a.values).putAll(b.values).build()
+        );
     }
 
     public static class MapStatsValueBuilder {
