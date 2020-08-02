@@ -1,12 +1,8 @@
 package io.izzel.mesmerize.impl.service;
 
-import com.google.common.collect.Multimap;
-import com.google.common.collect.MultimapBuilder;
 import io.izzel.mesmerize.api.cause.CauseManager;
 import io.izzel.mesmerize.api.cause.ContextKey;
 import io.izzel.mesmerize.api.cause.EventContext;
-
-import java.util.Map;
 
 public class SimpleCauseManager implements CauseManager {
 
@@ -29,22 +25,27 @@ public class SimpleCauseManager implements CauseManager {
 
     private class SimpleFrame implements StackFrame {
 
-        private final Multimap<ContextKey<?>, Object> contextKey = MultimapBuilder.hashKeys().linkedListValues().build();
+        private final EventContext last;
 
-        @SuppressWarnings({"unchecked", "rawtypes"})
+        public SimpleFrame() {
+            last = context.get();
+            context.set(EventContext.create(last));
+        }
+
         @Override
         public void close() throws Exception {
-            for (Map.Entry<ContextKey<?>, Object> entry : contextKey.entries()) {
-                currentContext().remove((ContextKey) entry.getKey(), entry.getValue());
-            }
+            context.set(last);
         }
 
         @Override
         public <T> StackFrame pushContext(ContextKey<T> key, T value) {
-            if (currentContext().add(key, value)) {
-                contextKey.put(key, value);
-            }
+            SimpleCauseManager.this.pushContext(key, value);
             return this;
+        }
+
+        @Override
+        public EventContext getFrameContext() {
+            return context.get();
         }
     }
 }

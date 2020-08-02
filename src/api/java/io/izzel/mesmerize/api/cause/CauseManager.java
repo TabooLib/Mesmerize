@@ -17,5 +17,7 @@ public interface CauseManager {
     interface StackFrame extends AutoCloseable {
 
         <T> StackFrame pushContext(ContextKey<T> key, T value);
+
+        EventContext getFrameContext();
     }
 }

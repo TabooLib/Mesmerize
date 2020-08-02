@@ -13,14 +13,12 @@ import java.util.Set;
 
 public final class EventContext {
 
-    private static final EventContext EMPTY_CONTEXT = new EventContext(ArrayListMultimap.create());
-
-    public static EventContext empty() {
-        return EMPTY_CONTEXT;
-    }
-
     public static EventContext create() {
         return new EventContext(MultimapBuilder.hashKeys().arrayListValues().build());
+    }
+
+    public static EventContext create(EventContext context) {
+        return new EventContext(ArrayListMultimap.create(context.entries));
     }
 
     private final ListMultimap<ContextKey<?>, Object> entries;
