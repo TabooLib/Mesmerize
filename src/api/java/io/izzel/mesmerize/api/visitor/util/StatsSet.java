@@ -5,6 +5,7 @@ import io.izzel.mesmerize.api.visitor.StatsHolder;
 import io.izzel.mesmerize.api.visitor.StatsValue;
 import io.izzel.mesmerize.api.visitor.ValueVisitor;
 import io.izzel.mesmerize.api.visitor.StatsVisitor;
+import io.izzel.mesmerize.api.visitor.VisitMode;
 import io.izzel.mesmerize.api.visitor.impl.AbstractValueVisitor;
 import io.izzel.mesmerize.api.visitor.impl.AbstractStatsVisitor;
 import org.jetbrains.annotations.NotNull;
@@ -63,10 +64,10 @@ public class StatsSet extends AbstractStatsVisitor implements StatsHolder.Modifi
     }
 
     @Override
-    public void accept(StatsVisitor visitor) {
+    public void accept(StatsVisitor visitor, VisitMode mode) {
         for (Map.Entry<Stats<?>, StatsValue<?>> entry : entrySet()) {
             ValueVisitor stats = visitor.visitStats(entry.getKey());
-            entry.getValue().accept(stats);
+            entry.getValue().accept(stats, mode);
         }
         visitor.visitEnd();
     }

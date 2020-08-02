@@ -1,6 +1,7 @@
 package io.izzel.mesmerize.api.data;
 
 import io.izzel.mesmerize.api.visitor.ValueVisitor;
+import io.izzel.mesmerize.api.visitor.VisitMode;
 import io.izzel.mesmerize.api.visitor.impl.AbstractValue;
 
 import java.util.function.BiFunction;
@@ -21,7 +22,7 @@ public class BooleanValue extends AbstractValue<Boolean> {
     }
 
     @Override
-    public void accept(ValueVisitor visitor) {
+    public void accept(ValueVisitor visitor, VisitMode mode) {
         visitor.visitBoolean(b);
         visitor.visitEnd();
     }

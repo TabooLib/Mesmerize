@@ -1,6 +1,7 @@
 package io.izzel.mesmerize.impl.config;
 
 import io.izzel.mesmerize.api.visitor.ValueVisitor;
+import io.izzel.mesmerize.api.visitor.VisitMode;
 import io.izzel.mesmerize.api.visitor.impl.AbstractValue;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -21,7 +22,7 @@ public class YamlValueReader extends AbstractValue<Object> {
 
     @SuppressWarnings("unchecked")
     @Override
-    public void accept(ValueVisitor visitor) {
+    public void accept(ValueVisitor visitor, VisitMode mode) {
         if (o instanceof Boolean) {
             visitor.visitBoolean((Boolean) o);
             visitor.visitEnd();
@@ -38,11 +39,11 @@ public class YamlValueReader extends AbstractValue<Object> {
             visitor.visitString(((String) o));
             visitor.visitEnd();
         } else if (o instanceof Collection) {
-            new YamlListReader(((Collection<?>) o)).accept(visitor);
+            new YamlListReader(((Collection<?>) o)).accept(visitor, mode);
         } else if (o instanceof ConfigurationSection) {
-            new YamlMapReader(((ConfigurationSection) o)).accept(visitor);
+            new YamlMapReader(((ConfigurationSection) o)).accept(visitor, mode);
         } else if (o instanceof Map) {
-            new YamlMapReader(((Map<String, Object>) o)).accept(visitor);
+            new YamlMapReader(((Map<String, Object>) o)).accept(visitor, mode);
         } else {
             throw new RuntimeException("unknown data " + o);
         }

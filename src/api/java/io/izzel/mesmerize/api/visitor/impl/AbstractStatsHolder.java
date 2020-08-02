@@ -6,6 +6,7 @@ import io.izzel.mesmerize.api.Stats;
 import io.izzel.mesmerize.api.visitor.StatsHolder;
 import io.izzel.mesmerize.api.visitor.StatsValue;
 import io.izzel.mesmerize.api.visitor.StatsVisitor;
+import io.izzel.mesmerize.api.visitor.VisitMode;
 
 import java.util.Collection;
 import java.util.List;
@@ -41,6 +42,6 @@ public class AbstractStatsHolder implements StatsHolder {
     }
 
     @Override
-    public void accept(StatsVisitor visitor) {
+    public void accept(StatsVisitor visitor, VisitMode mode) {
     }
 }

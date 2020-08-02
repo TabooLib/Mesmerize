@@ -5,6 +5,7 @@ import io.izzel.mesmerize.api.visitor.MapVisitor;
 import io.izzel.mesmerize.api.visitor.StatsValue;
 import io.izzel.mesmerize.api.visitor.StatsVisitor;
 import io.izzel.mesmerize.api.visitor.ValueVisitor;
+import io.izzel.mesmerize.api.visitor.VisitMode;
 
 import java.util.Optional;
 import java.util.function.BiFunction;
@@ -19,7 +20,7 @@ public abstract class AbstractValue<T> implements StatsValue<T> {
     }
 
     @Override
-    public void accept(ValueVisitor visitor) {
+    public void accept(ValueVisitor visitor, VisitMode mode) {
         throw new UnsupportedOperationException("accept");
     }
 
@@ -69,7 +70,7 @@ public abstract class AbstractValue<T> implements StatsValue<T> {
     }
 
     @Override
-    public void visitMutableValue(StatsValue<?> value) {
+    public void visitMutableValue(StatsValue<?> value, VisitMode mode) {
         this.mutableValue = value;
     }
 

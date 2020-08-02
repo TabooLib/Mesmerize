@@ -2,6 +2,7 @@ package io.izzel.mesmerize.api.data;
 
 import io.izzel.mesmerize.api.visitor.ListVisitor;
 import io.izzel.mesmerize.api.visitor.ValueVisitor;
+import io.izzel.mesmerize.api.visitor.VisitMode;
 import io.izzel.mesmerize.api.visitor.impl.AbstractListVisitor;
 import io.izzel.mesmerize.api.visitor.impl.AbstractValue;
 import io.izzel.mesmerize.api.visitor.impl.AbstractValueVisitor;
@@ -25,7 +26,7 @@ public class IntArrayValue extends AbstractValue<int[]> {
     }
 
     @Override
-    public void accept(ValueVisitor visitor) {
+    public void accept(ValueVisitor visitor, VisitMode mode) {
         ListVisitor list = visitor.visitList();
         list.visitLength(array.length);
         for (int i = 0; i < array.length; i++) {

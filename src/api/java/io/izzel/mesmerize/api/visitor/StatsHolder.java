@@ -24,7 +24,7 @@ public interface StatsHolder {
 
     boolean containsKey(Stats<?> stats);
 
-    void accept(StatsVisitor visitor);
+    void accept(StatsVisitor visitor, VisitMode mode);
 
     default boolean isModifiable() {
         return this instanceof Modifiable;

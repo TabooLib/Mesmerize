@@ -2,6 +2,7 @@ package io.izzel.mesmerize.impl.config;
 
 import io.izzel.mesmerize.api.visitor.ListVisitor;
 import io.izzel.mesmerize.api.visitor.ValueVisitor;
+import io.izzel.mesmerize.api.visitor.VisitMode;
 import io.izzel.mesmerize.api.visitor.impl.AbstractValue;
 
 import java.util.Collection;
@@ -16,12 +17,12 @@ public class YamlListReader extends AbstractValue<List<?>> {
     }
 
     @Override
-    public void accept(ValueVisitor visitor) {
+    public void accept(ValueVisitor visitor, VisitMode mode) {
         ListVisitor listVisitor = visitor.visitList();
         listVisitor.visitLength(collection.size());
         int i = 0;
         for (Object o : collection) {
-            new YamlValueReader(o).accept(listVisitor.visit(i++));
+            new YamlValueReader(o).accept(listVisitor.visit(i++), mode);
         }
         listVisitor.visitEnd();
         visitor.visitEnd();

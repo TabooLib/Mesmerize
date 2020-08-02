@@ -2,6 +2,7 @@ package io.izzel.mesmerize.api.data;
 
 import com.google.common.base.Preconditions;
 import io.izzel.mesmerize.api.visitor.ValueVisitor;
+import io.izzel.mesmerize.api.visitor.VisitMode;
 import io.izzel.mesmerize.api.visitor.impl.AbstractValue;
 
 import java.util.function.BiFunction;
@@ -23,7 +24,7 @@ public class StringValue extends AbstractValue<String> {
     }
 
     @Override
-    public void accept(ValueVisitor visitor) {
+    public void accept(ValueVisitor visitor, VisitMode mode) {
         visitor.visitString(s);
         visitor.visitEnd();
     }

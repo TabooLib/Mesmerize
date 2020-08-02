@@ -5,6 +5,7 @@ import io.izzel.mesmerize.api.visitor.ListVisitor;
 import io.izzel.mesmerize.api.visitor.MapVisitor;
 import io.izzel.mesmerize.api.visitor.StatsValue;
 import io.izzel.mesmerize.api.visitor.ValueVisitor;
+import io.izzel.mesmerize.api.visitor.VisitMode;
 import io.izzel.mesmerize.api.visitor.impl.AbstractListVisitor;
 import io.izzel.mesmerize.api.visitor.impl.AbstractValue;
 import io.izzel.mesmerize.api.visitor.impl.AbstractValueVisitor;
@@ -36,16 +37,16 @@ public class MultiValue<E, V extends StatsValue<E>> extends AbstractValue<List<V
     }
 
     @Override
-    public void accept(ValueVisitor visitor) {
+    public void accept(ValueVisitor visitor, VisitMode mode) {
         if (this.allowSingleNonListValue && this.values.size() == 1) {
-            this.values.get(0).accept(visitor);
+            this.values.get(0).accept(visitor, mode);
         } else {
             ListVisitor listVisitor = visitor.visitList();
             listVisitor.visitLength(values.size());
             for (int i = 0; i < values.size(); i++) {
                 V value = values.get(i);
                 ValueVisitor valueVisitor = listVisitor.visit(i);
-                value.accept(valueVisitor);
+                value.accept(valueVisitor, mode);
             }
             listVisitor.visitEnd();
             visitor.visitEnd();

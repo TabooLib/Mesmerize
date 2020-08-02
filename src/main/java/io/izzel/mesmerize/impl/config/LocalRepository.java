@@ -1,6 +1,7 @@
 package io.izzel.mesmerize.impl.config;
 
 import io.izzel.mesmerize.api.visitor.StatsHolder;
+import io.izzel.mesmerize.api.visitor.VisitMode;
 import io.izzel.mesmerize.api.visitor.util.StatsSet;
 import io.izzel.mesmerize.impl.Mesmerize;
 import io.izzel.taboolib.module.inject.TInject;
@@ -47,7 +48,7 @@ public class LocalRepository {
                         String name = node + "." + key;
                         try {
                             YamlStatsHolder holder = new YamlStatsHolder(configuration.getConfigurationSection(key));
-                            holder.accept(new StatsSet());
+                            holder.accept(new StatsSet(), VisitMode.VALUE);
                             this.map.put(name, holder);
                         } catch (Throwable t) {
                             LOGGER.error(TLocale.asString("load.fail.node", name, t));

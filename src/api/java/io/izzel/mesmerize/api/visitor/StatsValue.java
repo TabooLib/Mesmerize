@@ -8,5 +8,5 @@ public interface StatsValue<T> extends ValueVisitor {
 
     Optional<ValueVisitor> getMutableValue();
 
-    void accept(ValueVisitor visitor);
+    void accept(ValueVisitor visitor, VisitMode mode);
 }

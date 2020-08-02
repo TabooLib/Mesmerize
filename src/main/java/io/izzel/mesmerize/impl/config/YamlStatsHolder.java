@@ -6,6 +6,7 @@ import io.izzel.mesmerize.api.visitor.StatsHolder;
 import io.izzel.mesmerize.api.visitor.StatsValue;
 import io.izzel.mesmerize.api.visitor.StatsVisitor;
 import io.izzel.mesmerize.api.visitor.ValueVisitor;
+import io.izzel.mesmerize.api.visitor.VisitMode;
 import io.izzel.mesmerize.api.visitor.impl.AbstractValueVisitor;
 import io.izzel.mesmerize.api.visitor.util.StatsSet;
 import org.bukkit.configuration.ConfigurationSection;
@@ -44,7 +45,7 @@ public class YamlStatsHolder implements StatsHolder {
                 }
             }
         };
-        this.accept(statsSet);
+        this.accept(statsSet, VisitMode.VALUE);
         return statsSet.getAll(stats);
     }
 
@@ -61,7 +62,7 @@ public class YamlStatsHolder implements StatsHolder {
     @Override
     public Collection<Map.Entry<Stats<?>, StatsValue<?>>> entrySet() {
         StatsSet statsSet = new StatsSet();
-        this.accept(statsSet);
+        this.accept(statsSet, VisitMode.VALUE);
         return statsSet.entrySet();
     }
 
@@ -71,13 +72,13 @@ public class YamlStatsHolder implements StatsHolder {
     }
 
     @Override
-    public void accept(StatsVisitor visitor) {
+    public void accept(StatsVisitor visitor, VisitMode mode) {
         for (Map.Entry<String, Object> entry : this.section.getValues(false).entrySet()) {
             Optional<Stats<Object>> optional = StatsService.instance().getRegistry().getStats(entry.getKey());
             if (optional.isPresent()) {
                 Stats<Object> stats = optional.get();
                 ValueVisitor valueVisitor = visitor.visitStats(stats);
-                new YamlValueReader(entry.getValue()).accept(valueVisitor);
+                new YamlValueReader(entry.getValue()).accept(valueVisitor, mode);
             }
         }
         visitor.visitEnd();

@@ -2,6 +2,7 @@ package io.izzel.mesmerize.impl.config;
 
 import io.izzel.mesmerize.api.visitor.MapVisitor;
 import io.izzel.mesmerize.api.visitor.ValueVisitor;
+import io.izzel.mesmerize.api.visitor.VisitMode;
 import io.izzel.mesmerize.api.visitor.impl.AbstractValue;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -20,11 +21,11 @@ public class YamlMapReader extends AbstractValue<Object> {
     }
 
     @Override
-    public void accept(ValueVisitor visitor) {
+    public void accept(ValueVisitor visitor, VisitMode mode) {
         MapVisitor mapVisitor = visitor.visitMap();
         for (Map.Entry<String, Object> entry : this.map.entrySet()) {
             ValueVisitor valueVisitor = mapVisitor.visit(entry.getKey());
-            new YamlValueReader(entry.getValue()).accept(valueVisitor);
+            new YamlValueReader(entry.getValue()).accept(valueVisitor, mode);
         }
         mapVisitor.visitEnd();
         visitor.visitEnd();

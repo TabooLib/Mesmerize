@@ -5,6 +5,7 @@ import io.izzel.mesmerize.api.Stats;
 import io.izzel.mesmerize.api.visitor.ListVisitor;
 import io.izzel.mesmerize.api.visitor.StatsValue;
 import io.izzel.mesmerize.api.visitor.ValueVisitor;
+import io.izzel.mesmerize.api.visitor.VisitMode;
 import io.izzel.mesmerize.api.visitor.impl.AbstractListVisitor;
 import io.izzel.mesmerize.api.visitor.impl.AbstractValue;
 import io.izzel.mesmerize.api.visitor.impl.AbstractValueVisitor;
@@ -30,12 +31,12 @@ public class ListValue extends AbstractValue<List<StatsValue<?>>> {
     }
 
     @Override
-    public void accept(ValueVisitor visitor) {
+    public void accept(ValueVisitor visitor, VisitMode mode) {
         ListVisitor listVisitor = visitor.visitList();
         listVisitor.visitLength(values.size());
         for (int i = 0; i < values.size(); i++) {
             StatsValue<?> value = values.get(i);
-            value.accept(listVisitor.visit(i));
+            value.accept(listVisitor.visit(i), mode);
         }
         listVisitor.visitEnd();
         visitor.visitEnd();

@@ -1,9 +1,9 @@
 package io.izzel.mesmerize.api.data;
 
 import com.google.common.base.Preconditions;
-import io.izzel.mesmerize.api.cause.ContextKeys;
 import io.izzel.mesmerize.api.visitor.StatsHolder;
 import io.izzel.mesmerize.api.visitor.ValueVisitor;
+import io.izzel.mesmerize.api.visitor.VisitMode;
 import io.izzel.mesmerize.api.visitor.impl.AbstractValue;
 import io.izzel.mesmerize.api.visitor.util.LazyStatsHolder;
 
@@ -14,10 +14,10 @@ public class ReferenceHolderValue extends AbstractValue<StatsHolder> {
     private LazyStatsHolder holder;
 
     @Override
-    public void accept(ValueVisitor visitor) {
-        if (visitor.context().containsKey(ContextKeys.SOURCE)) {
-            this.holder.accept(visitor.visitStats());
-        } else {
+    public void accept(ValueVisitor visitor, VisitMode mode) {
+        if (mode == VisitMode.VALUE) {
+            this.holder.accept(visitor.visitStats(), mode);
+        } else if (mode == VisitMode.DATA) {
             visitor.visitString(holder.getId());
             visitor.visitEnd();
         }

@@ -2,6 +2,7 @@ package io.izzel.mesmerize.impl.util;
 
 import io.izzel.mesmerize.api.visitor.ListVisitor;
 import io.izzel.mesmerize.api.visitor.ValueVisitor;
+import io.izzel.mesmerize.api.visitor.VisitMode;
 import io.izzel.mesmerize.api.visitor.impl.AbstractValue;
 import org.bukkit.NamespacedKey;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -19,7 +20,7 @@ public class PersistentValueReader extends AbstractValue<Object> {
 
     @SuppressWarnings("ConstantConditions")
     @Override
-    public void accept(ValueVisitor visitor) {
+    public void accept(ValueVisitor visitor, VisitMode mode) {
         int i = Util.typeOfKey(this.container, this.key);
         switch (i) {
             case 1:
@@ -49,9 +50,9 @@ public class PersistentValueReader extends AbstractValue<Object> {
             case 10:
                 PersistentDataContainer container = this.container.get(this.key, PersistentDataType.TAG_CONTAINER);
                 if (container.has(Util.ARRAY_LENGTH, PersistentDataType.INTEGER)) {
-                    new PersistentListReader(container).accept(visitor);
+                    new PersistentListReader(container).accept(visitor, mode);
                 } else {
-                    new PersistentTagReader(container).accept(visitor);
+                    new PersistentTagReader(container).accept(visitor, mode);
                 }
                 break;
             case 11:

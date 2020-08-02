@@ -5,6 +5,7 @@ import io.izzel.mesmerize.api.Stats;
 import io.izzel.mesmerize.api.visitor.MapVisitor;
 import io.izzel.mesmerize.api.visitor.StatsValue;
 import io.izzel.mesmerize.api.visitor.ValueVisitor;
+import io.izzel.mesmerize.api.visitor.VisitMode;
 import io.izzel.mesmerize.api.visitor.impl.AbstractMapVisitor;
 import io.izzel.mesmerize.api.visitor.impl.AbstractValue;
 import io.izzel.mesmerize.api.visitor.impl.AbstractValueVisitor;
@@ -40,11 +41,11 @@ public class MapValue extends AbstractValue<Map<String, StatsValue<?>>> {
     }
 
     @Override
-    public void accept(ValueVisitor visitor) {
+    public void accept(ValueVisitor visitor, VisitMode mode) {
         MapVisitor mapVisitor = visitor.visitMap();
         for (Map.Entry<String, StatsValue<?>> entry : values.entrySet()) {
             ValueVisitor valueVisitor = mapVisitor.visit(entry.getKey());
-            entry.getValue().accept(valueVisitor);
+            entry.getValue().accept(valueVisitor, mode);
         }
         mapVisitor.visitEnd();
         visitor.visitEnd();

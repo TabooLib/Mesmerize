@@ -23,8 +23,8 @@ public interface ValueVisitor {
 
     StatsVisitor visitStats();
 
-    default void visitMutableValue(StatsValue<?> value) {
-        value.accept(this);
+    default void visitMutableValue(StatsValue<?> value, VisitMode mode) {
+        value.accept(this, mode);
     }
 
     void visitEnd();

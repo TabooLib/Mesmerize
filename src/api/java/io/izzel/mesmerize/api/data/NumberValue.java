@@ -3,6 +3,7 @@ package io.izzel.mesmerize.api.data;
 import com.google.common.base.Preconditions;
 import com.google.common.primitives.Primitives;
 import io.izzel.mesmerize.api.visitor.ValueVisitor;
+import io.izzel.mesmerize.api.visitor.VisitMode;
 import io.izzel.mesmerize.api.visitor.impl.AbstractValue;
 import org.jetbrains.annotations.Contract;
 
@@ -37,7 +38,7 @@ public class NumberValue<T extends Number> extends AbstractValue<StatsNumber<T>>
     }
 
     @Override
-    public void accept(ValueVisitor visitor) {
+    public void accept(ValueVisitor visitor, VisitMode mode) {
         if (number.getAbsolutePart() != null) {
             Number absolutePart = number.getAbsolutePart();
             Class<?> valueType = number.getValueType();

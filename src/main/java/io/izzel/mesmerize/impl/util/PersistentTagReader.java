@@ -2,6 +2,7 @@ package io.izzel.mesmerize.impl.util;
 
 import io.izzel.mesmerize.api.visitor.MapVisitor;
 import io.izzel.mesmerize.api.visitor.ValueVisitor;
+import io.izzel.mesmerize.api.visitor.VisitMode;
 import io.izzel.mesmerize.api.visitor.impl.AbstractValue;
 import org.bukkit.persistence.PersistentDataContainer;
 
@@ -16,12 +17,12 @@ public class PersistentTagReader extends AbstractValue<PersistentDataContainer> 
     }
 
     @Override
-    public void accept(ValueVisitor visitor) {
+    public void accept(ValueVisitor visitor, VisitMode mode) {
         MapVisitor mapVisitor = visitor.visitMap();
         Map<String, ?> map = Util.mapOfContainer(this.container);
         for (String s : map.keySet()) {
             ValueVisitor valueVisitor = mapVisitor.visit(s);
-            new PersistentValueReader(this.container, Util.fromString(s)).accept(valueVisitor);
+            new PersistentValueReader(this.container, Util.fromString(s)).accept(valueVisitor, mode);
         }
         mapVisitor.visitEnd();
         visitor.visitEnd();
