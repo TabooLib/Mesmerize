@@ -1,10 +1,12 @@
 package io.izzel.mesmerize.api.data;
 
-import com.google.common.base.Preconditions;
 import com.google.common.primitives.Primitives;
+import io.izzel.mesmerize.api.visitor.MapVisitor;
 import io.izzel.mesmerize.api.visitor.ValueVisitor;
 import io.izzel.mesmerize.api.visitor.VisitMode;
+import io.izzel.mesmerize.api.visitor.impl.AbstractMapVisitor;
 import io.izzel.mesmerize.api.visitor.impl.AbstractValue;
+import io.izzel.mesmerize.api.visitor.impl.AbstractValueVisitor;
 import org.jetbrains.annotations.Contract;
 
 import java.util.function.BiFunction;
@@ -12,6 +14,8 @@ import java.util.function.Supplier;
 
 @SuppressWarnings("unchecked")
 public class NumberValue<T extends Number> extends AbstractValue<StatsNumber<T>> {
+
+    public static final double DBL_EPSILON = Double.longBitsToDouble(0x3cb0000000000000L);
 
     private final boolean allowRelative, allowDecimal, allowCoerce;
 
@@ -40,21 +44,36 @@ public class NumberValue<T extends Number> extends AbstractValue<StatsNumber<T>>
     @Override
     public void accept(ValueVisitor visitor, VisitMode mode) {
         if (number.getAbsolutePart() != null) {
-            Number absolutePart = number.getAbsolutePart();
-            Class<?> valueType = number.getValueType();
-            if (valueType == int.class) {
-                visitor.visitInt(absolutePart.intValue());
-            } else if (valueType == long.class) {
-                visitor.visitLong(absolutePart.longValue());
-            } else if (valueType == float.class) {
-                visitor.visitFloat(absolutePart.floatValue());
+            if (Math.abs(number.getRelativePart()) >= DBL_EPSILON) {
+                MapVisitor mapVisitor = visitor.visitMap();
+                ValueVisitor valueVisitor = mapVisitor.visit("abs");
+                acceptByType(valueVisitor);
+                valueVisitor.visitEnd();
+                ValueVisitor rel = mapVisitor.visit("rel");
+                rel.visitString(number.getRelativePart() + "%");
+                rel.visitEnd();
+                mapVisitor.visitEnd();
             } else {
-                visitor.visitLong(absolutePart.longValue());
+                acceptByType(visitor);
             }
         } else {
             visitor.visitString(number.getRelativePart() + "%");
         }
         visitor.visitEnd();
+    }
+
+    private void acceptByType(ValueVisitor visitor) {
+        Number absolutePart = number.getAbsolutePart();
+        Class<?> valueType = number.getValueType();
+        if (valueType == int.class) {
+            visitor.visitInt(absolutePart.intValue());
+        } else if (valueType == long.class) {
+            visitor.visitLong(absolutePart.longValue());
+        } else if (valueType == float.class) {
+            visitor.visitFloat(absolutePart.floatValue());
+        } else {
+            visitor.visitLong(absolutePart.longValue());
+        }
     }
 
     @Override
@@ -117,8 +136,44 @@ public class NumberValue<T extends Number> extends AbstractValue<StatsNumber<T>>
     }
 
     @Override
-    public void visitEnd() {
-        Preconditions.checkNotNull(number, "empty");
+    public MapVisitor visitMap() {
+        return new AbstractMapVisitor(null) {
+            @Override
+            public ValueVisitor visit(String key) {
+                if (key.equals("abs")) {
+                    return new AbstractValueVisitor(null) {
+                        @Override
+                        public void visitInt(int i) {
+                            NumberValue.this.visitInt(i);
+                        }
+
+                        @Override
+                        public void visitLong(long l) {
+                            NumberValue.this.visitLong(l);
+                        }
+
+                        @Override
+                        public void visitFloat(float f) {
+                            NumberValue.this.visitFloat(f);
+                        }
+
+                        @Override
+                        public void visitDouble(double d) {
+                            NumberValue.this.visitDouble(d);
+                        }
+                    };
+                } else if (key.equals("rel")) {
+                    return new AbstractValueVisitor(null) {
+                        @Override
+                        public void visitString(String s) {
+                            NumberValue.this.visitString(s);
+                        }
+                    };
+                } else {
+                    return AbstractValueVisitor.EMPTY;
+                }
+            }
+        };
     }
 
     public static NumberValueBuilder<?> builder() {

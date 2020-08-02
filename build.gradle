@@ -41,6 +41,7 @@ dependencies {
     implementation 'org.spigotmc:spigot-api:1.14.4-R0.1-SNAPSHOT'
     implementation 'io.izzel.taboolib:TabooLib:5.18:all'
     implementation 'org.jetbrains:annotations:19.0.0'
+    implementation 'com.github.ben-manes.caffeine:caffeine:2.8.5'
     implementation fileTree(dir:'libs',includes:['*jar'])
     embed 'io.izzel.taboolib:TabooLibLoader:2.1:all'
     embed 'org.bstats:bstats-bukkit:1.7'

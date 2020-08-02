@@ -1,12 +1,12 @@
 package io.izzel.mesmerize.api.visitor.impl;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import io.izzel.mesmerize.api.Stats;
 import io.izzel.mesmerize.api.visitor.StatsHolder;
 import io.izzel.mesmerize.api.visitor.StatsValue;
 import io.izzel.mesmerize.api.visitor.StatsVisitor;
 import io.izzel.mesmerize.api.visitor.VisitMode;
+import io.izzel.mesmerize.api.visitor.util.StatsSet;
 
 import java.util.Collection;
 import java.util.List;
@@ -16,14 +16,19 @@ import java.util.Set;
 
 public class AbstractStatsHolder implements StatsHolder {
 
+    public static final AbstractStatsHolder EMPTY = new AbstractStatsHolder();
+
     @Override
     public <T> Optional<StatsValue<T>> get(Stats<T> stats) {
-        return Optional.empty();
+        List<StatsValue<T>> list = getAll(stats);
+        return list.isEmpty() ? Optional.empty() : Optional.of(list.get(0));
     }
 
     @Override
     public <T> List<StatsValue<T>> getAll(Stats<T> stats) {
-        return ImmutableList.of();
+        StatsSet statsSet = new StatsSet();
+        this.accept(statsSet, VisitMode.VALUE);
+        return statsSet.getAll(stats);
     }
 
     @Override
@@ -33,15 +38,18 @@ public class AbstractStatsHolder implements StatsHolder {
 
     @Override
     public Collection<Map.Entry<Stats<?>, StatsValue<?>>> entrySet() {
-        return ImmutableSet.of();
+        StatsSet statsSet = new StatsSet();
+        this.accept(statsSet, VisitMode.VALUE);
+        return statsSet.entrySet();
     }
 
     @Override
     public boolean containsKey(Stats<?> stats) {
-        return false;
+        return keySet().contains(stats);
     }
 
     @Override
     public void accept(StatsVisitor visitor, VisitMode mode) {
+        visitor.visitEnd();
     }
 }

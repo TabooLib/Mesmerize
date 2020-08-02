@@ -26,7 +26,7 @@ public class Stats<T> implements Keyed {
         this.supplier = supplier;
     }
 
-    public String getId() {
+    public final String getId() {
         return key.toString();
     }
 

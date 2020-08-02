@@ -8,8 +8,10 @@ import io.izzel.mesmerize.api.visitor.VisitMode;
 import io.izzel.mesmerize.api.visitor.impl.AbstractStatsHolder;
 import org.bukkit.persistence.PersistentDataContainer;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 public class PersistentStatsReader extends AbstractStatsHolder {
 
@@ -17,6 +19,21 @@ public class PersistentStatsReader extends AbstractStatsHolder {
 
     public PersistentStatsReader(PersistentDataContainer container) {
         this.container = container;
+    }
+
+    @Override
+    public Set<Stats<?>> keySet() {
+        Set<Stats<?>> set = new HashSet<>();
+        for (String key : Util.mapOfContainer(this.container).keySet()) {
+            Optional<Stats<Object>> optional = StatsService.instance().getRegistry().getStats(key);
+            optional.ifPresent(set::add);
+        }
+        return set;
+    }
+
+    @Override
+    public boolean containsKey(Stats<?> stats) {
+        return Util.mapOfContainer(this.container).containsKey(stats.getId());
     }
 
     @Override
