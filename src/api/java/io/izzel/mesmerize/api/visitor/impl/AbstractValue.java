@@ -6,7 +6,12 @@ import io.izzel.mesmerize.api.visitor.StatsValue;
 import io.izzel.mesmerize.api.visitor.StatsVisitor;
 import io.izzel.mesmerize.api.visitor.ValueVisitor;
 
+import java.util.Optional;
+import java.util.function.BiFunction;
+
 public abstract class AbstractValue<T> implements StatsValue<T> {
+
+    protected StatsValue<?> mutableValue;
 
     @Override
     public T get() {
@@ -64,6 +69,32 @@ public abstract class AbstractValue<T> implements StatsValue<T> {
     }
 
     @Override
+    public void visitMutableValue(StatsValue<?> value) {
+        this.mutableValue = value;
+    }
+
+    @Override
+    public Optional<ValueVisitor> getMutableValue() {
+        return Optional.ofNullable(this.mutableValue);
+    }
+
+    @Override
     public void visitEnd() {
+    }
+
+    public static <V extends AbstractValue<?>> BiFunction<V, V, V> keepMutableValue(BiFunction<V, V, V> merger) {
+        return (a, b) -> {
+            V v = merger.apply(a, b);
+            v.mutableValue = a.mutableValue;
+            return v;
+        };
+    }
+
+    public static <V extends AbstractValue<?>> BiFunction<V, V, V> replaceMutableValue(BiFunction<V, V, V> merger) {
+        return (a, b) -> {
+            V v = merger.apply(a, b);
+            v.mutableValue = b.mutableValue;
+            return v;
+        };
     }
 }

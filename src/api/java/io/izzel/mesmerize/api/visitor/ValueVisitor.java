@@ -23,6 +23,10 @@ public interface ValueVisitor {
 
     StatsVisitor visitStats();
 
+    default void visitMutableValue(StatsValue<?> value) {
+        value.accept(this);
+    }
+
     void visitEnd();
 
     default EventContext context() {
