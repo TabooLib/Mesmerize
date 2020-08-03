@@ -2,15 +2,20 @@ package io.izzel.mesmerize.api;
 
 import com.google.common.base.Preconditions;
 import io.izzel.mesmerize.api.display.DisplayPane;
+import io.izzel.mesmerize.api.event.StatsApplyEvent;
 import io.izzel.mesmerize.api.visitor.StatsValue;
+import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
 import org.bukkit.NamespacedKey;
+import org.bukkit.event.Event;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
@@ -21,7 +26,7 @@ public class Stats<T> implements Keyed {
     private final NamespacedKey key;
     private final BiFunction<StatsValue<T>, StatsValue<T>, StatsValue<T>> onMerge;
     private final Supplier<StatsValue<T>> supplier;
-    private final BiConsumer<StatsValue<T>, DisplayPane> onDisplay;
+    private BiConsumer<StatsValue<T>, DisplayPane> onDisplay;
 
     protected Stats(NamespacedKey key, BiFunction<StatsValue<T>, StatsValue<T>, StatsValue<T>> onMerge, Supplier<StatsValue<T>> supplier, BiConsumer<StatsValue<T>, DisplayPane> onDisplay) {
         this.key = key;
@@ -48,8 +53,21 @@ public class Stats<T> implements Keyed {
         return supplier.get();
     }
 
+    public void setDisplay(BiConsumer<StatsValue<T>, DisplayPane> onDisplay) {
+        this.onDisplay = onDisplay;
+    }
+
     public void displayValue(StatsValue<T> value, DisplayPane pane) {
         this.onDisplay.accept(value, pane);
+    }
+
+    @SuppressWarnings("unchecked")
+    public <V extends StatsValue<T>> void tryApply(V statsValue, @Nullable Event event, Consumer<V> action) {
+        StatsApplyEvent applyEvent = new StatsApplyEvent(this, statsValue, event);
+        Bukkit.getPluginManager().callEvent(applyEvent);
+        if (!applyEvent.isCancelled()) {
+            action.accept((V) applyEvent.getValue());
+        }
     }
 
     @Override

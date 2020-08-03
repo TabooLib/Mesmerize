@@ -2,7 +2,6 @@ package io.izzel.mesmerize.api.data;
 
 import com.google.common.primitives.Primitives;
 import io.izzel.mesmerize.api.display.DisplayPane;
-import io.izzel.mesmerize.api.display.Element;
 import io.izzel.mesmerize.api.service.ElementFactory;
 import io.izzel.mesmerize.api.visitor.MapVisitor;
 import io.izzel.mesmerize.api.visitor.ValueVisitor;
@@ -234,13 +233,12 @@ public class NumberValue<T extends Number> extends AbstractValue<StatsNumber<T>>
     public static <N extends Number, V extends NumberValue<N>> BiConsumer<V, DisplayPane> defaultDisplay(String key) {
         return (value, pane) -> {
             ElementFactory factory = ElementFactory.instance();
-            Element name = factory.createLocaleElement(key);
             StatsNumber<N> number = value.get();
             if (number.hasAbsolutePart()) {
-                pane.addElement(factory.namedValue(name, factory.createNumberElement(number.getAbsolutePart())));
+                pane.addElement(factory.createLocaleElement(key, factory.createNumberElement(number.getAbsolutePart())));
             }
             if (number.hasRelativePart()) {
-                pane.addElement(factory.namedValue(name, factory.createRelativeElement(number)));
+                pane.addElement(factory.createLocaleElement(key, factory.createRelativeElement(number)));
             }
         };
     }

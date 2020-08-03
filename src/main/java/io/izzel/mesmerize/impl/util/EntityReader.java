@@ -1,5 +1,8 @@
 package io.izzel.mesmerize.impl.util;
 
+import io.izzel.mesmerize.api.cause.CauseManager;
+import io.izzel.mesmerize.api.cause.ContextKeys;
+import io.izzel.mesmerize.api.cause.EventContext;
 import io.izzel.mesmerize.api.service.StatsService;
 import io.izzel.mesmerize.api.slot.StatsSlot;
 import io.izzel.mesmerize.api.visitor.StatsVisitor;
@@ -28,12 +31,15 @@ public class EntityReader extends AbstractStatsHolder {
             }
         };
         StatsService.instance().newPersistentHolder(entity).accept(wrapped, mode);
+        EventContext eventContext = CauseManager.instance().currentContext();
         for (StatsSlot slot : StatsService.instance().getRegistry().getSlots()) {
             Optional<ItemStack> optional = slot.get(entity);
             if (optional.isPresent() && optional.get().hasItemMeta()) {
                 ItemMeta itemMeta = optional.get().getItemMeta();
                 if (itemMeta != null) {
+                    eventContext.add(ContextKeys.SLOT, slot);
                     StatsService.instance().newPersistentHolder(itemMeta).accept(wrapped, mode);
+                    eventContext.remove(ContextKeys.SLOT, slot);
                 }
             }
         }

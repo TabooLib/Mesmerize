@@ -106,6 +106,16 @@ public class StatsSet extends AbstractStatsVisitor implements StatsHolder.Modifi
         };
     }
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public void addAll(StatsSet set) {
+        for (Map.Entry<Stats<?>, ? extends StatsValue<?>> entry : set.entrySet()) {
+            Stats stats = entry.getKey();
+            Optional<StatsValue<?>> optional = this.get(stats);
+            StatsValue<?> merged = optional.isPresent() ? stats.mergeValue(optional.get(), entry.getValue()) : entry.getValue();
+            map.put(stats, merged);
+        }
+    }
+
     public static StatsSet of(@NotNull LivingEntity entity) {
         return StatsService.instance().cachedSetFor(entity);
     }

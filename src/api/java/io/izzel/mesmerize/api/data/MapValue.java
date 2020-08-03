@@ -9,6 +9,7 @@ import io.izzel.mesmerize.api.visitor.VisitMode;
 import io.izzel.mesmerize.api.visitor.impl.AbstractMapVisitor;
 import io.izzel.mesmerize.api.visitor.impl.AbstractValue;
 import io.izzel.mesmerize.api.visitor.impl.AbstractValueVisitor;
+import org.jetbrains.annotations.Contract;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -90,20 +91,67 @@ public class MapValue extends AbstractValue<Map<String, StatsValue<?>>> {
 
         private final Map<String, Supplier<StatsValue<?>>> map = new HashMap<>();
 
-        public void put(String key, Supplier<StatsValue<?>> supplier) {
-            map.put(key, supplier);
+        @Contract("_, _ -> this")
+        @SuppressWarnings("unchecked")
+        public <V extends StatsValue<?>> MapStatsValueBuilder put(String key, Supplier<V> supplier) {
+            map.put(key, (Supplier<StatsValue<?>>) supplier);
+            return this;
         }
 
-        public void put(String key, Stats<?> stats) {
+        @Contract("_, _ -> this")
+        public MapStatsValueBuilder put(String key, Stats<?> stats) {
             map.put(key, stats::newValue);
+            return this;
         }
 
+        @Contract("-> new")
         public MapValue build() {
             return new MapValue(map);
         }
 
+        @Contract("-> new")
         public Supplier<MapValue> buildSupplier() {
             return this::build;
+        }
+    }
+
+    public static DeepMergerBuilder deepMerger() {
+        return new DeepMergerBuilder();
+    }
+
+    public static class DeepMergerBuilder {
+
+        private final Map<String, BiFunction<StatsValue<?>, StatsValue<?>, StatsValue<?>>> mergers = new HashMap<>();
+
+        @SuppressWarnings("unchecked")
+        public <V extends StatsValue<?>> DeepMergerBuilder put(String key, BiFunction<V, V, V> function) {
+            this.mergers.put(key, (BiFunction<StatsValue<?>, StatsValue<?>, StatsValue<?>>) function);
+            return this;
+        }
+
+        public BiFunction<MapValue, MapValue, MapValue> build() {
+            return (a, b) -> {
+                Map<String, StatsValue<?>> map = new HashMap<>(a.values);
+                for (Map.Entry<String, StatsValue<?>> entry : b.values.entrySet()) {
+                    map.compute(entry.getKey(), (key, oldVal) -> {
+                        StatsValue<?> newVal = entry.getValue();
+                        if (oldVal == null) {
+                            return newVal;
+                        } else {
+                            BiFunction<StatsValue<?>, StatsValue<?>, StatsValue<?>> function = mergers.get(entry.getKey());
+                            if (function != null) {
+                                return function.apply(oldVal, newVal);
+                            } else {
+                                return newVal;
+                            }
+                        }
+                    });
+                }
+                return new MapValue(
+                    ImmutableMap.<String, Supplier<StatsValue<?>>>builder().putAll(a.dataTypes).putAll(b.dataTypes).build(),
+                    map
+                );
+            };
         }
     }
 }

@@ -7,6 +7,7 @@ import io.izzel.mesmerize.api.service.ElementFactory;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
+import java.time.Instant;
 
 public class SimpleElementFactory implements ElementFactory {
 
@@ -17,11 +18,6 @@ public class SimpleElementFactory implements ElementFactory {
 
     @Override
     public Element createLocaleElement(String node, Object... args) {
-        return null;
-    }
-
-    @Override
-    public Element namedValue(Element name, Element value) {
         return null;
     }
 
@@ -47,6 +43,11 @@ public class SimpleElementFactory implements ElementFactory {
 
     @Override
     public Element createDurationElement(Duration duration) {
+        return null;
+    }
+
+    @Override
+    public Element createDateElement(Instant instant) {
         return null;
     }
 }
