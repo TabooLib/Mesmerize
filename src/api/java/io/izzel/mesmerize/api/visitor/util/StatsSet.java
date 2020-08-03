@@ -1,6 +1,7 @@
 package io.izzel.mesmerize.api.visitor.util;
 
 import io.izzel.mesmerize.api.Stats;
+import io.izzel.mesmerize.api.service.StatsService;
 import io.izzel.mesmerize.api.visitor.StatsHolder;
 import io.izzel.mesmerize.api.visitor.StatsValue;
 import io.izzel.mesmerize.api.visitor.ValueVisitor;
@@ -8,6 +9,9 @@ import io.izzel.mesmerize.api.visitor.StatsVisitor;
 import io.izzel.mesmerize.api.visitor.VisitMode;
 import io.izzel.mesmerize.api.visitor.impl.AbstractValueVisitor;
 import io.izzel.mesmerize.api.visitor.impl.AbstractStatsVisitor;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -100,5 +104,18 @@ public class StatsSet extends AbstractStatsVisitor implements StatsHolder.Modifi
                 return StatsSet.this;
             }
         };
+    }
+
+    public static StatsSet of(@NotNull LivingEntity entity) {
+        return StatsService.instance().cachedSetFor(entity);
+    }
+
+    public static StatsSet of(@NotNull ItemStack itemStack) {
+        StatsSet set = new StatsSet();
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        if (itemMeta != null) {
+            StatsService.instance().newPersistentHolder(itemMeta).accept(set, VisitMode.VALUE);
+        }
+        return set;
     }
 }

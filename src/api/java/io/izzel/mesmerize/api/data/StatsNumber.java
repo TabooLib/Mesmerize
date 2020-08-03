@@ -57,6 +57,14 @@ public class StatsNumber<T extends Number> {
         this.relativePart = relativePart;
     }
 
+    public boolean hasAbsolutePart() {
+        return this.absolutePart != null;
+    }
+
+    public boolean hasRelativePart() {
+        return Math.abs(this.relativePart) >= NumberValue.DBL_EPSILON;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -2,8 +2,12 @@ package io.izzel.mesmerize.api.data;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import io.izzel.mesmerize.api.display.DisplayPane;
+import io.izzel.mesmerize.api.display.Element;
+import io.izzel.mesmerize.api.service.ElementFactory;
 
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
@@ -63,6 +67,38 @@ public class RangeNumberValue<T extends Number> extends MultiValue<StatsNumber<T
                     NumberValue.<T>defaultMerger().apply(first.get(0), second.get(0)),
                     NumberValue.<T>defaultMerger().apply(first.get(1), second.get(0))
                 );
+            }
+        };
+    }
+
+    public static <N extends Number, V extends RangeNumberValue<N>> BiConsumer<V, DisplayPane> defaultDisplay(String key) {
+        return (range, pane) -> {
+            ElementFactory factory = ElementFactory.instance();
+            Element name = factory.createLocaleElement(key);
+            List<NumberValue<N>> values = range.get();
+            if (values.size() == 1) {
+                NumberValue.<N, NumberValue<N>>defaultDisplay(key).accept(values.get(0), pane);
+            } else if (values.size() == 2) {
+                StatsNumber<N> first = values.get(0).get();
+                StatsNumber<N> second = values.get(1).get();
+                if (first.hasAbsolutePart()) {
+                    if (second.hasAbsolutePart()) {
+                        pane.addElement(factory.namedValue(name, factory.createRangeNumber(first.getAbsolutePart(), second.getAbsolutePart())));
+                    } else {
+                        pane.addElement(factory.namedValue(name, factory.createNumberElement(first.getAbsolutePart())));
+                    }
+                } else if (second.hasAbsolutePart()) {
+                    pane.addElement(factory.namedValue(name, factory.createNumberElement(second.getAbsolutePart())));
+                }
+                if (first.hasRelativePart()) {
+                    if (second.hasRelativePart()) {
+                        pane.addElement(factory.namedValue(name, factory.createRangeRelative(first, second)));
+                    } else {
+                        pane.addElement(factory.namedValue(name, factory.createRelativeElement(first)));
+                    }
+                } else if (second.hasRelativePart()) {
+                    pane.addElement(factory.namedValue(name, factory.createRelativeElement(second)));
+                }
             }
         };
     }

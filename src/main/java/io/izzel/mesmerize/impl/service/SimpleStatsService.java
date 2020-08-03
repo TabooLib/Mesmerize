@@ -3,6 +3,7 @@ package io.izzel.mesmerize.impl.service;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import io.izzel.mesmerize.api.cause.CauseManager;
+import io.izzel.mesmerize.api.service.ElementFactory;
 import io.izzel.mesmerize.api.service.StatsManager;
 import io.izzel.mesmerize.api.service.StatsRegistry;
 import io.izzel.mesmerize.api.service.StatsService;
@@ -27,6 +28,7 @@ public class SimpleStatsService implements StatsService {
     private final StatsManager statsManager = new SimpleStatsManager();
     private final StatsRegistry statsRegistry = new SimpleStatsRegistry();
     private final CauseManager causeManager = new SimpleCauseManager();
+    private final ElementFactory elementFactory = new SimpleElementFactory();
 
     private final LoadingCache<LivingEntity, StatsSet> statsSetCache = Caffeine
         .newBuilder()
@@ -74,5 +76,10 @@ public class SimpleStatsService implements StatsService {
     @Override
     public StatsHolder newEntityReader(@NotNull LivingEntity entity) {
         return new EntityReader(entity);
+    }
+
+    @Override
+    public ElementFactory getElementFactory() {
+        return elementFactory;
     }
 }

@@ -20,6 +20,8 @@ public interface StatsService {
 
     CauseManager getCauseManager();
 
+    ElementFactory getElementFactory();
+
     StatsSet cachedSetFor(@NotNull LivingEntity entity);
 
     default StatsHolder newPersistentHolder(@NotNull PersistentDataHolder holder) {

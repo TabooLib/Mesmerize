@@ -1,6 +1,9 @@
 package io.izzel.mesmerize.api.data;
 
 import com.google.common.primitives.Primitives;
+import io.izzel.mesmerize.api.display.DisplayPane;
+import io.izzel.mesmerize.api.display.Element;
+import io.izzel.mesmerize.api.service.ElementFactory;
 import io.izzel.mesmerize.api.visitor.MapVisitor;
 import io.izzel.mesmerize.api.visitor.ValueVisitor;
 import io.izzel.mesmerize.api.visitor.VisitMode;
@@ -9,6 +12,7 @@ import io.izzel.mesmerize.api.visitor.impl.AbstractValue;
 import io.izzel.mesmerize.api.visitor.impl.AbstractValueVisitor;
 import org.jetbrains.annotations.Contract;
 
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
@@ -44,7 +48,7 @@ public class NumberValue<T extends Number> extends AbstractValue<StatsNumber<T>>
     @Override
     public void accept(ValueVisitor visitor, VisitMode mode) {
         if (number.getAbsolutePart() != null) {
-            if (Math.abs(number.getRelativePart()) >= DBL_EPSILON) {
+            if (number.hasRelativePart()) {
                 MapVisitor mapVisitor = visitor.visitMap();
                 ValueVisitor valueVisitor = mapVisitor.visit("abs");
                 acceptByType(valueVisitor);
@@ -192,6 +196,9 @@ public class NumberValue<T extends Number> extends AbstractValue<StatsNumber<T>>
         @Contract("_ -> this")
         public <N extends Number> NumberValueBuilder<N> valueType(Class<N> valueType) {
             this.valueType = (Class<T>) Primitives.unwrap(valueType);
+            if (this.valueType == float.class || this.valueType == double.class) {
+                this.allowDecimal = true;
+            }
             return (NumberValueBuilder<N>) this;
         }
 
@@ -222,5 +229,19 @@ public class NumberValue<T extends Number> extends AbstractValue<StatsNumber<T>>
         public Supplier<NumberValue<T>> buildSupplier() {
             return this::build;
         }
+    }
+
+    public static <N extends Number, V extends NumberValue<N>> BiConsumer<V, DisplayPane> defaultDisplay(String key) {
+        return (value, pane) -> {
+            ElementFactory factory = ElementFactory.instance();
+            Element name = factory.createLocaleElement(key);
+            StatsNumber<N> number = value.get();
+            if (number.hasAbsolutePart()) {
+                pane.addElement(factory.namedValue(name, factory.createNumberElement(number.getAbsolutePart())));
+            }
+            if (number.hasRelativePart()) {
+                pane.addElement(factory.namedValue(name, factory.createRelativeElement(number)));
+            }
+        };
     }
 }

@@ -1,5 +1,6 @@
 package io.izzel.mesmerize.impl.service;
 
+import io.izzel.mesmerize.api.DefaultStats;
 import io.izzel.mesmerize.api.Stats;
 import io.izzel.mesmerize.api.service.StatsRegistry;
 import io.izzel.mesmerize.api.slot.StatsSlot;
@@ -8,6 +9,7 @@ import io.izzel.taboolib.module.inject.TInject;
 import io.izzel.taboolib.module.locale.TLocale;
 import io.izzel.taboolib.module.locale.logger.TLogger;
 
+import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -30,6 +32,16 @@ public class SimpleStatsRegistry implements StatsRegistry {
         this.registerSlot(StatsSlots.BOOTS);
         this.registerSlot(StatsSlots.MAIN_HAND);
         this.registerSlot(StatsSlots.OFF_HAND);
+        try {
+            for (Field field : DefaultStats.class.getFields()) {
+                Object o = field.get(null);
+                if (o instanceof Stats) {
+                    this.registerStats((Stats<?>) o);
+                }
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
     }
 
     @Override

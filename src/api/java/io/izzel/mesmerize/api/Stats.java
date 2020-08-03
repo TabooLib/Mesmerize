@@ -1,6 +1,7 @@
 package io.izzel.mesmerize.api;
 
 import com.google.common.base.Preconditions;
+import io.izzel.mesmerize.api.display.DisplayPane;
 import io.izzel.mesmerize.api.visitor.StatsValue;
 import org.bukkit.Keyed;
 import org.bukkit.NamespacedKey;
@@ -8,6 +9,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
@@ -19,11 +21,13 @@ public class Stats<T> implements Keyed {
     private final NamespacedKey key;
     private final BiFunction<StatsValue<T>, StatsValue<T>, StatsValue<T>> onMerge;
     private final Supplier<StatsValue<T>> supplier;
+    private final BiConsumer<StatsValue<T>, DisplayPane> onDisplay;
 
-    protected Stats(NamespacedKey key, BiFunction<StatsValue<T>, StatsValue<T>, StatsValue<T>> onMerge, Supplier<StatsValue<T>> supplier) {
+    protected Stats(NamespacedKey key, BiFunction<StatsValue<T>, StatsValue<T>, StatsValue<T>> onMerge, Supplier<StatsValue<T>> supplier, BiConsumer<StatsValue<T>, DisplayPane> onDisplay) {
         this.key = key;
         this.onMerge = onMerge;
         this.supplier = supplier;
+        this.onDisplay = onDisplay;
     }
 
     public final String getId() {
@@ -42,6 +46,10 @@ public class Stats<T> implements Keyed {
 
     public StatsValue<T> newValue() {
         return supplier.get();
+    }
+
+    public void displayValue(StatsValue<T> value, DisplayPane pane) {
+        this.onDisplay.accept(value, pane);
     }
 
     @Override
@@ -73,6 +81,7 @@ public class Stats<T> implements Keyed {
         private NamespacedKey key;
         private Supplier<V> valueSupplier;
         private BiFunction<V, V, V> mergeFunction = (a, b) -> b;
+        private BiConsumer<V, DisplayPane> displayFunction = (a, b) -> {};
 
         @Contract("_ -> this")
         public StatsBuilder<E, V> key(@NotNull NamespacedKey key) {
@@ -94,12 +103,23 @@ public class Stats<T> implements Keyed {
             return this;
         }
 
-        @SuppressWarnings({"unchecked", "rawtypes"})
+        @Contract("_ -> this")
+        public StatsBuilder<E, V> displaying(@NotNull BiConsumer<V, DisplayPane> displayFunction) {
+            this.displayFunction = displayFunction;
+            return this;
+        }
+
+        @SuppressWarnings({"unchecked"})
         public @NotNull Stats<E> build() {
             Preconditions.checkNotNull(this.key, "key");
             Preconditions.checkNotNull(this.valueSupplier, "valueSupplier");
             Preconditions.checkNotNull(this.mergeFunction, "mergeFunction");
-            return new Stats<>(key, (BiFunction) mergeFunction, (Supplier) valueSupplier);
+            Preconditions.checkNotNull(this.displayFunction, "displayFunction");
+            return new Stats<>(key,
+                (BiFunction<StatsValue<E>, StatsValue<E>, StatsValue<E>>) mergeFunction,
+                (Supplier<StatsValue<E>>) valueSupplier,
+                (BiConsumer<StatsValue<E>, DisplayPane>) this.displayFunction
+            );
         }
     }
 }
