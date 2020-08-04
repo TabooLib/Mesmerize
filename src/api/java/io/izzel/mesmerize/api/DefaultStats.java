@@ -21,12 +21,12 @@ public final class DefaultStats {
     public static final Stats<List<NumberValue<Double>>> DAMAGE = rangeRelativeStats("damage");
     public static final Stats<List<NumberValue<Double>>> PVP_DAMAGE = rangeRelativeStats("pvp_damage");
     public static final Stats<List<NumberValue<Double>>> PVE_DAMAGE = rangeRelativeStats("pve_damage");
-    public static final Stats<List<NumberValue<Double>>> ARROW_DAMAGE = rangeRelativeStats("arrow_damage");
+    public static final Stats<List<NumberValue<Double>>> RANGE_DAMAGE = rangeRelativeStats("range_damage");
     public static final Stats<StatsNumber<Double>> REAL_DAMAGE = singleRelativeStats("real_damage");
     public static final Stats<List<NumberValue<Double>>> DEFENSE = rangeRelativeStats("defense");
     public static final Stats<List<NumberValue<Double>>> PVP_DEFENSE = rangeRelativeStats("pvp_defense");
     public static final Stats<List<NumberValue<Double>>> PVE_DEFENSE = rangeRelativeStats("pve_defense");
-    public static final Stats<List<NumberValue<Double>>> ARROW_DEFENSE = rangeRelativeStats("arrow_defense");
+    public static final Stats<List<NumberValue<Double>>> RANGE_DEFENSE = rangeRelativeStats("range_defense");
     public static final Stats<StatsNumber<Double>> CRIT_DAMAGE = singleRelativeStats("crit_damage");
     public static final Stats<StatsNumber<Double>> CRIT_CHANCE = singleRelativeStats("crit_chance");
     public static final Stats<StatsNumber<Double>> THORNS = singleRelativeStats("thorns");
@@ -59,13 +59,13 @@ public final class DefaultStats {
                         .allowSingleNonListValue()
                         .supplying(StringValue::new)
                         .buildSupplier()
-                    ).put("set", StatsSetValue::new)
+                    ).put("stats", StatsSetValue::new)
                     .buildSupplier()
             )
             .merging(
                 MapValue.deepMerger()
                     .put("node", MultiValue.concatMerger())
-                    .put("set", StatsSetValue.defaultMerger())
+                    .put("stats", StatsSetValue.defaultMerger())
                     .build()
             )
             // todo displaying

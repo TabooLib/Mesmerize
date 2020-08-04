@@ -5,6 +5,9 @@ load:
   fail:
     file: '&c读取文件 {0} 发生错误: {1}'
     node: '&c读取节点 {0} 发生错误: {1}'
+general:
+  register: '注册了 {0} 个属性和 {1} 个槽位'
+  load: '在 {0} 秒内加载完毕。'
 GENERAL_LOAD: '&e在 {0} 秒内加载完毕。'
 WARN_ERROR_OCCUR: '&c发生了错误: {0}'
 GENERAL_DISABLE: '&e在 {0} 秒内卸载完毕。'

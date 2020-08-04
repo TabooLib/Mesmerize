@@ -13,6 +13,7 @@ import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -61,7 +62,7 @@ public class SimpleStatsRegistry implements StatsRegistry {
 
     @Override
     public Collection<Stats<?>> getStats() {
-        return Collections.unmodifiableCollection(this.stats.values());
+        return new HashSet<>(this.stats.values());
     }
 
     @Override
