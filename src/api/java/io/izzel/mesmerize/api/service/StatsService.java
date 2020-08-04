@@ -1,7 +1,6 @@
 package io.izzel.mesmerize.api.service;
 
 import io.izzel.mesmerize.api.cause.CauseManager;
-import io.izzel.mesmerize.api.display.DisplayPane;
 import io.izzel.mesmerize.api.visitor.StatsHolder;
 import io.izzel.mesmerize.api.visitor.StatsVisitor;
 import io.izzel.mesmerize.api.visitor.util.StatsSet;
@@ -38,8 +37,6 @@ public interface StatsService {
     StatsVisitor newPersistentWriter(@NotNull PersistentDataContainer container);
 
     StatsHolder newEntityReader(@NotNull LivingEntity entity);
-
-    void displayHolder(StatsHolder holder, DisplayPane pane);
 
     static StatsService instance() {
         return Objects.requireNonNull(Bukkit.getServicesManager().load(StatsService.class));

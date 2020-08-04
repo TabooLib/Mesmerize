@@ -1,7 +1,7 @@
 package io.izzel.mesmerize.impl.util;
 
 import io.izzel.taboolib.Version;
-import io.izzel.taboolib.util.UNSAFE;
+import io.izzel.taboolib.util.Ref;
 import org.bukkit.NamespacedKey;
 import org.bukkit.persistence.PersistentDataContainer;
 
@@ -22,7 +22,7 @@ public class Util {
         try {
             Class<?> cl = Class.forName("org.bukkit.craftbukkit." + Version.getBukkitVersion() + ".persistence.CraftPersistentDataContainer");
             Field field = cl.getDeclaredField("customDataTags");
-            RAW_OFFSET = UNSAFE.objectFieldOffset(field);
+            RAW_OFFSET = Ref.getUnsafe().objectFieldOffset(field);
             NBT_TYPE = new HashMap<>();
             NBT_TYPE.put(Class.forName("net.minecraft.server." + Version.getBukkitVersion() + ".NBTTagByte"), 1);
             NBT_TYPE.put(Class.forName("net.minecraft.server." + Version.getBukkitVersion() + ".NBTTagShort"), 2);
@@ -42,7 +42,7 @@ public class Util {
 
     @SuppressWarnings("unchecked")
     public static Map<String, ?> mapOfContainer(PersistentDataContainer container) {
-        return (Map<String, ?>) UNSAFE.getObject(container, RAW_OFFSET);
+        return (Map<String, ?>) Ref.getUnsafe().getObject(container, RAW_OFFSET);
     }
 
     public static int typeOfKey(PersistentDataContainer container, NamespacedKey key) {

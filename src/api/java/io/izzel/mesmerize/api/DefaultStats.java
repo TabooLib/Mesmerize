@@ -1,14 +1,11 @@
 package io.izzel.mesmerize.api;
 
-import io.izzel.mesmerize.api.data.MapValue;
 import io.izzel.mesmerize.api.data.MarkerValue;
-import io.izzel.mesmerize.api.data.MultiValue;
 import io.izzel.mesmerize.api.data.NumberValue;
 import io.izzel.mesmerize.api.data.RangeNumberValue;
 import io.izzel.mesmerize.api.data.StatsNumber;
-import io.izzel.mesmerize.api.data.StatsSetValue;
-import io.izzel.mesmerize.api.data.StringValue;
 import io.izzel.mesmerize.api.data.UUIDValue;
+import io.izzel.mesmerize.api.data.complex.PermissionValue;
 import io.izzel.mesmerize.api.visitor.StatsValue;
 import org.bukkit.NamespacedKey;
 
@@ -50,26 +47,8 @@ public final class DefaultStats {
     public static final Stats<StatsNumber<Double>> KNOCKBACK_RESISTANCE = singleRelativeStats("knockback_resistance");
     public static final Stats<StatsNumber<Double>> DODGE = singleRelativeStats("dodge");
     public static final Stats<StatsNumber<Double>> ACCURACY = singleRelativeStats("accuracy");
-    public static final Stats<Map<String, StatsValue<?>>> PERMISSION =
-        Stats.builder()
-            .key(key("permission"))
-            .supplying(
-                MapValue.builder()
-                    .put("node", MultiValue.builder()
-                        .allowSingleNonListValue()
-                        .supplying(StringValue::new)
-                        .buildSupplier()
-                    ).put("stats", StatsSetValue::new)
-                    .buildSupplier()
-            )
-            .merging(
-                MapValue.deepMerger()
-                    .put("node", MultiValue.concatMerger())
-                    .put("stats", StatsSetValue.defaultMerger())
-                    .build()
-            )
-            // todo displaying
-            .build();
+    public static final Stats<Map<String, StatsValue<?>>> PERMISSION = PermissionValue.STATS;
+    public static final Stats<StatsNumber<Double>> TRACING = singleRelativeStats("tracing");
 
     @SuppressWarnings("deprecation")
     private static NamespacedKey key(String id) {

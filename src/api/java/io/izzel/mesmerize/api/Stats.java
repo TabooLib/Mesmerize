@@ -12,6 +12,8 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
@@ -27,12 +29,14 @@ public class Stats<T> implements Keyed {
     private final BiFunction<StatsValue<T>, StatsValue<T>, StatsValue<T>> onMerge;
     private final Supplier<StatsValue<T>> supplier;
     private BiConsumer<StatsValue<T>, DisplayPane> onDisplay;
+    private final List<BiConsumer<StatsValue<T>, Event>> onApply;
 
-    protected Stats(NamespacedKey key, BiFunction<StatsValue<T>, StatsValue<T>, StatsValue<T>> onMerge, Supplier<StatsValue<T>> supplier, BiConsumer<StatsValue<T>, DisplayPane> onDisplay) {
+    protected Stats(NamespacedKey key, BiFunction<StatsValue<T>, StatsValue<T>, StatsValue<T>> onMerge, Supplier<StatsValue<T>> supplier, BiConsumer<StatsValue<T>, DisplayPane> onDisplay, List<BiConsumer<StatsValue<T>, Event>> onApply) {
         this.key = key;
         this.onMerge = onMerge;
         this.supplier = supplier;
         this.onDisplay = onDisplay;
+        this.onApply = onApply;
     }
 
     public final String getId() {
@@ -62,11 +66,17 @@ public class Stats<T> implements Keyed {
     }
 
     @SuppressWarnings("unchecked")
+    public <V extends StatsValue<T>> void setOnApply(BiConsumer<V, Event> onApply) {
+        this.onApply.add((BiConsumer<StatsValue<T>, Event>) onApply);
+    }
+
+    @SuppressWarnings("unchecked")
     public <V extends StatsValue<T>> void tryApply(V statsValue, @Nullable Event event, Consumer<V> action) {
         StatsApplyEvent applyEvent = new StatsApplyEvent(this, statsValue, event);
         Bukkit.getPluginManager().callEvent(applyEvent);
         if (!applyEvent.isCancelled()) {
             action.accept((V) applyEvent.getValue());
+            this.onApply.forEach(it -> it.accept(statsValue, event));
         }
     }
 
@@ -100,6 +110,7 @@ public class Stats<T> implements Keyed {
         private Supplier<V> valueSupplier;
         private BiFunction<V, V, V> mergeFunction = (a, b) -> b;
         private BiConsumer<V, DisplayPane> displayFunction = (a, b) -> {};
+        private final List<BiConsumer<V, Event>> onApply = new ArrayList<>();
 
         @Contract("_ -> this")
         public StatsBuilder<E, V> key(@NotNull NamespacedKey key) {
@@ -127,6 +138,22 @@ public class Stats<T> implements Keyed {
             return this;
         }
 
+        @Contract("_ -> this")
+        public StatsBuilder<E, V> applying(@NotNull BiConsumer<V, Event> onApply) {
+            this.onApply.add(onApply);
+            return this;
+        }
+
+        @Contract("_, _ -> this")
+        public <EVT extends Event> StatsBuilder<E, V> applying(Class<EVT> evtClass, @NotNull BiConsumer<V, EVT> onApply) {
+            this.onApply.add((v, e) -> {
+                if (evtClass.isInstance(e)) {
+                    onApply.accept(v, evtClass.cast(e));
+                }
+            });
+            return this;
+        }
+
         @SuppressWarnings({"unchecked"})
         public @NotNull Stats<E> build() {
             Preconditions.checkNotNull(this.key, "key");
@@ -136,8 +163,8 @@ public class Stats<T> implements Keyed {
             return new Stats<>(key,
                 (BiFunction<StatsValue<E>, StatsValue<E>, StatsValue<E>>) mergeFunction,
                 (Supplier<StatsValue<E>>) valueSupplier,
-                (BiConsumer<StatsValue<E>, DisplayPane>) this.displayFunction
-            );
+                (BiConsumer<StatsValue<E>, DisplayPane>) this.displayFunction,
+                (List<BiConsumer<StatsValue<E>, Event>>) (Object) onApply);
         }
     }
 }

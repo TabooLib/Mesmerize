@@ -3,6 +3,7 @@ package io.izzel.mesmerize.impl;
 import io.izzel.mesmerize.api.service.StatsRegistry;
 import io.izzel.mesmerize.api.service.StatsService;
 import io.izzel.mesmerize.impl.config.LocalRepository;
+import io.izzel.mesmerize.impl.config.spec.ConfigSpec;
 import io.izzel.mesmerize.impl.service.SimpleStatsService;
 import io.izzel.taboolib.loader.Plugin;
 import io.izzel.taboolib.module.dependency.Dependency;
@@ -13,6 +14,8 @@ import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.constructor.CustomClassLoaderConstructor;
 
 @Dependency(maven = "com.github.ben-manes.caffeine:caffeine:2.8.5")
 public class Mesmerize extends Plugin {
@@ -21,13 +24,22 @@ public class Mesmerize extends Plugin {
     private static TLogger LOGGER;
 
     private final LocalRepository localRepository = new LocalRepository();
+    private ConfigSpec configSpec;
 
     public LocalRepository getLocalRepository() {
         return localRepository;
     }
 
+    public ConfigSpec getConfigSpec() {
+        return configSpec;
+    }
+
+    @SuppressWarnings("deprecation")
     @Override
     public void onLoading() {
+        this.saveDefaultConfig();
+        Yaml yaml = new Yaml(new CustomClassLoaderConstructor(ConfigSpec.class, this.getClassLoader()));
+        this.configSpec = yaml.load(this.getConfig().saveToString());
         Bukkit.getServicesManager().register(StatsService.class, new SimpleStatsService(), this, ServicePriority.Normal);
     }
 

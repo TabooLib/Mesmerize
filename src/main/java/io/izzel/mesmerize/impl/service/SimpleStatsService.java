@@ -3,7 +3,6 @@ package io.izzel.mesmerize.impl.service;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import io.izzel.mesmerize.api.cause.CauseManager;
-import io.izzel.mesmerize.api.display.DisplayPane;
 import io.izzel.mesmerize.api.service.ElementFactory;
 import io.izzel.mesmerize.api.service.StatsManager;
 import io.izzel.mesmerize.api.service.StatsRegistry;
@@ -77,11 +76,6 @@ public class SimpleStatsService implements StatsService {
     @Override
     public StatsHolder newEntityReader(@NotNull LivingEntity entity) {
         return new EntityReader(entity);
-    }
-
-    @Override
-    public void displayHolder(StatsHolder holder, DisplayPane pane) {
-        // todo
     }
 
     @Override

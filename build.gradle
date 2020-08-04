@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'com.github.johnrengelman.shadow' version '4.0.4'
+    id "io.izzel.taboolib" version "1.2"
 }
 
 group 'io.izzel.mesmerize'
@@ -11,13 +11,12 @@ targetCompatibility = 1.8
 
 defaultTasks 'clean', 'build'
 
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
+taboolib {
+    classifier = null
 }
 
-configurations {
-    embed
-    implementation.extendsFrom(embed)
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
 }
 
 sourceSets {
@@ -28,7 +27,6 @@ sourceSets {
 }
 
 repositories {
-    maven { url "http://ptms.ink:8081/repository/maven-releases/" }
     maven { url 'https://hub.spigotmc.org/nexus/content/groups/public/' }
     mavenCentral()
     maven { url 'https://repo.codemc.org/repository/maven-public' }
@@ -39,12 +37,10 @@ dependencies {
     apiImplementation 'org.spigotmc:spigot-api:1.14.4-R0.1-SNAPSHOT'
     apiImplementation 'org.jetbrains:annotations:19.0.0'
     implementation 'org.spigotmc:spigot-api:1.14.4-R0.1-SNAPSHOT'
-    implementation 'io.izzel.taboolib:TabooLib:5.18:all'
     implementation 'org.jetbrains:annotations:19.0.0'
     implementation 'com.github.ben-manes.caffeine:caffeine:2.8.5'
     implementation fileTree(dir:'libs',includes:['*jar'])
-    embed 'io.izzel.taboolib:TabooLibLoader:2.1:all'
-    embed 'org.bstats:bstats-bukkit:1.7'
+    taboo 'org.bstats:bstats-bukkit:1.7'
 }
 
 processResources {
@@ -56,15 +52,6 @@ processResources {
 jar {
     from sourceSets.api.output
 }
-
-shadowJar {
-    classifier = null
-    from sourceSets.api.output
-    configurations = [project.configurations.embed]
-    it.relocate 'io.izzel.taboolib.loader', project.group + '.boot'
-    it.relocate 'org.bstats.bukkit', project.group + '.metrics'
-}
-tasks.build.dependsOn(tasks.shadowJar)
 
 task apiJar(type: Jar) {
     classifier = 'api'

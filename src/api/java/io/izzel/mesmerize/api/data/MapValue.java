@@ -14,6 +14,7 @@ import org.jetbrains.annotations.Contract;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class MapValue extends AbstractValue<Map<String, StatsValue<?>>> {
@@ -37,8 +38,8 @@ public class MapValue extends AbstractValue<Map<String, StatsValue<?>>> {
     }
 
     @SuppressWarnings("unchecked")
-    public <T> StatsValue<T> get(String key) {
-        return (StatsValue<T>) values.get(key);
+    public <V extends StatsValue<?>> V get(String key) {
+        return (V) values.get(key);
     }
 
     @Override
@@ -113,6 +114,11 @@ public class MapValue extends AbstractValue<Map<String, StatsValue<?>>> {
         public Supplier<MapValue> buildSupplier() {
             return this::build;
         }
+
+        @Contract("_ -> new")
+        public <V extends MapValue> Supplier<V> buildSupplier(Function<Map<String, Supplier<StatsValue<?>>>, V> constructor) {
+            return () -> constructor.apply(this.map);
+        }
     }
 
     public static DeepMergerBuilder deepMerger() {
@@ -130,6 +136,10 @@ public class MapValue extends AbstractValue<Map<String, StatsValue<?>>> {
         }
 
         public BiFunction<MapValue, MapValue, MapValue> build() {
+            return build(MapValue::new);
+        }
+
+        public <V extends MapValue> BiFunction<V, V, V> build(BiFunction<Map<String, Supplier<StatsValue<?>>>, Map<String, StatsValue<?>>, V> constructor) {
             return (a, b) -> {
                 Map<String, StatsValue<?>> map = new HashMap<>(a.values);
                 for (Map.Entry<String, StatsValue<?>> entry : b.values.entrySet()) {
@@ -147,7 +157,7 @@ public class MapValue extends AbstractValue<Map<String, StatsValue<?>>> {
                         }
                     });
                 }
-                return new MapValue(
+                return constructor.apply(
                     ImmutableMap.<String, Supplier<StatsValue<?>>>builder().putAll(a.dataTypes).putAll(b.dataTypes).build(),
                     map
                 );

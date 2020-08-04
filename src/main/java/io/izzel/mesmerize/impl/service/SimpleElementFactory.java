@@ -4,12 +4,18 @@ import io.izzel.mesmerize.api.data.StatsNumber;
 import io.izzel.mesmerize.api.display.DisplayPane;
 import io.izzel.mesmerize.api.display.Element;
 import io.izzel.mesmerize.api.service.ElementFactory;
+import io.izzel.mesmerize.api.visitor.StatsHolder;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
 import java.time.Instant;
 
 public class SimpleElementFactory implements ElementFactory {
+
+    @Override
+    public void displayHolder(StatsHolder holder, DisplayPane pane) {
+
+    }
 
     @Override
     public DisplayPane createDisplayPane() {
