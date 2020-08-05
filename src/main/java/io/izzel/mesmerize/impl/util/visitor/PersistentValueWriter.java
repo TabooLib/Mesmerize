@@ -1,8 +1,10 @@
-package io.izzel.mesmerize.impl.util;
+package io.izzel.mesmerize.impl.util.visitor;
 
 import io.izzel.mesmerize.api.visitor.ListVisitor;
 import io.izzel.mesmerize.api.visitor.MapVisitor;
+import io.izzel.mesmerize.api.visitor.StatsVisitor;
 import io.izzel.mesmerize.api.visitor.impl.AbstractValueVisitor;
+import io.izzel.mesmerize.api.visitor.util.StatsAsMapVisitor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -56,5 +58,10 @@ public class PersistentValueWriter extends AbstractValueVisitor {
     @Override
     public ListVisitor visitList() {
         return new PersistentListWriter(this.container, this.key);
+    }
+
+    @Override
+    public StatsVisitor visitStats() {
+        return new StatsAsMapVisitor(this.visitMap());
     }
 }

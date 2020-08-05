@@ -9,16 +9,18 @@ import io.izzel.mesmerize.api.visitor.VisitMode;
 import io.izzel.mesmerize.api.visitor.impl.AbstractListVisitor;
 import io.izzel.mesmerize.api.visitor.impl.AbstractValue;
 import io.izzel.mesmerize.api.visitor.impl.AbstractValueVisitor;
+import org.jetbrains.annotations.Contract;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class ListValue extends AbstractValue<List<StatsValue<?>>> {
 
-    private final List<Supplier<StatsValue<?>>> dataTypes;
-    private final List<StatsValue<?>> values;
+    protected final List<Supplier<StatsValue<?>>> dataTypes;
+    protected final List<StatsValue<?>> values;
 
     public ListValue(List<Supplier<StatsValue<?>>> dataTypes) {
         this.dataTypes = dataTypes instanceof ImmutableList ? dataTypes : ImmutableList.copyOf(dataTypes);
@@ -80,6 +82,38 @@ public class ListValue extends AbstractValue<List<StatsValue<?>>> {
         return new ListStatsValueBuilder();
     }
 
+    public static class ListStatsValueBuilder {
+
+        private final List<Supplier<StatsValue<?>>> list = new ArrayList<>();
+
+        @Contract("_ -> this")
+        public ListStatsValueBuilder add(Supplier<StatsValue<?>> supplier) {
+            this.list.add(supplier);
+            return this;
+        }
+
+        @Contract("_ -> this")
+        public ListStatsValueBuilder add(Stats<?> stats) {
+            this.list.add(stats::newValue);
+            return this;
+        }
+
+        @Contract("-> new")
+        public ListValue build() {
+            return new ListValue(this.list);
+        }
+
+        @Contract("-> new")
+        public Supplier<ListValue> buildSupplier() {
+            return this::build;
+        }
+
+        @Contract("_ -> new")
+        public <V extends ListValue> Supplier<V> buildSupplier(Function<List<Supplier<StatsValue<?>>>, V> constructor) {
+            return () -> constructor.apply(list);
+        }
+    }
+
     public static BiFunction<ListValue, ListValue, ListValue> concatMerger() {
         return (a, b) -> new ListValue(
             ImmutableList.<Supplier<StatsValue<?>>>builder().addAll(a.dataTypes).addAll(b.dataTypes).build(),
@@ -87,24 +121,37 @@ public class ListValue extends AbstractValue<List<StatsValue<?>>> {
         );
     }
 
-    public static class ListStatsValueBuilder {
+    public static ListDeepMergerBuilder deepMerger() {
+        return new ListDeepMergerBuilder();
+    }
 
-        private final List<Supplier<StatsValue<?>>> list = new ArrayList<>();
+    public static class ListDeepMergerBuilder {
 
-        public void add(Supplier<StatsValue<?>> supplier) {
-            this.list.add(supplier);
+        private final List<BiFunction<StatsValue<?>, StatsValue<?>, StatsValue<?>>> mergers = new ArrayList<>();
+
+        @SuppressWarnings("unchecked")
+        public <V extends StatsValue<?>> ListDeepMergerBuilder add(BiFunction<V, V, V> merger) {
+            this.mergers.add((BiFunction<StatsValue<?>, StatsValue<?>, StatsValue<?>>) merger);
+            return this;
         }
 
-        public void add(Stats<?> stats) {
-            this.list.add(stats::newValue);
+        public BiFunction<ListValue, ListValue, ListValue> build() {
+            return build(ListValue::new);
         }
 
-        public ListValue build() {
-            return new ListValue(this.list);
-        }
-
-        public Supplier<ListValue> buildSupplier() {
-            return this::build;
+        public <V extends ListValue> BiFunction<V, V, V> build(BiFunction<List<Supplier<StatsValue<?>>>, List<StatsValue<?>>, V> constructor) {
+            return (a, b) -> {
+                int size = a.dataTypes.size();
+                List<StatsValue<?>> list = new ArrayList<>(size);
+                for (int i = 0; i < size; i++) {
+                    StatsValue<?> left = a.values.get(i);
+                    StatsValue<?> right = b.values.get(i);
+                    if (left == null) list.set(i, right);
+                    else if (right == null) list.set(i, left);
+                    else list.set(i, mergers.get(i).apply(left, right));
+                }
+                return constructor.apply(a.dataTypes, list);
+            };
         }
     }
 }

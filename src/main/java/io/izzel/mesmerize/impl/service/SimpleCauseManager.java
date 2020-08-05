@@ -33,7 +33,7 @@ public class SimpleCauseManager implements CauseManager {
         }
 
         @Override
-        public void close() throws Exception {
+        public void close() {
             context.set(last);
         }
 

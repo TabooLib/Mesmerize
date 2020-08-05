@@ -14,9 +14,9 @@ import java.util.Set;
 
 public interface StatsHolder {
 
-    <T> Optional<StatsValue<T>> get(Stats<T> stats);
+    <T, V extends StatsValue<T>> Optional<V> get(Stats<T> stats);
 
-    <T> List<StatsValue<T>> getAll(Stats<T> stats);
+    <T, V extends StatsValue<T>> List<V> getAll(Stats<T> stats);
 
     Set<Stats<?>> keySet();
 

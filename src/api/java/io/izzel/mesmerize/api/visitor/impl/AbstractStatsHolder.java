@@ -19,13 +19,13 @@ public class AbstractStatsHolder implements StatsHolder {
     public static final AbstractStatsHolder EMPTY = new AbstractStatsHolder();
 
     @Override
-    public <T> Optional<StatsValue<T>> get(Stats<T> stats) {
-        List<StatsValue<T>> list = getAll(stats);
+    public <T, V extends StatsValue<T>> Optional<V> get(Stats<T> stats) {
+        List<V> list = getAll(stats);
         return list.isEmpty() ? Optional.empty() : Optional.of(list.get(0));
     }
 
     @Override
-    public <T> List<StatsValue<T>> getAll(Stats<T> stats) {
+    public <T, V extends StatsValue<T>> List<V> getAll(Stats<T> stats) {
         StatsSet statsSet = new StatsSet();
         this.accept(statsSet, VisitMode.VALUE);
         return statsSet.getAll(stats);

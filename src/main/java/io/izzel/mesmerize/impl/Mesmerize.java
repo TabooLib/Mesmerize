@@ -4,6 +4,8 @@ import io.izzel.mesmerize.api.service.StatsRegistry;
 import io.izzel.mesmerize.api.service.StatsService;
 import io.izzel.mesmerize.impl.config.LocalRepository;
 import io.izzel.mesmerize.impl.config.spec.ConfigSpec;
+import io.izzel.mesmerize.impl.event.CombatListener;
+import io.izzel.mesmerize.impl.event.ProjectileListener;
 import io.izzel.mesmerize.impl.service.SimpleStatsService;
 import io.izzel.taboolib.loader.Plugin;
 import io.izzel.taboolib.module.dependency.Dependency;
@@ -54,6 +56,8 @@ public class Mesmerize extends Plugin {
         StatsRegistry registry = StatsService.instance().getRegistry();
         LOGGER.info(TLocale.asString("general.register", registry.getStats().size(), registry.getSlots().size()));
         this.localRepository.loadAndValidate();
+        this.getServer().getPluginManager().registerEvents(new CombatListener(), this);
+        this.getServer().getPluginManager().registerEvents(new ProjectileListener(), this);
         LOGGER.info(TLocale.asString("general.load", (System.currentTimeMillis() - begin) / 1000D));
     }
 

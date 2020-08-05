@@ -1,10 +1,11 @@
-package io.izzel.mesmerize.impl.util;
+package io.izzel.mesmerize.impl.util.visitor;
 
 import com.google.common.base.Preconditions;
 import io.izzel.mesmerize.api.visitor.ListVisitor;
 import io.izzel.mesmerize.api.visitor.ValueVisitor;
 import io.izzel.mesmerize.api.visitor.VisitMode;
 import io.izzel.mesmerize.api.visitor.impl.AbstractValue;
+import io.izzel.mesmerize.impl.util.Util;
 import org.bukkit.NamespacedKey;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;

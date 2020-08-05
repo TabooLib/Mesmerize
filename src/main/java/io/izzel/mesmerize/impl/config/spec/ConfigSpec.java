@@ -5,6 +5,8 @@ import io.izzel.mesmerize.impl.Mesmerize;
 public class ConfigSpec {
 
     private HealthSpec health;
+    private GeneralSpec general;
+    private PerformanceSpec performance;
 
     public HealthSpec health() {
         return health;
@@ -12,6 +14,22 @@ public class ConfigSpec {
 
     public void setHealth(HealthSpec health) {
         this.health = health;
+    }
+
+    public GeneralSpec general() {
+        return general;
+    }
+
+    public void setGeneral(GeneralSpec general) {
+        this.general = general;
+    }
+
+    public PerformanceSpec performance() {
+        return performance;
+    }
+
+    public void setPerformance(PerformanceSpec performance) {
+        this.performance = performance;
     }
 
     public static ConfigSpec spec() {

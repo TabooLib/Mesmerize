@@ -6,6 +6,8 @@ import io.izzel.mesmerize.api.display.DisplayPane;
 import io.izzel.mesmerize.api.service.ElementFactory;
 
 import java.util.List;
+import java.util.ListIterator;
+import java.util.Random;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
@@ -99,5 +101,17 @@ public class RangeNumberValue<T extends Number> extends MultiValue<StatsNumber<T
                 }
             }
         };
+    }
+
+    public static double applyAsDouble(double d, List<NumberValue<Double>> values, Random random) {
+        double value = values.get(0).get().applyDouble(d);
+        if (values.size() > 1) {
+            ListIterator<NumberValue<Double>> iterator = values.listIterator(1);
+            while (iterator.hasNext()) {
+                NumberValue<Double> next = iterator.next();
+                value += random.nextDouble() * (next.get().applyDouble(d) - value);
+            }
+        }
+        return value;
     }
 }

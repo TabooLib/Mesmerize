@@ -1,4 +1,4 @@
-package io.izzel.mesmerize.impl.util;
+package io.izzel.mesmerize.impl.util.visitor;
 
 import io.izzel.mesmerize.api.cause.CauseManager;
 import io.izzel.mesmerize.api.cause.ContextKeys;

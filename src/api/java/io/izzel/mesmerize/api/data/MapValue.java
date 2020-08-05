@@ -121,16 +121,16 @@ public class MapValue extends AbstractValue<Map<String, StatsValue<?>>> {
         }
     }
 
-    public static DeepMergerBuilder deepMerger() {
-        return new DeepMergerBuilder();
+    public static MapDeepMergerBuilder deepMerger() {
+        return new MapDeepMergerBuilder();
     }
 
-    public static class DeepMergerBuilder {
+    public static class MapDeepMergerBuilder {
 
         private final Map<String, BiFunction<StatsValue<?>, StatsValue<?>, StatsValue<?>>> mergers = new HashMap<>();
 
         @SuppressWarnings("unchecked")
-        public <V extends StatsValue<?>> DeepMergerBuilder put(String key, BiFunction<V, V, V> function) {
+        public <V extends StatsValue<?>> MapDeepMergerBuilder put(String key, BiFunction<V, V, V> function) {
             this.mergers.put(key, (BiFunction<StatsValue<?>, StatsValue<?>, StatsValue<?>>) function);
             return this;
         }

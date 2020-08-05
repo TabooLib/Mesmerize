@@ -56,6 +56,7 @@ public class PermissionValue extends MapValue {
                 }
             }
             this.getStats().accept(visitor.visitStats(), mode);
+            visitor.visitEnd();
         } else {
             super.accept(visitor, mode);
         }

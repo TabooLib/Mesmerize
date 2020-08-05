@@ -34,12 +34,12 @@ public class LazyStatsHolder implements StatsHolder {
     }
 
     @Override
-    public <T> Optional<StatsValue<T>> get(Stats<T> stats) {
+    public <T, V extends StatsValue<T>> Optional<V> get(Stats<T> stats) {
         return getHolder().get(stats);
     }
 
     @Override
-    public <T> List<StatsValue<T>> getAll(Stats<T> stats) {
+    public <T, V extends StatsValue<T>> List<V> getAll(Stats<T> stats) {
         return getHolder().getAll(stats);
     }
 

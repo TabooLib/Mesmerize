@@ -1,7 +1,49 @@
+################################################
+#
+#  Mesmerize 插件配置文件
+#
+#  代码仓库 https://github.com/TabooLib/Mesmerize
+#  错误报告与特性请求 https://github.com/TabooLib/Mesmerize/issues
+#
+################################################
+
+
+# 基础设定
+general:
+  # 调试输出
+  debug: false
+  # 类似生命、攻击速度、移动速度等属性更新的周期
+  # 单位 游戏刻
+  attributeApplyInterval: 20
+  # 玩家默认的攻击距离
+  # 往更高数值更改不会生效
+  defaultAttackRange: 5.0
+  # 默认的命中率
+  defaultHitChance: 1.0
+
+# 关于生命值的设定
 health:
+  # 启用生命值控制
+  # 关闭后 health/regeneration 属性将失效
   enableHealthControl: true
+  # 无论实际的最大生命值是多少，是否都以某个固定的数值显示
   healthScaled: true
+  # 两点生命值就是一颗心
   heathScale: 20.0
+  # health 属性生效后，最小和最大的生命值
   minimalHealth: 1.0
   maximumHealth: 2.147483647E9
+  # 每多少游戏刻进行一次生命回复
   regenerationTicks: 20
+
+# 关乎性能的部分设定
+performance:
+  # 生物属性的缓存时间，单位 毫秒
+  # 增大此值可以减少一秒进行属性解析的次数，但属性可能无法及时更新
+  entityStatsCacheMs: 50
+  # 追踪属性最大的追踪距离
+  maxTracingDistance: 128
+  # 是否只追踪可见和视野内的生物
+  tracingVisibleCheck: true
+  # 最大的追踪角，单位 角度
+  maxTracingAngle: 30.0

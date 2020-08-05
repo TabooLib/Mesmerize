@@ -1,21 +1,16 @@
 package io.izzel.mesmerize.api.data;
 
 import com.google.common.base.Preconditions;
-import io.izzel.mesmerize.api.Stats;
-import io.izzel.mesmerize.api.service.StatsService;
 import io.izzel.mesmerize.api.visitor.MapVisitor;
 import io.izzel.mesmerize.api.visitor.StatsHolder;
 import io.izzel.mesmerize.api.visitor.ValueVisitor;
 import io.izzel.mesmerize.api.visitor.VisitMode;
-import io.izzel.mesmerize.api.visitor.impl.AbstractMapVisitor;
-import io.izzel.mesmerize.api.visitor.impl.AbstractStatsVisitor;
 import io.izzel.mesmerize.api.visitor.impl.AbstractValue;
-import io.izzel.mesmerize.api.visitor.impl.AbstractValueVisitor;
 import io.izzel.mesmerize.api.visitor.util.LazyStatsHolder;
+import io.izzel.mesmerize.api.visitor.util.MapAsStatsVisitor;
+import io.izzel.mesmerize.api.visitor.util.StatsAsMapVisitor;
 import io.izzel.mesmerize.api.visitor.util.StatsSet;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.Optional;
 import java.util.function.BiFunction;
 
 public class StatsSetValue extends AbstractValue<StatsHolder> {
@@ -38,22 +33,12 @@ public class StatsSetValue extends AbstractValue<StatsHolder> {
             } else {
                 this.statsSet.accept(visitor.visitStats(), mode);
             }
+            visitor.visitEnd();
         } else if (mode == VisitMode.DATA) {
             if (holder != null) {
                 visitor.visitString(holder.getId());
             } else {
-                MapVisitor mapVisitor = visitor.visitMap();
-                statsSet.accept(new AbstractStatsVisitor(null) {
-                    @Override
-                    public <T> ValueVisitor visitStats(@NotNull Stats<T> stats) {
-                        return mapVisitor.visit(stats.getId());
-                    }
-
-                    @Override
-                    public void visitEnd() {
-                        mapVisitor.visitEnd();
-                    }
-                }, mode);
+                statsSet.accept(new StatsAsMapVisitor(visitor.visitMap()), mode);
             }
             visitor.visitEnd();
         }
@@ -68,22 +53,7 @@ public class StatsSetValue extends AbstractValue<StatsHolder> {
     @Override
     public MapVisitor visitMap() {
         this.statsSet = new StatsSet();
-        return new Vis(null);
-    }
-
-    private class Vis extends AbstractMapVisitor {
-
-        public Vis(MapVisitor visitor) {
-            super(visitor);
-        }
-
-        @Override
-        public ValueVisitor visit(String key) {
-            Optional<Stats<Object>> optional = StatsService.instance().getRegistry().getStats(key);
-            if (optional.isPresent()) {
-                return statsSet.visitStats(optional.get());
-            } else return AbstractValueVisitor.EMPTY;
-        }
+        return new MapAsStatsVisitor(this.statsSet);
     }
 
     @Override

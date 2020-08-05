@@ -1,4 +1,4 @@
-package io.izzel.mesmerize.impl.util;
+package io.izzel.mesmerize.impl.util.visitor;
 
 import io.izzel.mesmerize.api.Stats;
 import io.izzel.mesmerize.api.service.StatsService;
@@ -6,6 +6,7 @@ import io.izzel.mesmerize.api.visitor.StatsVisitor;
 import io.izzel.mesmerize.api.visitor.ValueVisitor;
 import io.izzel.mesmerize.api.visitor.VisitMode;
 import io.izzel.mesmerize.api.visitor.impl.AbstractStatsHolder;
+import io.izzel.mesmerize.impl.util.Util;
 import org.bukkit.persistence.PersistentDataContainer;
 
 import java.util.HashSet;

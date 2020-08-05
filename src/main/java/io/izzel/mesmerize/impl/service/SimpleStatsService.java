@@ -3,6 +3,7 @@ package io.izzel.mesmerize.impl.service;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import io.izzel.mesmerize.api.cause.CauseManager;
+import io.izzel.mesmerize.api.event.DamageCalculator;
 import io.izzel.mesmerize.api.service.ElementFactory;
 import io.izzel.mesmerize.api.service.StatsManager;
 import io.izzel.mesmerize.api.service.StatsRegistry;
@@ -12,9 +13,11 @@ import io.izzel.mesmerize.api.visitor.StatsVisitor;
 import io.izzel.mesmerize.api.visitor.VisitMode;
 import io.izzel.mesmerize.api.visitor.impl.AbstractStatsHolder;
 import io.izzel.mesmerize.api.visitor.util.StatsSet;
-import io.izzel.mesmerize.impl.util.EntityReader;
-import io.izzel.mesmerize.impl.util.PersistentStatsReader;
-import io.izzel.mesmerize.impl.util.PersistentStatsWriter;
+import io.izzel.mesmerize.impl.config.spec.ConfigSpec;
+import io.izzel.mesmerize.impl.event.SimpleCalculator;
+import io.izzel.mesmerize.impl.util.visitor.EntityReader;
+import io.izzel.mesmerize.impl.util.visitor.PersistentStatsReader;
+import io.izzel.mesmerize.impl.util.visitor.PersistentStatsWriter;
 import io.izzel.mesmerize.impl.util.Util;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -29,10 +32,11 @@ public class SimpleStatsService implements StatsService {
     private final StatsRegistry statsRegistry = new SimpleStatsRegistry();
     private final CauseManager causeManager = new SimpleCauseManager();
     private final ElementFactory elementFactory = new SimpleElementFactory();
+    private final DamageCalculator calculator = new SimpleCalculator();
 
     private final LoadingCache<LivingEntity, StatsSet> statsSetCache = Caffeine
         .newBuilder()
-        .expireAfterWrite(50, TimeUnit.MILLISECONDS)
+        .expireAfterWrite(ConfigSpec.spec().performance().entityStatsCacheMs(), TimeUnit.MILLISECONDS)
         .build(entity -> {
             StatsSet statsSet = new StatsSet();
             newEntityReader(entity).accept(statsSet, VisitMode.VALUE);
@@ -76,6 +80,11 @@ public class SimpleStatsService implements StatsService {
     @Override
     public StatsHolder newEntityReader(@NotNull LivingEntity entity) {
         return new EntityReader(entity);
+    }
+
+    @Override
+    public DamageCalculator getDamageCalculator() {
+        return calculator;
     }
 
     @Override

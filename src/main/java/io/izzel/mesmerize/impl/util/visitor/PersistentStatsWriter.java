@@ -1,8 +1,9 @@
-package io.izzel.mesmerize.impl.util;
+package io.izzel.mesmerize.impl.util.visitor;
 
 import io.izzel.mesmerize.api.Stats;
 import io.izzel.mesmerize.api.visitor.ValueVisitor;
 import io.izzel.mesmerize.api.visitor.impl.AbstractStatsVisitor;
+import io.izzel.mesmerize.impl.util.Util;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.jetbrains.annotations.NotNull;
 

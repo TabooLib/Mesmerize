@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import io.izzel.mesmerize.api.display.DisplayPane;
 import io.izzel.mesmerize.api.event.StatsApplyEvent;
 import io.izzel.mesmerize.api.visitor.StatsValue;
+import io.izzel.mesmerize.api.visitor.util.StatsSet;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
 import org.bukkit.NamespacedKey;
@@ -15,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -76,8 +78,21 @@ public class Stats<T> implements Keyed {
         Bukkit.getPluginManager().callEvent(applyEvent);
         if (!applyEvent.isCancelled()) {
             action.accept((V) applyEvent.getValue());
-            this.onApply.forEach(it -> it.accept(statsValue, event));
+            this.onApply.forEach(it -> it.accept((V) applyEvent.getValue(), event));
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    public Optional<T> tryApply(StatsSet set, @Nullable Event event) {
+        Optional<StatsValue<T>> value = set.get(this);
+        if (!value.isPresent()) return Optional.empty();
+        StatsApplyEvent applyEvent = new StatsApplyEvent(this, value.get(), event);
+        Bukkit.getPluginManager().callEvent(applyEvent);
+        if (!applyEvent.isCancelled()) {
+            this.onApply.forEach(it -> it.accept((StatsValue<T>) applyEvent.getValue(), event));
+            return (Optional<T>) Optional.ofNullable(applyEvent.getValue().get());
+        }
+        return Optional.empty();
     }
 
     @Override

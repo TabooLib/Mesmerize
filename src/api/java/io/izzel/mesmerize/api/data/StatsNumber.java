@@ -98,7 +98,25 @@ public class StatsNumber<T extends Number> {
     }
 
     public double applyDouble(double d) {
-        return accept(d, (x, y) -> x.doubleValue() + y.doubleValue()).doubleValue();
+        for (StatsNumber<T> operation : this.operations) {
+            if (operation.absolutePart != null) {
+                d += operation.absolutePart.doubleValue();
+            } else {
+                d += d * (operation.relativePart / 100D);
+            }
+        }
+        return d;
+    }
+
+    public double applyNegative(double d) {
+        for (StatsNumber<T> operation : this.operations) {
+            if (operation.absolutePart != null) {
+                d -= operation.absolutePart.doubleValue();
+            } else {
+                d -= d * (operation.relativePart / 100D);
+            }
+        }
+        return d;
     }
 
     @SuppressWarnings("unchecked")

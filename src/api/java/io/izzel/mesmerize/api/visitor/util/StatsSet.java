@@ -36,18 +36,18 @@ public class StatsSet extends AbstractStatsVisitor implements StatsHolder.Modifi
     }
 
     @Override
-    public <T> Optional<StatsValue<T>> get(Stats<T> stats) {
-        List<StatsValue<T>> list = getAll(stats);
+    public <T, V extends StatsValue<T>> Optional<V> get(Stats<T> stats) {
+        List<V> list = getAll(stats);
         return list.isEmpty() ? Optional.empty() : Optional.of(list.get(0));
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T> List<StatsValue<T>> getAll(Stats<T> stats) {
-        ArrayList<StatsValue<T>> list = new ArrayList<>();
+    public <T, V extends StatsValue<T>> List<V> getAll(Stats<T> stats) {
+        ArrayList<V> list = new ArrayList<>();
         StatsValue<?> value = map.get(stats);
         if (value != null) {
-            list.add((StatsValue<T>) value);
+            list.add((V) value);
         }
         return list;
     }
