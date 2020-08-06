@@ -28,7 +28,7 @@ public class TracingTargetTask extends BukkitRunnable {
         Vector velocity = projectile.getVelocity();
         Vector direction = target.getEyeLocation().subtract(projectile.getLocation()).toVector();
         if (Math.abs(velocity.angle(direction)) >= tracingRadians) {
-            Vector rotate = Quat.fromAngleRadAxis(tracingRadians, velocity.getCrossProduct(direction)).rotate(velocity);
+            Vector rotate = Quat.radiansAxis(tracingRadians, velocity.getCrossProduct(direction)).rotate(velocity);
             projectile.setVelocity(rotate);
         }
     }

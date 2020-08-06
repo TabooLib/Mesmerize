@@ -9,6 +9,7 @@ import io.izzel.mesmerize.api.visitor.StatsVisitor;
 import io.izzel.mesmerize.api.visitor.VisitMode;
 import io.izzel.mesmerize.api.visitor.impl.AbstractStatsHolder;
 import io.izzel.mesmerize.api.visitor.impl.AbstractStatsVisitor;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -17,9 +18,9 @@ import java.util.Optional;
 
 public class EntityReader extends AbstractStatsHolder {
 
-    private final LivingEntity entity;
+    private final Entity entity;
 
-    public EntityReader(LivingEntity entity) {
+    public EntityReader(Entity entity) {
         this.entity = entity;
     }
 
@@ -30,16 +31,18 @@ public class EntityReader extends AbstractStatsHolder {
             public void visitEnd() {
             }
         };
-        StatsService.instance().newPersistentHolder(entity).accept(wrapped, mode);
-        EventContext eventContext = CauseManager.instance().currentContext();
-        for (StatsSlot slot : StatsService.instance().getRegistry().getSlots()) {
-            Optional<ItemStack> optional = slot.get(entity);
-            if (optional.isPresent() && optional.get().hasItemMeta()) {
-                ItemMeta itemMeta = optional.get().getItemMeta();
-                if (itemMeta != null) {
-                    eventContext.add(ContextKeys.SLOT, slot);
-                    StatsService.instance().newPersistentHolder(itemMeta).accept(wrapped, mode);
-                    eventContext.remove(ContextKeys.SLOT, slot);
+        StatsService.instance().newStatsHolder(entity).accept(wrapped, mode);
+        if (entity instanceof LivingEntity) {
+            EventContext eventContext = CauseManager.instance().currentContext();
+            for (StatsSlot slot : StatsService.instance().getRegistry().getSlots()) {
+                Optional<ItemStack> optional = slot.get(((LivingEntity) entity));
+                if (optional.isPresent() && optional.get().hasItemMeta()) {
+                    ItemMeta itemMeta = optional.get().getItemMeta();
+                    if (itemMeta != null) {
+                        eventContext.add(ContextKeys.SLOT, slot);
+                        StatsService.instance().newStatsHolder(itemMeta).accept(wrapped, mode);
+                        eventContext.remove(ContextKeys.SLOT, slot);
+                    }
                 }
             }
         }

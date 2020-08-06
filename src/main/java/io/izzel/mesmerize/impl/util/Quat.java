@@ -48,11 +48,11 @@ public class Quat {
             pw * -nz + pz * nw - px * ny + py * nx);
     }
 
-    public static Quat fromAngleRadAxis(double angle, Vector vector) {
-        return fromAngleRadAxis(angle, vector.getX(), vector.getY(), vector.getZ());
+    public static Quat radiansAxis(double angle, Vector vector) {
+        return radiansAxis(angle, vector.getX(), vector.getY(), vector.getZ());
     }
 
-    public static Quat fromAngleRadAxis(double angle, double x, double y, double z) {
+    public static Quat radiansAxis(double angle, double x, double y, double z) {
         final double halfAngle = angle / 2;
         final double q = Math.sin(halfAngle) / Math.sqrt(x * x + y * y + z * z);
         return new Quat(x * q, y * q, z * q, Math.cos(halfAngle));

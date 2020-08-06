@@ -45,6 +45,11 @@ public final class StatsSlots {
                     return false;
                 }
             }
+
+            @Override
+            public String toString() {
+                return "StatsSlot{" + id + "}";
+            }
         };
     }
 }

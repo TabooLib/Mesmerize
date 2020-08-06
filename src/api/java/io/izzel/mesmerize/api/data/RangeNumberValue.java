@@ -15,15 +15,15 @@ import java.util.function.Supplier;
 public class RangeNumberValue<T extends Number> extends MultiValue<StatsNumber<T>, NumberValue<T>> {
 
     private RangeNumberValue(Supplier<NumberValue<T>> supplier) {
-        super(false, supplier);
+        super(true, supplier);
     }
 
     public RangeNumberValue(Supplier<NumberValue<T>> supplier, NumberValue<T> value) {
-        super(false, supplier, ImmutableList.of(value));
+        super(true, supplier, ImmutableList.of(value));
     }
 
     public RangeNumberValue(Supplier<NumberValue<T>> supplier, NumberValue<T> low, NumberValue<T> high) {
-        super(false, supplier, ImmutableList.of(low, high));
+        super(true, supplier, ImmutableList.of(low, high));
     }
 
     public StatsNumber<T> getLower() {

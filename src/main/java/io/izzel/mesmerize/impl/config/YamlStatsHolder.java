@@ -2,8 +2,8 @@ package io.izzel.mesmerize.impl.config;
 
 import io.izzel.mesmerize.api.Stats;
 import io.izzel.mesmerize.api.service.StatsService;
+import io.izzel.mesmerize.api.visitor.StatsValue;
 import io.izzel.mesmerize.api.visitor.StatsVisitor;
-import io.izzel.mesmerize.api.visitor.ValueVisitor;
 import io.izzel.mesmerize.api.visitor.VisitMode;
 import io.izzel.mesmerize.api.visitor.impl.AbstractStatsHolder;
 import org.bukkit.configuration.ConfigurationSection;
@@ -41,9 +41,9 @@ public class YamlStatsHolder extends AbstractStatsHolder {
         for (Map.Entry<String, Object> entry : this.section.getValues(false).entrySet()) {
             Optional<Stats<Object>> optional = StatsService.instance().getRegistry().getStats(entry.getKey());
             if (optional.isPresent()) {
-                Stats<Object> stats = optional.get();
-                ValueVisitor valueVisitor = visitor.visitStats(stats);
-                new YamlValueReader(entry.getValue()).accept(valueVisitor, mode);
+                StatsValue<Object> newValue = optional.get().newValue();
+                new YamlValueReader(entry.getValue()).accept(newValue, mode);
+                newValue.accept(visitor.visitStats(optional.get()), mode);
             }
         }
         visitor.visitEnd();

@@ -8,6 +8,12 @@ load:
 general:
   register: '注册了 {0} 个属性和 {1} 个槽位'
   load: '在 {0} 秒内加载完毕。'
+command:
+  reload: '&a重载完成'
+  set_not_provide: '&c缺少属性集参数'
+  set_not_present: '&c属性集 {0} 不存在'
+  item_not_present: '&c手中没有物品'
+  attach: '物品现在拥有 {0} 中的属性'
 stats: {}
 permission_name: {}
 GENERAL_LOAD: '&e在 {0} 秒内加载完毕。'

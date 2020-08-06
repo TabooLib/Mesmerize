@@ -4,12 +4,12 @@ import io.izzel.mesmerize.api.Stats;
 import io.izzel.mesmerize.api.service.StatsService;
 import io.izzel.mesmerize.api.visitor.StatsHolder;
 import io.izzel.mesmerize.api.visitor.StatsValue;
-import io.izzel.mesmerize.api.visitor.ValueVisitor;
 import io.izzel.mesmerize.api.visitor.StatsVisitor;
+import io.izzel.mesmerize.api.visitor.ValueVisitor;
 import io.izzel.mesmerize.api.visitor.VisitMode;
-import io.izzel.mesmerize.api.visitor.impl.AbstractValueVisitor;
 import io.izzel.mesmerize.api.visitor.impl.AbstractStatsVisitor;
-import org.bukkit.entity.LivingEntity;
+import io.izzel.mesmerize.api.visitor.impl.AbstractValueVisitor;
+import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
@@ -116,7 +116,7 @@ public class StatsSet extends AbstractStatsVisitor implements StatsHolder.Modifi
         }
     }
 
-    public static StatsSet of(@NotNull LivingEntity entity) {
+    public static StatsSet of(@NotNull Entity entity) {
         return StatsService.instance().cachedSetFor(entity);
     }
 
@@ -124,7 +124,7 @@ public class StatsSet extends AbstractStatsVisitor implements StatsHolder.Modifi
         StatsSet set = new StatsSet();
         ItemMeta itemMeta = itemStack.getItemMeta();
         if (itemMeta != null) {
-            StatsService.instance().newPersistentHolder(itemMeta).accept(set, VisitMode.VALUE);
+            StatsService.instance().newStatsHolder(itemMeta).accept(set, VisitMode.VALUE);
         }
         return set;
     }

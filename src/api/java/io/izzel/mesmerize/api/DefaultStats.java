@@ -1,6 +1,7 @@
 package io.izzel.mesmerize.api;
 
 import io.izzel.mesmerize.api.data.MarkerValue;
+import io.izzel.mesmerize.api.data.MultiValue;
 import io.izzel.mesmerize.api.data.NumberValue;
 import io.izzel.mesmerize.api.data.RangeNumberValue;
 import io.izzel.mesmerize.api.data.StatsNumber;
@@ -8,7 +9,6 @@ import io.izzel.mesmerize.api.data.StatsSetValue;
 import io.izzel.mesmerize.api.data.UUIDValue;
 import io.izzel.mesmerize.api.data.complex.PermissionValue;
 import io.izzel.mesmerize.api.service.ElementFactory;
-import io.izzel.mesmerize.api.visitor.StatsHolder;
 import io.izzel.mesmerize.api.visitor.StatsValue;
 import org.bukkit.NamespacedKey;
 
@@ -52,9 +52,11 @@ public final class DefaultStats {
     public static final Stats<Map<String, StatsValue<?>>> PERMISSION = PermissionValue.STATS;
     public static final Stats<StatsNumber<Double>> TRACING = singleRelativeStats("tracing");
     public static final Stats<StatsNumber<Double>> ACCELERATE = singleRelativeStats("accelerate");
-    public static final Stats<StatsHolder> STATS_SET =
-        Stats.builder().key(key("stats_set")).supplying(StatsSetValue::new).merging(StatsSetValue.defaultMerger())
-            .displaying((value, pane) -> ElementFactory.instance().displayHolder(value.get(), pane)).build();
+    public static final Stats<List<StatsSetValue>> STATS_SET =
+        Stats.builder().key(key("stats_set"))
+            .supplying(MultiValue.builder().supplying(StatsSetValue::new).allowSingleNonListValue().buildSupplier())
+            .merging(MultiValue.concatMerger())
+            .displaying((value, pane) -> value.get().forEach(it -> ElementFactory.instance().displayHolder(it.get(), pane))).build();
 
     @SuppressWarnings("deprecation")
     private static NamespacedKey key(String id) {

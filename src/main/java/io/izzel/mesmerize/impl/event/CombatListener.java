@@ -1,7 +1,6 @@
 package io.izzel.mesmerize.impl.event;
 
 import io.izzel.mesmerize.api.DefaultStats;
-import io.izzel.mesmerize.api.Stats;
 import io.izzel.mesmerize.api.cause.CauseManager;
 import io.izzel.mesmerize.api.cause.ContextKeys;
 import io.izzel.mesmerize.api.data.NumberValue;
@@ -9,9 +8,9 @@ import io.izzel.mesmerize.api.data.StatsNumber;
 import io.izzel.mesmerize.api.service.StatsService;
 import io.izzel.mesmerize.api.visitor.util.StatsSet;
 import io.izzel.mesmerize.impl.config.spec.ConfigSpec;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Projectile;
-import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -25,13 +24,16 @@ public class CombatListener implements Listener {
 
     @EventHandler
     public void onAttack(EntityDamageByEntityEvent event) {
-        if (event.getEntity() instanceof LivingEntity && event.getDamager() instanceof LivingEntity) {
+        if (event.getEntity() instanceof LivingEntity) {
             LivingEntity entity = (LivingEntity) event.getEntity();
-            LivingEntity damager = (LivingEntity) event.getDamager();
+            Entity damager = event.getDamager();
             if (entity.hasMetadata("NPC")) return;
-            if (damager instanceof Projectile && !(((Projectile) damager).getShooter() instanceof LivingEntity)) return;
             boolean rangeAttack = damager instanceof Projectile;
-            LivingEntity realDamager = rangeAttack ? ((LivingEntity) ((Projectile) damager).getShooter()) : damager;
+            if (rangeAttack && !(((Projectile) damager).getShooter() instanceof LivingEntity))
+                return;
+            if (!rangeAttack && !(damager instanceof LivingEntity))
+                return;
+            LivingEntity realDamager = rangeAttack ? ((LivingEntity) ((Projectile) damager).getShooter()) : (LivingEntity) damager;
             if (realDamager == null) return;
             try (CauseManager.StackFrame frame = CauseManager.instance().pushStackFrame()) {
                 frame.pushContext(ContextKeys.SOURCE, realDamager);
@@ -121,11 +123,5 @@ public class CombatListener implements Listener {
                 }
             }
         }
-    }
-
-    private double afterApply(double initial, StatsSet set, Stats<StatsNumber<Double>> stats, Event event) {
-        double[] ret = new double[]{0};
-        set.get(stats).ifPresent(value -> stats.tryApply(value, event, newVal -> ret[0] = value.get().applyDouble(initial)));
-        return ret[0];
     }
 }

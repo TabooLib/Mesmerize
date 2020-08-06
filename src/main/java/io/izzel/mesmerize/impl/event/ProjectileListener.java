@@ -21,11 +21,8 @@ import org.bukkit.util.Vector;
 
 import java.util.Comparator;
 import java.util.Optional;
-import java.util.Random;
 
 public class ProjectileListener implements Listener {
-
-    private final Random random = new Random();
 
     @EventHandler
     public void onRangeAttack(ProjectileLaunchEvent event) {
@@ -36,7 +33,7 @@ public class ProjectileListener implements Listener {
                 frame.pushContext(ContextKeys.SOURCE, livingEntity);
                 StatsSet statsSet = StatsSet.of(livingEntity);
 
-                StatsVisitor writer = StatsService.instance().newPersistentWriter(event.getEntity());
+                StatsVisitor writer = StatsService.instance().newStatsWriter(event.getEntity());
                 statsSet.accept(writer, VisitMode.DATA);
 
                 Optional<StatsNumber<Double>> tracing = DefaultStats.TRACING.tryApply(statsSet, event);

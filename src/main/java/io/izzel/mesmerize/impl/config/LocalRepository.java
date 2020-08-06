@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -27,6 +28,10 @@ public class LocalRepository {
 
     public StatsHolder get(String s) {
         return map.get(s);
+    }
+
+    public Collection<String> keys() {
+        return map.keySet();
     }
 
     public void loadAndValidate() {
@@ -47,9 +52,9 @@ public class LocalRepository {
                     for (String key : configuration.getKeys(false)) {
                         String name = node + "." + key;
                         try {
-                            YamlStatsHolder holder = new YamlStatsHolder(configuration.getConfigurationSection(key));
-                            holder.accept(new StatsSet(), VisitMode.VALUE);
-                            this.map.put(name, holder);
+                            StatsSet statsSet = new StatsSet();
+                            new YamlStatsHolder(configuration.getConfigurationSection(key)).accept(statsSet, VisitMode.DATA);
+                            this.map.put(name, statsSet);
                         } catch (Throwable t) {
                             LOGGER.error(TLocale.asString("load.fail.node", name, t));
                         }

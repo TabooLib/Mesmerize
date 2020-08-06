@@ -6,7 +6,7 @@ import io.izzel.mesmerize.api.visitor.StatsHolder;
 import io.izzel.mesmerize.api.visitor.StatsVisitor;
 import io.izzel.mesmerize.api.visitor.util.StatsSet;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Entity;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataHolder;
 import org.jetbrains.annotations.NotNull;
@@ -23,21 +23,21 @@ public interface StatsService {
 
     ElementFactory getElementFactory();
 
-    StatsSet cachedSetFor(@NotNull LivingEntity entity);
+    StatsSet cachedSetFor(@NotNull Entity entity);
 
-    default StatsHolder newPersistentHolder(@NotNull PersistentDataHolder holder) {
-        return newPersistentHolder(holder.getPersistentDataContainer());
+    default StatsHolder newStatsHolder(@NotNull PersistentDataHolder holder) {
+        return newStatsHolder(holder.getPersistentDataContainer());
     }
 
-    StatsHolder newPersistentHolder(@NotNull PersistentDataContainer container);
+    StatsHolder newStatsHolder(@NotNull PersistentDataContainer container);
 
-    default StatsVisitor newPersistentWriter(@NotNull PersistentDataHolder holder) {
-        return newPersistentWriter(holder.getPersistentDataContainer());
+    default StatsVisitor newStatsWriter(@NotNull PersistentDataHolder holder) {
+        return newStatsWriter(holder.getPersistentDataContainer());
     }
 
-    StatsVisitor newPersistentWriter(@NotNull PersistentDataContainer container);
+    StatsVisitor newStatsWriter(@NotNull PersistentDataContainer container);
 
-    StatsHolder newEntityReader(@NotNull LivingEntity entity);
+    StatsHolder newEntityReader(@NotNull Entity entity);
 
     DamageCalculator getDamageCalculator();
 

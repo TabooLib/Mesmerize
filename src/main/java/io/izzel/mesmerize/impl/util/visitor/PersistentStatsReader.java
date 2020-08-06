@@ -2,8 +2,8 @@ package io.izzel.mesmerize.impl.util.visitor;
 
 import io.izzel.mesmerize.api.Stats;
 import io.izzel.mesmerize.api.service.StatsService;
+import io.izzel.mesmerize.api.visitor.StatsValue;
 import io.izzel.mesmerize.api.visitor.StatsVisitor;
-import io.izzel.mesmerize.api.visitor.ValueVisitor;
 import io.izzel.mesmerize.api.visitor.VisitMode;
 import io.izzel.mesmerize.api.visitor.impl.AbstractStatsHolder;
 import io.izzel.mesmerize.impl.util.Util;
@@ -43,8 +43,9 @@ public class PersistentStatsReader extends AbstractStatsHolder {
         for (String s : map.keySet()) {
             Optional<Stats<Object>> optional = StatsService.instance().getRegistry().getStats(s);
             if (optional.isPresent()) {
-                ValueVisitor valueVisitor = visitor.visitStats(optional.get());
-                new PersistentValueReader(this.container, Util.fromString(s)).accept(valueVisitor, mode);
+                StatsValue<Object> newValue = optional.get().newValue();
+                new PersistentValueReader(this.container, optional.get().getKey()).accept(newValue, mode);
+                newValue.accept(visitor.visitStats(optional.get()), mode);
             }
         }
         visitor.visitEnd();

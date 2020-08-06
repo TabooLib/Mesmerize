@@ -61,6 +61,14 @@ public class Mesmerize extends Plugin {
         LOGGER.info(TLocale.asString("general.load", (System.currentTimeMillis() - begin) / 1000D));
     }
 
+    @SuppressWarnings("deprecation")
+    public void reloadMesmerizeData() {
+        this.reloadConfig();
+        Yaml yaml = new Yaml(new CustomClassLoaderConstructor(ConfigSpec.class, this.getClassLoader()));
+        this.configSpec = yaml.load(this.getConfig().saveToString());
+        this.localRepository.loadAndValidate();
+    }
+
     public static Mesmerize instance() {
         return JavaPlugin.getPlugin(Mesmerize.class);
     }

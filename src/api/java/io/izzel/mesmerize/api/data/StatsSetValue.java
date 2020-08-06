@@ -25,6 +25,10 @@ public class StatsSetValue extends AbstractValue<StatsHolder> {
         this.statsSet = statsSet;
     }
 
+    public StatsSetValue(String key) {
+        this.holder = new LazyStatsHolder(key);
+    }
+
     @Override
     public void accept(ValueVisitor visitor, VisitMode mode) {
         if (mode == VisitMode.VALUE) {
