@@ -7,6 +7,7 @@ import io.izzel.mesmerize.impl.config.spec.ConfigSpec;
 import io.izzel.mesmerize.impl.event.CombatListener;
 import io.izzel.mesmerize.impl.event.ProjectileListener;
 import io.izzel.mesmerize.impl.service.SimpleStatsService;
+import io.izzel.mesmerize.impl.util.Updater;
 import io.izzel.taboolib.loader.Plugin;
 import io.izzel.taboolib.module.dependency.Dependency;
 import io.izzel.taboolib.module.inject.TInject;
@@ -58,6 +59,7 @@ public class Mesmerize extends Plugin {
         this.localRepository.loadAndValidate();
         this.getServer().getPluginManager().registerEvents(new CombatListener(), this);
         this.getServer().getPluginManager().registerEvents(new ProjectileListener(), this);
+        Updater.start();
         LOGGER.info(TLocale.asString("general.load", (System.currentTimeMillis() - begin) / 1000D));
     }
 

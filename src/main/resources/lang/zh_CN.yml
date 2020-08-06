@@ -8,6 +8,7 @@ load:
 general:
   register: '注册了 {0} 个属性和 {1} 个槽位'
   load: '在 {0} 秒内加载完毕。'
+  update: 'Mesmerize 检测到更新版本 {0} 发布于 {1}'
 command:
   reload: '&a重载完成'
   set_not_provide: '&c缺少属性集参数'

@@ -3,6 +3,7 @@ package io.izzel.mesmerize.impl.config.spec;
 public class GeneralSpec {
 
     private boolean debug = false;
+    private boolean updateCheck = true;
     private long attributeApplyInterval = 20L;
     private double defaultAttackRange = 5.0D;
     private double defaultHitChance = 1.0D;
@@ -13,6 +14,14 @@ public class GeneralSpec {
 
     public void setDebug(boolean debug) {
         this.debug = debug;
+    }
+
+    public boolean updateCheck() {
+        return updateCheck;
+    }
+
+    public void setUpdateCheck(boolean updateCheck) {
+        this.updateCheck = updateCheck;
     }
 
     public long attributeApplyInterval() {

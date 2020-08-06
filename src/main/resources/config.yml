@@ -12,6 +12,8 @@
 general:
   # 调试输出
   debug: false
+  # 检查更新
+  updateCheck: true
   # 类似生命、攻击速度、移动速度等属性更新的周期
   # 单位 游戏刻
   attributeApplyInterval: 20
