@@ -52,9 +52,9 @@ public class LocalRepository {
                     for (String key : configuration.getKeys(false)) {
                         String name = node + "." + key;
                         try {
-                            StatsSet statsSet = new StatsSet();
-                            new YamlStatsHolder(configuration.getConfigurationSection(key)).accept(statsSet, VisitMode.DATA);
-                            this.map.put(name, statsSet);
+                            YamlStatsReader holder = new YamlStatsReader(configuration.getConfigurationSection(key));
+                            holder.accept(new StatsSet(), VisitMode.DATA);
+                            this.map.put(name, holder);
                         } catch (Throwable t) {
                             LOGGER.error(TLocale.asString("load.fail.node", name, t));
                         }

@@ -37,6 +37,8 @@ public interface StatsService {
 
     StatsVisitor newStatsWriter(@NotNull PersistentDataContainer container);
 
+    StatsVisitor newExternalWriter(@NotNull PersistentDataContainer container);
+
     StatsHolder newEntityReader(@NotNull Entity entity);
 
     DamageCalculator getDamageCalculator();

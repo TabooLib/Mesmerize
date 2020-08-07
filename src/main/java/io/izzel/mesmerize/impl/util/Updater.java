@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import io.izzel.mesmerize.impl.Mesmerize;
+import io.izzel.mesmerize.impl.config.spec.ConfigSpec;
 import io.izzel.taboolib.module.locale.TLocale;
 import org.bukkit.util.NumberConversions;
 
@@ -25,6 +26,7 @@ public class Updater {
     }
 
     private static void fetch() {
+        if (!ConfigSpec.spec().general().updateCheck()) return;
         try {
             HttpURLConnection connection = (HttpURLConnection) new URL(API_URL).openConnection();
             try (InputStream stream = connection.getInputStream()) {

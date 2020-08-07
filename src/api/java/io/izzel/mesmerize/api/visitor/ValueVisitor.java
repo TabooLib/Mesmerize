@@ -23,11 +23,11 @@ public interface ValueVisitor {
 
     StatsVisitor visitStats();
 
-    default void visitMutableValue(StatsValue<?> value, VisitMode mode) {
-        value.accept(this, mode);
-    }
+    ValueVisitor visitExternal();
 
     void visitEnd();
+
+    boolean hasExternalValue();
 
     default EventContext context() {
         return CauseManager.instance().currentContext();

@@ -12,6 +12,7 @@ import io.izzel.mesmerize.api.visitor.StatsHolder;
 import io.izzel.mesmerize.api.visitor.StatsVisitor;
 import io.izzel.mesmerize.api.visitor.VisitMode;
 import io.izzel.mesmerize.api.visitor.impl.AbstractStatsHolder;
+import io.izzel.mesmerize.api.visitor.util.StatsAsMapVisitor;
 import io.izzel.mesmerize.api.visitor.util.StatsSet;
 import io.izzel.mesmerize.impl.config.spec.ConfigSpec;
 import io.izzel.mesmerize.impl.event.SimpleCalculator;
@@ -19,6 +20,8 @@ import io.izzel.mesmerize.impl.util.Util;
 import io.izzel.mesmerize.impl.util.visitor.EntityReader;
 import io.izzel.mesmerize.impl.util.visitor.PersistentStatsReader;
 import io.izzel.mesmerize.impl.util.visitor.PersistentStatsWriter;
+import io.izzel.mesmerize.impl.util.visitor.external.ExternalReader;
+import io.izzel.mesmerize.impl.util.visitor.external.ExternalWriter;
 import org.bukkit.entity.Entity;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -66,7 +69,8 @@ public class SimpleStatsService implements StatsService {
     @Override
     public StatsHolder newStatsHolder(@NotNull PersistentDataContainer container) {
         if (container.has(Util.STATS_STORE, PersistentDataType.TAG_CONTAINER)) {
-            return new PersistentStatsReader(container.get(Util.STATS_STORE, PersistentDataType.TAG_CONTAINER));
+            return new PersistentStatsReader(container.get(Util.STATS_STORE, PersistentDataType.TAG_CONTAINER),
+                new ExternalReader(container.get(Util.EXTERNAL_STORE, PersistentDataType.TAG_CONTAINER)));
         } else {
             return AbstractStatsHolder.EMPTY;
         }
@@ -75,6 +79,11 @@ public class SimpleStatsService implements StatsService {
     @Override
     public StatsVisitor newStatsWriter(@NotNull PersistentDataContainer container) {
         return new PersistentStatsWriter(container);
+    }
+
+    @Override
+    public StatsVisitor newExternalWriter(@NotNull PersistentDataContainer container) {
+        return new StatsAsMapVisitor(new ExternalWriter(container, Util.EXTERNAL_STORE));
     }
 
     @Override

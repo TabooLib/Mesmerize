@@ -22,6 +22,11 @@ public class AbstractValueVisitor implements ValueVisitor {
         public StatsVisitor visitStats() {
             return AbstractStatsVisitor.EMPTY;
         }
+
+        @Override
+        public ValueVisitor visitExternal() {
+            return this;
+        }
     };
 
     protected ValueVisitor visitor;
@@ -97,9 +102,25 @@ public class AbstractValueVisitor implements ValueVisitor {
     }
 
     @Override
+    public ValueVisitor visitExternal() {
+        if (visitor != null) {
+            return visitor.visitExternal();
+        }
+        return null;
+    }
+
+    @Override
     public void visitEnd() {
         if (visitor != null) {
             visitor.visitEnd();
         }
+    }
+
+    @Override
+    public boolean hasExternalValue() {
+        if (visitor != null) {
+            return visitor.hasExternalValue();
+        }
+        return false;
     }
 }

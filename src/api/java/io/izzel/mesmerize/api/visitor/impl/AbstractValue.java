@@ -7,7 +7,6 @@ import io.izzel.mesmerize.api.visitor.StatsVisitor;
 import io.izzel.mesmerize.api.visitor.ValueVisitor;
 import io.izzel.mesmerize.api.visitor.VisitMode;
 
-import java.util.Optional;
 import java.util.function.BiFunction;
 
 public abstract class AbstractValue<T> implements StatsValue<T> {
@@ -70,17 +69,17 @@ public abstract class AbstractValue<T> implements StatsValue<T> {
     }
 
     @Override
-    public void visitMutableValue(StatsValue<?> value, VisitMode mode) {
-        this.mutableValue = value;
-    }
-
-    @Override
-    public Optional<ValueVisitor> getMutableValue() {
-        return Optional.ofNullable(this.mutableValue);
+    public final ValueVisitor visitExternal() {
+        throw new UnsupportedOperationException("external");
     }
 
     @Override
     public void visitEnd() {
+    }
+
+    @Override
+    public boolean hasExternalValue() {
+        return false;
     }
 
     public static <V extends AbstractValue<?>> BiFunction<V, V, V> keepMutableValue(BiFunction<V, V, V> merger) {

@@ -5,6 +5,7 @@ import io.izzel.mesmerize.api.visitor.ValueVisitor;
 import io.izzel.mesmerize.api.visitor.VisitMode;
 import io.izzel.mesmerize.api.visitor.impl.AbstractValue;
 import io.izzel.mesmerize.impl.util.Util;
+import io.izzel.mesmerize.impl.util.visitor.external.ExternalTrackingVisitor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -22,6 +23,10 @@ public class PersistentValueReader extends AbstractValue<Object> {
     @SuppressWarnings("ConstantConditions")
     @Override
     public void accept(ValueVisitor visitor, VisitMode mode) {
+        if (visitor instanceof ExternalTrackingVisitor && visitor.hasExternalValue()) {
+            ((ExternalTrackingVisitor) visitor).getExternal().accept(visitor, mode);
+            return;
+        }
         int i = Util.typeOfKey(this.container, this.key);
         switch (i) {
             case 1:
@@ -81,7 +86,7 @@ public class PersistentValueReader extends AbstractValue<Object> {
                 visitor.visitEnd();
                 break;
             default:
-                throw new IllegalArgumentException("Unknown data " + Util.mapOfContainer(this.container).get(this.key.toString()));
+                visitor.visitEnd();
         }
     }
 }

@@ -15,6 +15,8 @@ public class Util {
     public static final NamespacedKey ARRAY_LENGTH = new NamespacedKey("mesmerize", "array_length");
     @SuppressWarnings("deprecation")
     public static final NamespacedKey STATS_STORE = new NamespacedKey("mesmerize", "stats");
+    @SuppressWarnings("deprecation")
+    public static final NamespacedKey EXTERNAL_STORE = new NamespacedKey("mesmerize", "externals");
     private static final long RAW_OFFSET;
     private static final Map<Class<?>, Integer> NBT_TYPE;
 

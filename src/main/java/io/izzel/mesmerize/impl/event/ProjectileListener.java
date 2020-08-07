@@ -46,7 +46,7 @@ public class ProjectileListener implements Listener {
                         double angle = Math.toRadians(ConfigSpec.spec().performance().maxTracingAngle());
                         boolean visibleCheck = ConfigSpec.spec().performance().tracingVisibleCheck();
                         livingEntity.getNearbyEntities(distance, distance, distance).stream()
-                            .filter(it -> it instanceof LivingEntity && (!visibleCheck || livingEntity.hasLineOfSight(it)))
+                            .filter(it -> it != source && it instanceof LivingEntity && (!visibleCheck || livingEntity.hasLineOfSight(it)))
                             .filter(it -> Math.abs(((LivingEntity) it).getEyeLocation().subtract(sourceEye).toVector().angle(direction)) < angle)
                             .min(Comparator.comparingDouble(it -> Math.abs(((LivingEntity) it).getEyeLocation().subtract(sourceEye).toVector().angle(direction))))
                             .ifPresent(entity ->

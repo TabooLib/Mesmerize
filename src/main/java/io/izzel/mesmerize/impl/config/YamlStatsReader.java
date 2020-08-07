@@ -13,11 +13,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-public class YamlStatsHolder extends AbstractStatsHolder {
+public class YamlStatsReader extends AbstractStatsHolder {
 
     private final ConfigurationSection section;
 
-    public YamlStatsHolder(ConfigurationSection section) {
+    public YamlStatsReader(ConfigurationSection section) {
         this.section = section;
     }
 
