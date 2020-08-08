@@ -71,7 +71,7 @@ public class CombatListener implements Listener {
                 double calculate = StatsService.instance().getDamageCalculator().calculate(event, event.getFinalDamage(), damagerSet, entitySet);
                 Optional<StatsNumber<Double>> critChance = DefaultStats.CRIT_CHANCE.tryApply(damagerSet, event);
                 if (critChance.isPresent()) {
-                    double chance = critChance.get().applyDouble(0);
+                    double chance = critChance.get().applyDouble(1D) - 1D;
                     if (random.nextDouble() < chance) {
                         Optional<StatsNumber<Double>> critDamage = DefaultStats.CRIT_DAMAGE.tryApply(damagerSet, event);
                         if (critDamage.isPresent()) {
@@ -85,7 +85,7 @@ public class CombatListener implements Listener {
                 // THORNS
                 Optional<StatsNumber<Double>> thornsChance = DefaultStats.THORNS_CHANCE.tryApply(entitySet, event);
                 if (thornsChance.isPresent()) {
-                    double chance = thornsChance.get().applyDouble(0);
+                    double chance = thornsChance.get().applyDouble(1D) - 1D;
                     if (random.nextDouble() < chance) {
                         double thornsValue = 0;
                         Optional<StatsNumber<Double>> thorns = DefaultStats.THORNS.tryApply(entitySet, event);
@@ -112,7 +112,7 @@ public class CombatListener implements Listener {
                 // LIFESTEAL
                 Optional<StatsNumber<Double>> lifestealChance = DefaultStats.LIFESTEAL_CHANCE.tryApply(damagerSet, event);
                 if (lifestealChance.isPresent()) {
-                    double chance = lifestealChance.get().applyDouble(0);
+                    double chance = lifestealChance.get().applyDouble(1D) - 1D;
                     if (random.nextDouble() < chance) {
                         Optional<StatsNumber<Double>> lifesteal = DefaultStats.LIFESTEAL.tryApply(damagerSet, event);
                         if (lifesteal.isPresent()) {

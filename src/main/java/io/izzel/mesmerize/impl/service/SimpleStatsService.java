@@ -67,6 +67,11 @@ public class SimpleStatsService implements StatsService {
     }
 
     @Override
+    public void invalidateCache(@NotNull Entity entity) {
+        this.statsSetCache.invalidate(entity);
+    }
+
+    @Override
     public StatsHolder newStatsHolder(@NotNull PersistentDataContainer container) {
         if (container.has(Util.STATS_STORE, PersistentDataType.TAG_CONTAINER)) {
             return new PersistentStatsReader(container.get(Util.STATS_STORE, PersistentDataType.TAG_CONTAINER),

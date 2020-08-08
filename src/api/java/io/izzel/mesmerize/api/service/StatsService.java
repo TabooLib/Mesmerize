@@ -25,6 +25,8 @@ public interface StatsService {
 
     StatsSet cachedSetFor(@NotNull Entity entity);
 
+    void invalidateCache(@NotNull Entity entity);
+
     default StatsHolder newStatsHolder(@NotNull PersistentDataHolder holder) {
         return newStatsHolder(holder.getPersistentDataContainer());
     }
