@@ -67,7 +67,7 @@ public class StatsSetValue extends AbstractValue<StatsHolder> {
 
     @Override
     public void visitEnd() {
-        Preconditions.checkArgument(holder != null || statsSet != null, "empty");
+        // Preconditions.checkArgument(holder != null || statsSet != null, "empty");
     }
 
     public static BiFunction<StatsSetValue, StatsSetValue, StatsSetValue> defaultMerger() {

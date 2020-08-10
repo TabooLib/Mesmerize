@@ -1,6 +1,6 @@
 package io.izzel.mesmerize.api.data;
 
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import io.izzel.mesmerize.api.visitor.ListVisitor;
 import io.izzel.mesmerize.api.visitor.MapVisitor;
 import io.izzel.mesmerize.api.visitor.StatsValue;
@@ -20,7 +20,7 @@ public class MultiValue<E, V extends StatsValue<E>> extends AbstractValue<List<V
 
     private final boolean allowSingleNonListValue;
     protected final Supplier<V> supplier;
-    protected List<V> values;
+    protected ArrayList<V> values;
 
     public MultiValue(boolean allowSingleNonListValue, Supplier<V> supplier) {
         this.allowSingleNonListValue = allowSingleNonListValue;
@@ -33,7 +33,7 @@ public class MultiValue<E, V extends StatsValue<E>> extends AbstractValue<List<V
     public MultiValue(boolean allowSingleNonListValue, Supplier<V> supplier, List<V> values) {
         this.allowSingleNonListValue = allowSingleNonListValue;
         this.supplier = supplier;
-        this.values = values instanceof ImmutableList ? values : ImmutableList.copyOf(values);
+        this.values = values instanceof ArrayList ? ((ArrayList<V>) values) : new ArrayList<>(values);
     }
 
     @Override
@@ -140,12 +140,9 @@ public class MultiValue<E, V extends StatsValue<E>> extends AbstractValue<List<V
 
         @Override
         public void visitLength(int size) {
-            if (values == null || values.size() < size) {
-                ArrayList<V> list = new ArrayList<>(size);
-                if (values != null) {
-                    list.addAll(values);
-                }
-                values = list;
+            values = new ArrayList<>(size);
+            for (int i = 0; i < size; i++) {
+                values.add(null);
             }
         }
 
@@ -164,13 +161,14 @@ public class MultiValue<E, V extends StatsValue<E>> extends AbstractValue<List<V
 
     public static <E, V extends StatsValue<E>> BiFunction<MultiValue<E, V>, MultiValue<E, V>, MultiValue<E, V>> concatMerger() {
         return (a, b) -> {
-            ImmutableList<V> list = ImmutableList.<V>builder().addAll(a.values).addAll(b.values).build();
-            return new MultiValue<>(list.size() == 1, a.supplier, list);
+            ArrayList<V> arrayList = new ArrayList<>(a.values);
+            arrayList.addAll(b.values);
+            return new MultiValue<>(arrayList.size() == 1, a.supplier, arrayList);
         };
     }
 
     public static <E, V extends StatsValue<E>> BiFunction<MultiValue<E, V>, MultiValue<E, V>, MultiValue<E, V>> singletonMerger(BiFunction<V, V, V> valueMerger) {
-        return (a, b) -> new MultiValue<>(true, a.supplier, ImmutableList.of(valueMerger.apply(a.get(0), b.get(0))));
+        return (a, b) -> new MultiValue<>(true, a.supplier, Lists.newArrayList(valueMerger.apply(a.get(0), b.get(0))));
     }
 
     public static MultiValueBuilder<?, ?> builder() {

@@ -2,11 +2,15 @@ package io.izzel.mesmerize.api.visitor.util;
 
 import io.izzel.mesmerize.api.Stats;
 import io.izzel.mesmerize.api.service.StatsService;
+import io.izzel.mesmerize.api.visitor.ListVisitor;
+import io.izzel.mesmerize.api.visitor.MapVisitor;
 import io.izzel.mesmerize.api.visitor.StatsHolder;
 import io.izzel.mesmerize.api.visitor.StatsValue;
 import io.izzel.mesmerize.api.visitor.StatsVisitor;
 import io.izzel.mesmerize.api.visitor.ValueVisitor;
 import io.izzel.mesmerize.api.visitor.VisitMode;
+import io.izzel.mesmerize.api.visitor.impl.AbstractListVisitor;
+import io.izzel.mesmerize.api.visitor.impl.AbstractMapVisitor;
 import io.izzel.mesmerize.api.visitor.impl.AbstractStatsVisitor;
 import io.izzel.mesmerize.api.visitor.impl.AbstractValueVisitor;
 import org.bukkit.entity.Entity;
@@ -88,7 +92,8 @@ public class StatsSet extends AbstractStatsVisitor implements StatsHolder.Modifi
 
     @Override
     public <T> ValueVisitor visitStats(@NotNull Stats<T> stats) {
-        return new AbstractValueVisitor(stats.newValue()) {
+        return new MergeVal<T>(stats.newValue(), stats) {
+
             @SuppressWarnings("unchecked")
             @Override
             public void visitEnd() {
@@ -98,12 +103,42 @@ public class StatsSet extends AbstractStatsVisitor implements StatsHolder.Modifi
                 StatsValue<T> merged = optional.isPresent() ? stats.mergeValue(optional.get(), value) : value;
                 map.put(stats, merged);
             }
-
-            @Override
-            public StatsVisitor visitStats() {
-                return StatsSet.this;
-            }
         };
+    }
+
+    private class MergeVal<T> extends AbstractValueVisitor {
+
+        private final Stats<T> stats;
+
+        public MergeVal(ValueVisitor visitor, Stats<T> stats) {
+            super(visitor);
+            this.stats = stats;
+        }
+
+        @Override
+        public StatsVisitor visitStats() {
+            return StatsSet.this;
+        }
+
+        @Override
+        public ListVisitor visitList() {
+            return new AbstractListVisitor(super.visitList()) {
+                @Override
+                public ValueVisitor visit(int index) {
+                    return new MergeVal<>(super.visit(index), stats);
+                }
+            };
+        }
+
+        @Override
+        public MapVisitor visitMap() {
+            return new AbstractMapVisitor(super.visitMap()) {
+                @Override
+                public ValueVisitor visit(String key) {
+                    return new MergeVal<>(super.visit(key), stats);
+                }
+            };
+        }
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})

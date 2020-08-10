@@ -25,6 +25,9 @@ public class ListValue extends AbstractValue<List<StatsValue<?>>> {
     public ListValue(List<Supplier<StatsValue<?>>> dataTypes) {
         this.dataTypes = dataTypes instanceof ImmutableList ? dataTypes : ImmutableList.copyOf(dataTypes);
         this.values = new ArrayList<>(this.dataTypes.size());
+        for (int i = 0; i < this.dataTypes.size(); i++) {
+            this.values.add(null);
+        }
     }
 
     public ListValue(List<Supplier<StatsValue<?>>> dataTypes, List<StatsValue<?>> values) {
