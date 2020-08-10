@@ -65,6 +65,7 @@ public class CombatListener implements Listener {
                 }
                 if (random.nextDouble() >= hitChance) {
                     event.setCancelled(true);
+                    return;
                 }
 
                 // DAMAGE/DEFENSE/CRIT
