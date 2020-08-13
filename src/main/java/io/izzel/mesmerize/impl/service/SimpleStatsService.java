@@ -4,6 +4,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import io.izzel.mesmerize.api.cause.CauseManager;
 import io.izzel.mesmerize.api.event.DamageCalculator;
+import io.izzel.mesmerize.api.event.StatsRefreshEvent;
 import io.izzel.mesmerize.api.service.ElementFactory;
 import io.izzel.mesmerize.api.service.StatsManager;
 import io.izzel.mesmerize.api.service.StatsRegistry;
@@ -14,6 +15,7 @@ import io.izzel.mesmerize.api.visitor.VisitMode;
 import io.izzel.mesmerize.api.visitor.impl.AbstractStatsHolder;
 import io.izzel.mesmerize.api.visitor.util.StatsAsMapVisitor;
 import io.izzel.mesmerize.api.visitor.util.StatsSet;
+import io.izzel.mesmerize.impl.Mesmerize;
 import io.izzel.mesmerize.impl.config.spec.ConfigSpec;
 import io.izzel.mesmerize.impl.event.SimpleCalculator;
 import io.izzel.mesmerize.impl.util.Util;
@@ -22,11 +24,13 @@ import io.izzel.mesmerize.impl.util.visitor.PersistentStatsReader;
 import io.izzel.mesmerize.impl.util.visitor.PersistentStatsWriter;
 import io.izzel.mesmerize.impl.util.visitor.external.ExternalReader;
 import io.izzel.mesmerize.impl.util.visitor.external.ExternalWriter;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 public class SimpleStatsService implements StatsService {
@@ -39,11 +43,22 @@ public class SimpleStatsService implements StatsService {
 
     private final LoadingCache<Entity, StatsSet> statsSetCache = Caffeine
         .newBuilder()
-        .expireAfterWrite(ConfigSpec.spec().performance().entityStatsCacheMs(), TimeUnit.MILLISECONDS)
+        .refreshAfterWrite(ConfigSpec.spec().performance().entityStatsCacheMs(), TimeUnit.MILLISECONDS)
         .build(entity -> {
-            StatsSet statsSet = new StatsSet();
-            newEntityReader(entity).accept(statsSet, VisitMode.VALUE);
-            return statsSet;
+            if (!entity.isValid() || entity.isDead()) {
+                return null;
+            }
+            Callable<StatsSet> callable = () -> {
+                StatsSet statsSet = new StatsSet();
+                newEntityReader(entity).accept(statsSet, VisitMode.VALUE);
+                Bukkit.getPluginManager().callEvent(new StatsRefreshEvent(entity, statsSet));
+                return statsSet;
+            };
+            if (Bukkit.isPrimaryThread()) {
+                return callable.call();
+            } else {
+                return Bukkit.getScheduler().callSyncMethod(Mesmerize.instance(), callable).get();
+            }
         });
 
     @Override
@@ -67,8 +82,8 @@ public class SimpleStatsService implements StatsService {
     }
 
     @Override
-    public void invalidateCache(@NotNull Entity entity) {
-        this.statsSetCache.invalidate(entity);
+    public void refreshCache(@NotNull Entity entity) {
+        this.statsSetCache.refresh(entity);
     }
 
     @Override

@@ -22,6 +22,10 @@ general:
   defaultAttackRange: 5.0
   # 默认的命中率
   defaultHitChance: 1.0
+  defaultHealth: 20.0
+  defaultAttackSpeed: 4.0
+  defaultMoveSpeed: 0.1
+  defaultFlySpeed: 0.2
 
 # 关于生命值的设定
 health:
@@ -42,7 +46,7 @@ health:
 performance:
   # 生物属性的缓存时间，单位 毫秒
   # 增大此值可以减少一秒进行属性解析的次数，但属性可能无法及时更新
-  entityStatsCacheMs: 50
+  entityStatsCacheMs: 60000
   # 追踪属性最大的追踪距离
   maxTracingDistance: 128
   # 是否只追踪可见和视野内的生物
