@@ -17,7 +17,7 @@ public class StatsRefreshEvent extends EntityEvent {
         this.statsSet = statsSet;
     }
 
-    public StatsSet statsSet() {
+    public StatsSet getStatsSet() {
         return statsSet;
     }
 

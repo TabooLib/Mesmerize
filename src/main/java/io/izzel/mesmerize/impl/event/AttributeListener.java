@@ -41,7 +41,7 @@ public class AttributeListener implements Listener {
     public void onRefresh(StatsRefreshEvent event) {
         Entity entity = event.getEntity();
         if (entity instanceof LivingEntity) {
-            StatsSet statsSet = StatsSet.of(entity);
+            StatsSet statsSet = event.getStatsSet();
             AttributeInstance attribute = ((LivingEntity) entity).getAttribute(Attribute.GENERIC_MAX_HEALTH);
             if (attribute != null) {
                 Optional<StatsNumber<Double>> health = DefaultStats.HEALTH.tryApply(statsSet, event);

@@ -51,7 +51,8 @@ public class SimpleStatsService implements StatsService {
             Callable<StatsSet> callable = () -> {
                 StatsSet statsSet = new StatsSet();
                 newEntityReader(entity).accept(statsSet, VisitMode.VALUE);
-                Bukkit.getPluginManager().callEvent(new StatsRefreshEvent(entity, statsSet));
+                Bukkit.getScheduler().runTask(Mesmerize.instance(),
+                    () -> Bukkit.getPluginManager().callEvent(new StatsRefreshEvent(entity, statsSet)));
                 return statsSet;
             };
             if (Bukkit.isPrimaryThread()) {
