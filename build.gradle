@@ -12,6 +12,7 @@ targetCompatibility = 1.8
 defaultTasks 'clean', 'build'
 
 taboolib {
+    loaderVersion = '2.2'
     classifier = null
 }
 
