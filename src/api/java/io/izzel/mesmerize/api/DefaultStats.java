@@ -22,20 +22,20 @@ public final class DefaultStats {
     public static final Stats<List<NumberValue<Double>>> PVP_DAMAGE = rangeRelativeStats("pvp_damage");
     public static final Stats<List<NumberValue<Double>>> PVE_DAMAGE = rangeRelativeStats("pve_damage");
     public static final Stats<List<NumberValue<Double>>> RANGE_DAMAGE = rangeRelativeStats("range_damage");
-    public static final Stats<StatsNumber<Double>> REAL_DAMAGE = singleRelativeStats("real_damage");
+    public static final Stats<StatsNumber<Double>> REAL_DAMAGE = singleRelativeStats("real_damage", true);
     public static final Stats<List<NumberValue<Double>>> DEFENSE = rangeRelativeStats("defense");
     public static final Stats<List<NumberValue<Double>>> PVP_DEFENSE = rangeRelativeStats("pvp_defense");
     public static final Stats<List<NumberValue<Double>>> PVE_DEFENSE = rangeRelativeStats("pve_defense");
     public static final Stats<List<NumberValue<Double>>> RANGE_DEFENSE = rangeRelativeStats("range_defense");
-    public static final Stats<StatsNumber<Double>> CRIT_DAMAGE = singleRelativeStats("crit_damage");
-    public static final Stats<StatsNumber<Double>> CRIT_CHANCE = singleRelativeStats("crit_chance");
-    public static final Stats<StatsNumber<Double>> THORNS = singleRelativeStats("thorns");
-    public static final Stats<StatsNumber<Double>> MELEE_THORNS = singleRelativeStats("melee_thorns");
-    public static final Stats<StatsNumber<Double>> RANGE_THORNS = singleRelativeStats("range_thorns");
-    public static final Stats<StatsNumber<Double>> THORNS_CHANCE = singleRelativeStats("thorns_chance");
-    public static final Stats<StatsNumber<Double>> LIFESTEAL = singleRelativeStats("lifesteal");
-    public static final Stats<StatsNumber<Double>> LIFESTEAL_CHANCE = singleRelativeStats("lifesteal_chance");
-    public static final Stats<StatsNumber<Double>> HEALTH = singleRelativeStats("health");
+    public static final Stats<StatsNumber<Double>> CRIT_DAMAGE = singleRelativeStats("crit_damage", true);
+    public static final Stats<StatsNumber<Double>> CRIT_CHANCE = singleRelativeStats("crit_chance", false);
+    public static final Stats<StatsNumber<Double>> THORNS = singleRelativeStats("thorns", true);
+    public static final Stats<StatsNumber<Double>> MELEE_THORNS = singleRelativeStats("melee_thorns", true);
+    public static final Stats<StatsNumber<Double>> RANGE_THORNS = singleRelativeStats("range_thorns", true);
+    public static final Stats<StatsNumber<Double>> THORNS_CHANCE = singleRelativeStats("thorns_chance", false);
+    public static final Stats<StatsNumber<Double>> LIFESTEAL = singleRelativeStats("lifesteal", true);
+    public static final Stats<StatsNumber<Double>> LIFESTEAL_CHANCE = singleRelativeStats("lifesteal_chance", false);
+    public static final Stats<StatsNumber<Double>> HEALTH = singleRelativeStats("health", true);
     public static final Stats<List<NumberValue<Double>>> REGENERATION = rangeRelativeStats("regeneration");
     public static final Stats<StatsNumber<Integer>> COMBAT_EXP_BONUS = absoluteInt("combat_exp_bonus");
     public static final Stats<StatsNumber<Integer>> OTHER_EXP_BONUS = absoluteInt("other_exp_bonus");
@@ -43,15 +43,15 @@ public final class DefaultStats {
         Stats.builder().key(key("soulbind")).supplying(UUIDValue::new).displaying(UUIDValue.displayName("soulbind")).build();
     public static final Stats<Void> AUTO_BIND =
         Stats.builder().key(key("auto_bind")).supplying(MarkerValue::new).build();
-    public static final Stats<StatsNumber<Double>> MOVE_SPEED = singleRelativeStats("move_speed");
-    public static final Stats<StatsNumber<Double>> FLY_SPEED = singleRelativeStats("fly_speed");
-    public static final Stats<StatsNumber<Double>> ATTACK_SPEED = singleRelativeStats("attack_speed");
-    public static final Stats<StatsNumber<Double>> ATTACK_RANGE = singleRelativeStats("attack_range");
-    public static final Stats<StatsNumber<Double>> DODGE = singleRelativeStats("dodge");
-    public static final Stats<StatsNumber<Double>> ACCURACY = singleRelativeStats("accuracy");
+    public static final Stats<StatsNumber<Double>> MOVE_SPEED = singleRelativeStats("move_speed", true);
+    public static final Stats<StatsNumber<Double>> FLY_SPEED = singleRelativeStats("fly_speed", true);
+    public static final Stats<StatsNumber<Double>> ATTACK_SPEED = singleRelativeStats("attack_speed", true);
+    public static final Stats<StatsNumber<Double>> ATTACK_RANGE = singleRelativeStats("attack_range", true);
+    public static final Stats<StatsNumber<Double>> DODGE = singleRelativeStats("dodge", false);
+    public static final Stats<StatsNumber<Double>> ACCURACY = singleRelativeStats("accuracy", false);
     public static final Stats<Map<String, StatsValue<?>>> PERMISSION = PermissionValue.STATS;
-    public static final Stats<StatsNumber<Double>> TRACING = singleRelativeStats("tracing");
-    public static final Stats<StatsNumber<Double>> ACCELERATE = singleRelativeStats("accelerate");
+    public static final Stats<StatsNumber<Double>> TRACING = singleRelativeStats("tracing", true);
+    public static final Stats<StatsNumber<Double>> ACCELERATE = singleRelativeStats("accelerate", true);
     public static final Stats<List<StatsSetValue>> STATS_SET =
         Stats.builder().key(key("stats_set"))
             .supplying(MultiValue.builder().supplying(StatsSetValue::new).allowSingleNonListValue().buildSupplier())
@@ -73,10 +73,12 @@ public final class DefaultStats {
             .build();
     }
 
-    private static Stats<StatsNumber<Double>> singleRelativeStats(String key) {
+    private static Stats<StatsNumber<Double>> singleRelativeStats(String key, boolean absolute) {
+        NumberValue.NumberValueBuilder<Double> builder = NumberValue.builder().valueType(double.class).allowRelative();
+        if (absolute) builder.allowDecimal();
         return Stats.builder().key(key(key))
             .supplying(
-                NumberValue.builder().valueType(double.class).allowRelative().buildSupplier()
+                builder.buildSupplier()
             )
             .merging(NumberValue.defaultMerger())
             .displaying(NumberValue.defaultDisplay("stats." + key))

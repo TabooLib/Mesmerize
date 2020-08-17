@@ -65,4 +65,9 @@ public class Util {
             return new NamespacedKey(str.substring(0, i), str.substring(i + 1));
         }
     }
+
+    public static double clamp(double value, double min, double max) {
+        if (value < min) return min;
+        else return Math.min(value, max);
+    }
 }

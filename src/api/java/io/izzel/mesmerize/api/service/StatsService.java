@@ -9,6 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataHolder;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -25,7 +26,9 @@ public interface StatsService {
 
     StatsSet cachedSetFor(@NotNull Entity entity);
 
-    void refreshCache(@NotNull Entity entity);
+    @SuppressWarnings("UnusedReturnValue")
+    @Contract("_, false -> null; _, true -> !null")
+    StatsSet refreshCache(@NotNull Entity entity, boolean immediate);
 
     default StatsHolder newStatsHolder(@NotNull PersistentDataHolder holder) {
         return newStatsHolder(holder.getPersistentDataContainer());

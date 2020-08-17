@@ -13,55 +13,61 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.HashSet;
 import java.util.Set;
 
 public class EntityStatsCacheListener implements Listener {
 
-    private static final Set<Integer> INVENTORY = Sets.newHashSet(100, 101, 102, 103, -106);
+    private static final Set<Integer> INVENTORY = Sets.newHashSet(5, 6, 7, 8, 45);
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onEquipmentChange(InventoryClickEvent event) {
-        if (event.getInventory().getType() == InventoryType.PLAYER) {
+        if (event.getInventory().getType() == InventoryType.CRAFTING) {
             int rawSlot = event.getRawSlot();
-            if (rawSlot == event.getWhoClicked().getInventory().getHeldItemSlot()
+            if (rawSlot == event.getWhoClicked().getInventory().getHeldItemSlot() + 36
                 || INVENTORY.contains(rawSlot)) {
-                StatsService.instance().refreshCache(event.getWhoClicked());
+                StatsService.instance().refreshCache(event.getWhoClicked(), false);
             }
         }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onItemSwap(PlayerSwapHandItemsEvent event) {
-        StatsService.instance().refreshCache(event.getPlayer());
+        StatsService.instance().refreshCache(event.getPlayer(), false);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onItemHeld(PlayerItemHeldEvent event) {
-        StatsService.instance().refreshCache(event.getPlayer());
+        StatsService.instance().refreshCache(event.getPlayer(), false);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onItemDrag(InventoryDragEvent event) {
         Set<Integer> rawSlots = new HashSet<>(event.getRawSlots());
         if (rawSlots.removeAll(INVENTORY)) {
-            StatsService.instance().refreshCache(event.getWhoClicked());
+            StatsService.instance().refreshCache(event.getWhoClicked(), false);
         }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onItemDrop(PlayerDropItemEvent event) {
-        StatsService.instance().refreshCache(event.getPlayer());
+        StatsService.instance().refreshCache(event.getPlayer(), false);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onItemPick(EntityPickupItemEvent event) {
-        StatsService.instance().refreshCache(event.getEntity());
+        ItemStack itemStack = event.getItem().getItemStack();
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        if (itemMeta != null && !itemStack.getItemMeta().getPersistentDataContainer().isEmpty()) {
+            StatsService.instance().refreshCache(event.getEntity(), false);
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerJoin(PlayerJoinEvent event) {
-        StatsService.instance().refreshCache(event.getPlayer());
+        StatsService.instance().refreshCache(event.getPlayer(), true);
     }
 }

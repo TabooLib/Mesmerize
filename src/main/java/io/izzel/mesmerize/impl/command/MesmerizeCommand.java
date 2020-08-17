@@ -64,6 +64,7 @@ public class MesmerizeCommand extends BaseMainCommand {
                         statsSet.accept(writer, VisitMode.DATA);
                         itemInMainHand.setItemMeta(itemMeta);
                         player.getInventory().setItemInMainHand(itemInMainHand);
+                        StatsService.instance().refreshCache(player, true);
                         TLocale.sendTo(player, "command.attach", args[0]);
                     } else {
                         TLocale.sendTo(player, "command.item_not_present");

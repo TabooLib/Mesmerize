@@ -68,14 +68,14 @@ public class NumberValue<T extends Number> extends AbstractValue<StatsNumber<T>>
     private void acceptByType(ValueVisitor visitor) {
         Number absolutePart = number.getAbsolutePart();
         Class<?> valueType = number.getValueType();
-        if (valueType == int.class) {
+        if (valueType == double.class) {
+            visitor.visitDouble(absolutePart.doubleValue());
+        } else if (valueType == int.class) {
             visitor.visitInt(absolutePart.intValue());
         } else if (valueType == long.class) {
             visitor.visitLong(absolutePart.longValue());
-        } else if (valueType == float.class) {
-            visitor.visitFloat(absolutePart.floatValue());
         } else {
-            visitor.visitLong(absolutePart.longValue());
+            visitor.visitFloat(absolutePart.floatValue());
         }
     }
 
@@ -189,7 +189,7 @@ public class NumberValue<T extends Number> extends AbstractValue<StatsNumber<T>>
 
     public static class NumberValueBuilder<T extends Number> {
 
-        private boolean allowRelative, allowDecimal, allowCoerce = true;
+        private boolean allowRelative = false, allowDecimal = false, allowCoerce = true;
         private Class<T> valueType;
 
         @Contract("_ -> this")

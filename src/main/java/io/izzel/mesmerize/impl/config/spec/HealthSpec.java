@@ -8,6 +8,8 @@ public class HealthSpec {
 
     private double heathScale = 20.0D;
 
+    private double defaultHealth = 20.0D;
+
     private double minimalHealth = 1.0D;
 
     private double maximumHealth = Integer.MAX_VALUE;
@@ -36,6 +38,14 @@ public class HealthSpec {
 
     public void setHeathScale(double heathScale) {
         this.heathScale = heathScale;
+    }
+
+    public double defaultHealth() {
+        return defaultHealth;
+    }
+
+    public void setDefaultHealth(double defaultHealth) {
+        this.defaultHealth = defaultHealth;
     }
 
     public double minimalHealth() {

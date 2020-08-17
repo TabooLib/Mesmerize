@@ -4,9 +4,9 @@ import io.izzel.mesmerize.api.service.StatsRegistry;
 import io.izzel.mesmerize.api.service.StatsService;
 import io.izzel.mesmerize.impl.config.LocalRepository;
 import io.izzel.mesmerize.impl.config.spec.ConfigSpec;
+import io.izzel.mesmerize.impl.event.AttributeListener;
 import io.izzel.mesmerize.impl.event.CombatListener;
 import io.izzel.mesmerize.impl.event.EntityStatsCacheListener;
-import io.izzel.mesmerize.impl.event.AttributeListener;
 import io.izzel.mesmerize.impl.event.ProjectileListener;
 import io.izzel.mesmerize.impl.service.SimpleStatsService;
 import io.izzel.mesmerize.impl.util.Updater;
@@ -18,7 +18,6 @@ import io.izzel.taboolib.module.locale.logger.TLogger;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.ServicePriority;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.CustomClassLoaderConstructor;
 
@@ -76,6 +75,6 @@ public class Mesmerize extends Plugin {
     }
 
     public static Mesmerize instance() {
-        return JavaPlugin.getPlugin(Mesmerize.class);
+        return ((Mesmerize) getPlugin());
     }
 }

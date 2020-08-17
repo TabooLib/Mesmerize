@@ -4,10 +4,9 @@ public class GeneralSpec {
 
     private boolean debug = false;
     private boolean updateCheck = true;
-    private long attributeApplyInterval = 20L;
     private double defaultAttackRange = 5.0D;
     private double defaultHitChance = 1.0D;
-    private double defaultHealth = 20.0D;
+    private boolean enableSpeedControl = true;
     private double defaultAttackSpeed = 4.0D;
     private double defaultMoveSpeed = 0.1D;
     private double defaultFlySpeed = 0.2D;
@@ -28,14 +27,6 @@ public class GeneralSpec {
         this.updateCheck = updateCheck;
     }
 
-    public long attributeApplyInterval() {
-        return attributeApplyInterval;
-    }
-
-    public void setAttributeApplyInterval(long attributeApplyInterval) {
-        this.attributeApplyInterval = attributeApplyInterval;
-    }
-
     public double defaultAttackRange() {
         return defaultAttackRange;
     }
@@ -52,12 +43,12 @@ public class GeneralSpec {
         this.defaultHitChance = defaultHitChance;
     }
 
-    public double defaultHealth() {
-        return defaultHealth;
+    public boolean enableSpeedControl() {
+        return enableSpeedControl;
     }
 
-    public void setDefaultHealth(double defaultHealth) {
-        this.defaultHealth = defaultHealth;
+    public void setEnableSpeedControl(boolean enableSpeedControl) {
+        this.enableSpeedControl = enableSpeedControl;
     }
 
     public double defaultAttackSpeed() {

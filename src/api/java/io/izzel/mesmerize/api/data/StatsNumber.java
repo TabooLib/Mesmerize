@@ -179,7 +179,7 @@ public class StatsNumber<T extends Number> {
         } else {
             abs = (T) absMerger.apply(a.absolutePart, b.absolutePart);
         }
-        double rel = (a.relativePart + 100D) * (b.relativePart + 100D) - 100D;
+        double rel = (a.relativePart + 100D) * (b.relativePart + 100D) - 10000D;
         return new StatsNumber<>(a.valueType, abs, rel, ImmutableList.<StatsNumber<T>>builder().addAll(a.operations).addAll(b.operations).build());
     }
 }
