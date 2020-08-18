@@ -78,8 +78,8 @@ public abstract class AbstractValue<T> implements StatsValue<T> {
     }
 
     @Override
-    public StatsValue<?> getExternalValue() {
-        throw new UnsupportedOperationException("external");
+    public final StatsValue<?> getExternalValue() {
+        return null;
     }
 
     public static <V extends AbstractValue<?>> BiFunction<V, V, V> keepMutableValue(BiFunction<V, V, V> merger) {

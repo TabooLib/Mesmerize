@@ -1,5 +1,6 @@
 package io.izzel.mesmerize.impl.config.spec;
 
+import io.izzel.mesmerize.api.display.DisplaySetting;
 import io.izzel.mesmerize.impl.Mesmerize;
 
 public class ConfigSpec {
@@ -7,6 +8,7 @@ public class ConfigSpec {
     private HealthSpec health;
     private GeneralSpec general;
     private PerformanceSpec performance;
+    private DisplaySetting displaySetting;
 
     public HealthSpec health() {
         return health;
@@ -30,6 +32,14 @@ public class ConfigSpec {
 
     public void setPerformance(PerformanceSpec performance) {
         this.performance = performance;
+    }
+
+    public DisplaySetting displaySetting() {
+        return displaySetting;
+    }
+
+    public void setDisplaySetting(DisplaySetting displaySetting) {
+        this.displaySetting = displaySetting;
     }
 
     public static ConfigSpec spec() {

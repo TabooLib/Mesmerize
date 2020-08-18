@@ -1,5 +1,6 @@
 package io.izzel.mesmerize.impl.event;
 
+import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
 import com.google.common.collect.Sets;
 import io.izzel.mesmerize.api.service.StatsService;
 import org.bukkit.event.EventHandler;
@@ -12,6 +13,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -21,14 +23,11 @@ import java.util.Set;
 
 public class EntityStatsCacheListener implements Listener {
 
-    private static final Set<Integer> INVENTORY = Sets.newHashSet(5, 6, 7, 8, 45);
-
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onEquipmentChange(InventoryClickEvent event) {
+    public void onHotbarChange(InventoryClickEvent event) {
         if (event.getInventory().getType() == InventoryType.CRAFTING) {
             int rawSlot = event.getRawSlot();
-            if (rawSlot == event.getWhoClicked().getInventory().getHeldItemSlot() + 36
-                || INVENTORY.contains(rawSlot)) {
+            if (rawSlot == event.getWhoClicked().getInventory().getHeldItemSlot() + 36) {
                 StatsService.instance().refreshCache(event.getWhoClicked(), false);
             }
         }
@@ -41,14 +40,11 @@ public class EntityStatsCacheListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onItemHeld(PlayerItemHeldEvent event) {
-        StatsService.instance().refreshCache(event.getPlayer(), false);
-    }
-
-    @EventHandler(priority = EventPriority.HIGHEST)
-    public void onItemDrag(InventoryDragEvent event) {
-        Set<Integer> rawSlots = new HashSet<>(event.getRawSlots());
-        if (rawSlots.removeAll(INVENTORY)) {
-            StatsService.instance().refreshCache(event.getWhoClicked(), false);
+        ItemStack oldItem = event.getPlayer().getInventory().getItem(event.getPreviousSlot());
+        ItemStack newItem = event.getPlayer().getInventory().getItem(event.getNewSlot());
+        if (oldItem == null && newItem != null
+            || oldItem != null && (newItem == null || oldItem.getType() != newItem.getType())) {
+            StatsService.instance().refreshCache(event.getPlayer(), false);
         }
     }
 
@@ -69,5 +65,42 @@ public class EntityStatsCacheListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerJoin(PlayerJoinEvent event) {
         StatsService.instance().refreshCache(event.getPlayer(), true);
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onRespawn(PlayerRespawnEvent event) {
+        StatsService.instance().refreshCache(event.getPlayer(), false);
+    }
+
+    public static class Paper implements Listener {
+
+        @EventHandler(priority = EventPriority.HIGHEST)
+        public void onArmourChange(PlayerArmorChangeEvent event) {
+            StatsService.instance().refreshCache(event.getPlayer(), false);
+        }
+    }
+
+    public static class Spigot implements Listener {
+
+        private static final Set<Integer> INVENTORY = Sets.newHashSet(5, 6, 7, 8, 45);
+
+        @EventHandler(priority = EventPriority.HIGHEST)
+        public void onEquipmentChange(InventoryClickEvent event) {
+            if (event.getInventory().getType() == InventoryType.CRAFTING) {
+                int rawSlot = event.getRawSlot();
+                if (rawSlot == event.getWhoClicked().getInventory().getHeldItemSlot() + 36
+                    || INVENTORY.contains(rawSlot)) {
+                    StatsService.instance().refreshCache(event.getWhoClicked(), false);
+                }
+            }
+        }
+
+        @EventHandler(priority = EventPriority.HIGHEST)
+        public void onItemDrag(InventoryDragEvent event) {
+            Set<Integer> rawSlots = new HashSet<>(event.getRawSlots());
+            if (rawSlots.removeAll(INVENTORY)) {
+                StatsService.instance().refreshCache(event.getWhoClicked(), false);
+            }
+        }
     }
 }

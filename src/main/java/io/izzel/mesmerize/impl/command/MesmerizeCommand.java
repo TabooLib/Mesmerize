@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import io.izzel.mesmerize.api.DefaultStats;
 import io.izzel.mesmerize.api.data.MultiValue;
 import io.izzel.mesmerize.api.data.StatsSetValue;
+import io.izzel.mesmerize.api.service.ElementFactory;
 import io.izzel.mesmerize.api.service.StatsService;
 import io.izzel.mesmerize.api.visitor.StatsHolder;
 import io.izzel.mesmerize.api.visitor.StatsVisitor;
@@ -63,6 +64,7 @@ public class MesmerizeCommand extends BaseMainCommand {
                         StatsVisitor writer = StatsService.instance().newStatsWriter(itemMeta);
                         statsSet.accept(writer, VisitMode.DATA);
                         itemInMainHand.setItemMeta(itemMeta);
+                        ElementFactory.instance().updateLore(itemInMainHand);
                         player.getInventory().setItemInMainHand(itemInMainHand);
                         StatsService.instance().refreshCache(player, true);
                         TLocale.sendTo(player, "command.attach", args[0]);

@@ -87,7 +87,7 @@ public class PermissionValue extends MapValue {
                 Element nodeElement = factory.createLocaleElement("permission_name." + permissionValue.getPermissionNodes().get(0));
                 subPane.addHeader(factory.createLocaleElement("stats.permission", nodeElement));
                 factory.displayHolder(permissionValue.getStats(), subPane);
-                pane.addElement(pane);
+                pane.addElement(subPane);
             })
             .build();
 }

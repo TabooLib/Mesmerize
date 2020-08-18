@@ -25,5 +25,7 @@ public interface DisplayPane extends Element {
 
     @Nullable Element getPadding();
 
+    void setPadding(Element padding);
+
     @NotNull DisplaySetting getDisplaySetting();
 }

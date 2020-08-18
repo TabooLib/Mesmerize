@@ -54,3 +54,12 @@ performance:
   tracingVisibleCheck: true
   # 最大的追踪角，单位 角度
   maxTracingAngle: 30.0
+
+# 默认的显示设置
+displaySetting:
+  maxWidth: 30
+  layout: LINE
+  decimalFormat: '+0.##;-0.##'
+  paddingWithRandomColor: false
+  paddingElement: '| '
+  flattenFirstPadding: true

@@ -62,6 +62,14 @@ public class Mesmerize extends Plugin {
         this.getServer().getPluginManager().registerEvents(new ProjectileListener(), this);
         this.getServer().getPluginManager().registerEvents(new EntityStatsCacheListener(), this);
         this.getServer().getPluginManager().registerEvents(new AttributeListener(), this);
+        try {
+            Class.forName("com.destroystokyo.paper.event.player.PlayerArmorChangeEvent");
+            LOGGER.info(TLocale.asString("load.paper.present"));
+            this.getServer().getPluginManager().registerEvents(new EntityStatsCacheListener.Paper(), this);
+        } catch (ClassNotFoundException e) {
+            LOGGER.info(TLocale.asString("load.paper.absent"));
+            this.getServer().getPluginManager().registerEvents(new EntityStatsCacheListener.Spigot(), this);
+        }
         Updater.start();
         LOGGER.info(TLocale.asString("general.load", (System.currentTimeMillis() - begin) / 1000D));
     }

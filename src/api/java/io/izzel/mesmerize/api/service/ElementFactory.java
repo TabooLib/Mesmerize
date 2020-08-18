@@ -4,12 +4,15 @@ import io.izzel.mesmerize.api.data.StatsNumber;
 import io.izzel.mesmerize.api.display.DisplayPane;
 import io.izzel.mesmerize.api.display.Element;
 import io.izzel.mesmerize.api.visitor.StatsHolder;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
 import java.time.Instant;
 
 public interface ElementFactory {
+
+    void updateLore(ItemStack itemStack);
 
     void displayHolder(StatsHolder holder, DisplayPane pane);
 

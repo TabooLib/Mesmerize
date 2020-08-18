@@ -157,10 +157,9 @@ public class MapValue extends AbstractValue<Map<String, StatsValue<?>>> {
                         }
                     });
                 }
-                return constructor.apply(
-                    ImmutableMap.<String, Supplier<StatsValue<?>>>builder().putAll(a.dataTypes).putAll(b.dataTypes).build(),
-                    map
-                );
+                HashMap<String, Supplier<StatsValue<?>>> hashMap = new HashMap<>(a.dataTypes);
+                hashMap.putAll(b.dataTypes);
+                return constructor.apply(ImmutableMap.copyOf(hashMap), map);
             };
         }
     }
