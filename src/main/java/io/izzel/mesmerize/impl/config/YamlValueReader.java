@@ -1,9 +1,9 @@
 package io.izzel.mesmerize.impl.config;
 
+import io.izzel.mesmerize.api.visitor.StatsValue;
 import io.izzel.mesmerize.api.visitor.ValueVisitor;
 import io.izzel.mesmerize.api.visitor.VisitMode;
 import io.izzel.mesmerize.api.visitor.impl.AbstractValue;
-import io.izzel.mesmerize.impl.util.visitor.external.ExternalTrackingVisitor;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.Collection;
@@ -24,8 +24,9 @@ public class YamlValueReader extends AbstractValue<Object> {
     @SuppressWarnings("unchecked")
     @Override
     public void accept(ValueVisitor visitor, VisitMode mode) {
-        if (visitor instanceof ExternalTrackingVisitor && visitor.hasExternalValue()) {
-            ((ExternalTrackingVisitor) visitor).getExternal().accept(visitor, mode);
+        StatsValue<?> externalValue = visitor.getExternalValue();
+        if (externalValue != null) {
+            externalValue.accept(visitor, mode);
             return;
         }
         if (o instanceof Boolean) {

@@ -15,8 +15,6 @@ import org.jetbrains.annotations.NotNull;
 
 public interface ExternalTrackingVisitor {
 
-    ExternalReader getExternal();
-
     class ValueTracker extends AbstractValueVisitor implements ExternalTrackingVisitor {
 
         private final ExternalReader reader;
@@ -27,7 +25,7 @@ public interface ExternalTrackingVisitor {
         }
 
         @Override
-        public ExternalReader getExternal() {
+        public ExternalReader getExternalValue() {
             return reader;
         }
 
@@ -60,11 +58,6 @@ public interface ExternalTrackingVisitor {
         public ValueVisitor visit(String key) {
             return new ValueTracker(super.visit(key), reader.child(Util.fromString(key)));
         }
-
-        @Override
-        public ExternalReader getExternal() {
-            return reader;
-        }
     }
 
     class ListTracker extends AbstractListVisitor implements ExternalTrackingVisitor {
@@ -80,11 +73,6 @@ public interface ExternalTrackingVisitor {
         public ValueVisitor visit(int index) {
             return new ValueTracker(super.visit(index), reader.child(NamespacedKey.minecraft(String.valueOf(index))));
         }
-
-        @Override
-        public ExternalReader getExternal() {
-            return reader;
-        }
     }
 
     class StatsTracker extends AbstractStatsVisitor implements ExternalTrackingVisitor {
@@ -99,11 +87,6 @@ public interface ExternalTrackingVisitor {
         @Override
         public <T> ValueVisitor visitStats(@NotNull Stats<T> stats) {
             return new ValueTracker(super.visitStats(stats), reader.child(stats.getKey()));
-        }
-
-        @Override
-        public ExternalReader getExternal() {
-            return reader;
         }
     }
 }
