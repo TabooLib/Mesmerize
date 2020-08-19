@@ -49,7 +49,7 @@ public class SimpleStatsService implements StatsService {
 
     private final CacheLoader<Entity, StatsSet> cacheLoader = entity -> {
         if (!entity.isValid() || entity.isDead()) {
-            return new StatsSet();
+            return null;
         }
         Callable<StatsSet> callable = () -> {
             StatsSet statsSet = new StatsSet();
@@ -94,15 +94,17 @@ public class SimpleStatsService implements StatsService {
         if (!Bukkit.isPrimaryThread()) {
             throw new IllegalStateException("async stats get");
         }
+        StatsSet set;
         if (entityLock.contains(entity.getEntityId())) {
             try {
-                return cacheLoader.load(entity);
+                set = cacheLoader.load(entity);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         } else {
-            return statsSetCache.get(entity);
+            set = statsSetCache.get(entity);
         }
+        return set == null ? new StatsSet() : set;
     }
 
     @Override
