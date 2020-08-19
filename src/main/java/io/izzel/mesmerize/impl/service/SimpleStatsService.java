@@ -48,10 +48,10 @@ public class SimpleStatsService implements StatsService {
     private final Set<Integer> entityLock = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
     private final CacheLoader<Entity, StatsSet> cacheLoader = entity -> {
-        if (!entity.isValid() || entity.isDead()) {
-            return null;
-        }
         Callable<StatsSet> callable = () -> {
+            if (!entity.isValid() || entity.isDead()) {
+                return null;
+            }
             StatsSet statsSet = new StatsSet();
             newEntityReader(entity).accept(statsSet, VisitMode.VALUE);
             Bukkit.getPluginManager().callEvent(new StatsRefreshEvent(entity, statsSet));

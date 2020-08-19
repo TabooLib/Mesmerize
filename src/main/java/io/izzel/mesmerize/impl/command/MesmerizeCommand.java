@@ -21,6 +21,7 @@ import io.izzel.taboolib.module.locale.TLocale;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -33,6 +34,16 @@ public class MesmerizeCommand extends BaseMainCommand {
     public void reload(CommandSender sender, String... args) {
         Mesmerize.instance().reloadMesmerizeData();
         TLocale.sendTo(sender, "command.reload");
+    }
+
+    @SubCommand(permission = "mesmerize.refresh", type = CommandType.PLAYER)
+    public void refresh(Player player, String... args) {
+        EntityEquipment equipment = player.getEquipment();
+        if (equipment != null) {
+            ItemStack itemInMainHand = equipment.getItemInMainHand();
+            ElementFactory.instance().updateLore(itemInMainHand);
+            equipment.setItemInMainHand(itemInMainHand);
+        }
     }
 
     @SubCommand(permission = "mesmerize.attach", type = CommandType.PLAYER)

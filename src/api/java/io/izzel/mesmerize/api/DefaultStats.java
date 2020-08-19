@@ -53,6 +53,7 @@ public final class DefaultStats {
     public static final Stats<StatsNumber<Double>> ACCELERATE = singleRelativeStats("accelerate", true);
     public static final Stats<List<StatsSetValue>> STATS_SET = StatsSetValue.STATS;
     public static final Stats<Map<String, StatsValue<?>>> SLOT = SlotStats.STATS;
+    public static final Stats<List<StatsSetValue>> HIDDEN_SET = StatsSetValue.HIDDEN;
 
     @SuppressWarnings("deprecation")
     private static NamespacedKey key(String id) {

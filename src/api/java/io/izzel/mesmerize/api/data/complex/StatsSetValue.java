@@ -98,4 +98,10 @@ public class StatsSetValue extends AbstractValue<StatsHolder> {
             .supplying(MultiValue.builder().supplying(StatsSetValue::new).allowSingleNonListValue().buildSupplier())
             .merging(MultiValue.concatMerger())
             .displaying((value, pane) -> value.get().forEach(it -> ElementFactory.instance().displayHolder(it.get(), pane))).build();
+
+    @SuppressWarnings("deprecation")
+    public static final Stats<List<StatsSetValue>> HIDDEN =
+        Stats.builder().key(new NamespacedKey("mesmerize", "hidden"))
+            .supplying(MultiValue.builder().supplying(StatsSetValue::new).allowSingleNonListValue().buildSupplier())
+            .merging(MultiValue.concatMerger()).build();
 }

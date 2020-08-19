@@ -13,6 +13,7 @@ import io.izzel.mesmerize.impl.util.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
+import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -34,6 +35,7 @@ public class AttributeListener implements Listener {
                 return;
             }
             for (Player player : Bukkit.getOnlinePlayers()) {
+                if (player.isDead() || !player.isValid()) continue;
                 Optional<List<NumberValue<Double>>> regen = DefaultStats.REGENERATION.tryApply(StatsSet.of(player), null);
                 regen.ifPresent(list -> {
                     //noinspection ConstantConditions
@@ -55,6 +57,8 @@ public class AttributeListener implements Listener {
             } else {
                 event.getPlayer().setHealthScaled(false);
             }
+            //noinspection deprecation
+            event.getPlayer().setMaxHealth(health.defaultHealth());
         }
     }
 
@@ -69,10 +73,18 @@ public class AttributeListener implements Listener {
                 AttributeInstance attribute = livingEntity.getAttribute(Attribute.GENERIC_MAX_HEALTH);
                 if (attribute != null) {
                     HealthSpec healthSpec = ConfigSpec.spec().health();
-                    attribute.setBaseValue(DefaultStats.HEALTH.tryApply(statsSet, event).map(number -> {
-                        double value = number.applyDouble(healthSpec.defaultHealth());
+                    for (AttributeModifier modifier : attribute.getModifiers()) {
+                        if (modifier.getName().equals("mesmerize:health")) {
+                            attribute.removeModifier(modifier);
+                        }
+                    }
+                    double baseHealth = attribute.getValue();
+                    double healthModifier = DefaultStats.HEALTH.tryApply(statsSet, event).map(number -> {
+                        double value = number.applyDouble(baseHealth);
                         return Util.clamp(value, healthSpec.minimalHealth(), healthSpec.maximumHealth());
-                    }).orElse(healthSpec.defaultHealth()));
+                    }).orElse(baseHealth) - baseHealth;
+                    attribute.addModifier(new AttributeModifier("mesmerize:health", healthModifier, AttributeModifier.Operation.ADD_NUMBER));
+                    livingEntity.setHealth(Util.clamp(livingEntity.getHealth(), 0, baseHealth + healthModifier));
                 }
             }
 
