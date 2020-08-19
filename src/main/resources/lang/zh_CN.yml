@@ -49,7 +49,15 @@ stats:
   permission: '&f拥有 {0} &f权限时'
   tracing: '&6追踪: {0}'
   accelerate: '&6弓箭速度: {0}'
+  slot: '&f装备为 {0} 时'
 permission_name: {}
+slot_name:
+  main_hand: '主手'
+  off_hand: '副手'
+  helmet: '头盔'
+  chestplate: '胸甲'
+  leggings: '护腿'
+  boots: '靴子'
 GENERAL_LOAD: '&e在 {0} 秒内加载完毕。'
 WARN_ERROR_OCCUR: '&c发生了错误: {0}'
 GENERAL_DISABLE: '&e在 {0} 秒内卸载完毕。'

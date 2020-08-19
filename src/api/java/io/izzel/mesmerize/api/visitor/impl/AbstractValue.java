@@ -1,5 +1,6 @@
 package io.izzel.mesmerize.api.visitor.impl;
 
+import io.izzel.mesmerize.api.visitor.ExternalVisitor;
 import io.izzel.mesmerize.api.visitor.ListVisitor;
 import io.izzel.mesmerize.api.visitor.MapVisitor;
 import io.izzel.mesmerize.api.visitor.StatsValue;
@@ -7,11 +8,7 @@ import io.izzel.mesmerize.api.visitor.StatsVisitor;
 import io.izzel.mesmerize.api.visitor.ValueVisitor;
 import io.izzel.mesmerize.api.visitor.VisitMode;
 
-import java.util.function.BiFunction;
-
 public abstract class AbstractValue<T> implements StatsValue<T> {
-
-    protected StatsValue<?> mutableValue;
 
     @Override
     public T get() {
@@ -78,23 +75,7 @@ public abstract class AbstractValue<T> implements StatsValue<T> {
     }
 
     @Override
-    public final StatsValue<?> getExternalValue() {
+    public final ExternalVisitor getExternalValue() {
         return null;
-    }
-
-    public static <V extends AbstractValue<?>> BiFunction<V, V, V> keepMutableValue(BiFunction<V, V, V> merger) {
-        return (a, b) -> {
-            V v = merger.apply(a, b);
-            v.mutableValue = a.mutableValue;
-            return v;
-        };
-    }
-
-    public static <V extends AbstractValue<?>> BiFunction<V, V, V> replaceMutableValue(BiFunction<V, V, V> merger) {
-        return (a, b) -> {
-            V v = merger.apply(a, b);
-            v.mutableValue = b.mutableValue;
-            return v;
-        };
     }
 }

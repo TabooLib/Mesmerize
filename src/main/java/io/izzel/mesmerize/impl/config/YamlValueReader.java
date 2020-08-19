@@ -1,6 +1,6 @@
 package io.izzel.mesmerize.impl.config;
 
-import io.izzel.mesmerize.api.visitor.StatsValue;
+import io.izzel.mesmerize.api.visitor.ExternalVisitor;
 import io.izzel.mesmerize.api.visitor.ValueVisitor;
 import io.izzel.mesmerize.api.visitor.VisitMode;
 import io.izzel.mesmerize.api.visitor.impl.AbstractValue;
@@ -24,9 +24,9 @@ public class YamlValueReader extends AbstractValue<Object> {
     @SuppressWarnings("unchecked")
     @Override
     public void accept(ValueVisitor visitor, VisitMode mode) {
-        StatsValue<?> externalValue = visitor.getExternalValue();
-        if (externalValue != null) {
-            externalValue.accept(visitor, mode);
+        ExternalVisitor externalVisitor = visitor.getExternalValue();
+        if (externalVisitor != null && !externalVisitor.isVirtual()) {
+            externalVisitor.accept(visitor, mode);
             return;
         }
         if (o instanceof Boolean) {

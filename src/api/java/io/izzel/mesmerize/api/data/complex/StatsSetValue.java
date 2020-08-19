@@ -1,6 +1,9 @@
-package io.izzel.mesmerize.api.data;
+package io.izzel.mesmerize.api.data.complex;
 
 import com.google.common.base.Preconditions;
+import io.izzel.mesmerize.api.Stats;
+import io.izzel.mesmerize.api.data.MultiValue;
+import io.izzel.mesmerize.api.service.ElementFactory;
 import io.izzel.mesmerize.api.visitor.MapVisitor;
 import io.izzel.mesmerize.api.visitor.StatsHolder;
 import io.izzel.mesmerize.api.visitor.ValueVisitor;
@@ -10,7 +13,9 @@ import io.izzel.mesmerize.api.visitor.util.LazyStatsHolder;
 import io.izzel.mesmerize.api.visitor.util.MapAsStatsVisitor;
 import io.izzel.mesmerize.api.visitor.util.StatsAsMapVisitor;
 import io.izzel.mesmerize.api.visitor.util.StatsSet;
+import org.bukkit.NamespacedKey;
 
+import java.util.List;
 import java.util.function.BiFunction;
 
 public class StatsSetValue extends AbstractValue<StatsHolder> {
@@ -86,4 +91,11 @@ public class StatsSetValue extends AbstractValue<StatsHolder> {
             return new StatsSetValue(set);
         };
     }
+
+    @SuppressWarnings("deprecation")
+    public static final Stats<List<StatsSetValue>> STATS =
+        Stats.builder().key(new NamespacedKey("mesmerize", "stats_set"))
+            .supplying(MultiValue.builder().supplying(StatsSetValue::new).allowSingleNonListValue().buildSupplier())
+            .merging(MultiValue.concatMerger())
+            .displaying((value, pane) -> value.get().forEach(it -> ElementFactory.instance().displayHolder(it.get(), pane))).build();
 }

@@ -1,4 +1,4 @@
-package io.izzel.mesmerize.impl.util;
+package io.izzel.mesmerize.api.util;
 
 import io.izzel.mesmerize.api.data.NumberValue;
 import org.bukkit.util.Vector;

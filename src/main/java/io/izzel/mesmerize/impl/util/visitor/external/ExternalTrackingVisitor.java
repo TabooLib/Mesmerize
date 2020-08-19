@@ -1,6 +1,7 @@
 package io.izzel.mesmerize.impl.util.visitor.external;
 
 import io.izzel.mesmerize.api.Stats;
+import io.izzel.mesmerize.api.visitor.ExternalVisitor;
 import io.izzel.mesmerize.api.visitor.ListVisitor;
 import io.izzel.mesmerize.api.visitor.MapVisitor;
 import io.izzel.mesmerize.api.visitor.StatsVisitor;
@@ -25,7 +26,7 @@ public interface ExternalTrackingVisitor {
         }
 
         @Override
-        public ExternalReader getExternalValue() {
+        public ExternalVisitor getExternalValue() {
             return reader;
         }
 

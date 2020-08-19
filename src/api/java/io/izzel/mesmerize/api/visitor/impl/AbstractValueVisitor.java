@@ -1,8 +1,8 @@
 package io.izzel.mesmerize.api.visitor.impl;
 
+import io.izzel.mesmerize.api.visitor.ExternalVisitor;
 import io.izzel.mesmerize.api.visitor.ListVisitor;
 import io.izzel.mesmerize.api.visitor.MapVisitor;
-import io.izzel.mesmerize.api.visitor.StatsValue;
 import io.izzel.mesmerize.api.visitor.StatsVisitor;
 import io.izzel.mesmerize.api.visitor.ValueVisitor;
 
@@ -118,7 +118,7 @@ public class AbstractValueVisitor implements ValueVisitor {
     }
 
     @Override
-    public StatsValue<?> getExternalValue() {
+    public ExternalVisitor getExternalValue() {
         if (visitor != null) {
             return visitor.getExternalValue();
         }

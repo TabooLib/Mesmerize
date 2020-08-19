@@ -1,6 +1,6 @@
 package io.izzel.mesmerize.impl.event;
 
-import io.izzel.mesmerize.impl.util.Quat;
+import io.izzel.mesmerize.api.util.Quat;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Projectile;
 import org.bukkit.scheduler.BukkitRunnable;

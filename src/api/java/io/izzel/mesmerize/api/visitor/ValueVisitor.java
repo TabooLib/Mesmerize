@@ -27,7 +27,9 @@ public interface ValueVisitor {
 
     void visitEnd();
 
-    StatsValue<?> getExternalValue();
+    default ExternalVisitor getExternalValue() {
+        return null;
+    }
 
     default EventContext context() {
         return CauseManager.instance().currentContext();

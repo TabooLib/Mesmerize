@@ -1,11 +1,11 @@
-package io.izzel.mesmerize.api.data.complex;
+package io.izzel.mesmerize.api.data.stats;
 
 import com.google.common.collect.Lists;
 import io.izzel.mesmerize.api.Stats;
 import io.izzel.mesmerize.api.cause.ContextKeys;
 import io.izzel.mesmerize.api.data.MapValue;
 import io.izzel.mesmerize.api.data.MultiValue;
-import io.izzel.mesmerize.api.data.StatsSetValue;
+import io.izzel.mesmerize.api.data.complex.StatsSetValue;
 import io.izzel.mesmerize.api.data.StringValue;
 import io.izzel.mesmerize.api.display.DisplayPane;
 import io.izzel.mesmerize.api.display.Element;
@@ -21,14 +21,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
-public class PermissionValue extends MapValue {
+public class PermissionStats extends MapValue {
 
-    public PermissionValue(Map<String, Supplier<StatsValue<?>>> dataTypes) {
+    public PermissionStats(Map<String, Supplier<StatsValue<?>>> dataTypes) {
         super(dataTypes);
-    }
-
-    public PermissionValue(Map<String, Supplier<StatsValue<?>>> dataTypes, Map<String, StatsValue<?>> values) {
-        super(dataTypes, values);
     }
 
     public List<String> getPermissionNodes() {
@@ -73,20 +69,14 @@ public class PermissionValue extends MapValue {
                         .supplying(StringValue::new)
                         .buildSupplier()
                     ).put("stats", StatsSetValue::new)
-                    .buildSupplier(PermissionValue::new)
+                    .buildSupplier(PermissionStats::new)
             )
-            .merging(
-                MapValue.deepMerger()
-                    .put("node", MultiValue.concatMerger())
-                    .put("stats", StatsSetValue.defaultMerger())
-                    .build(PermissionValue::new)
-            )
-            .displaying((permissionValue, pane) -> {
+            .displaying((permissionStats, pane) -> {
                 DisplayPane subPane = pane.createSubPane();
                 ElementFactory factory = ElementFactory.instance();
-                Element nodeElement = factory.createLocaleElement("permission_name." + permissionValue.getPermissionNodes().get(0));
+                Element nodeElement = factory.createLocaleElement("permission_name." + permissionStats.getPermissionNodes().get(0));
                 subPane.addHeader(factory.createLocaleElement("stats.permission", nodeElement));
-                factory.displayHolder(permissionValue.getStats(), subPane);
+                factory.displayHolder(permissionStats.getStats(), subPane);
                 pane.addElement(subPane);
             })
             .build();
