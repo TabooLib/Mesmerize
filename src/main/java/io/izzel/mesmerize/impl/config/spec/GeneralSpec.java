@@ -10,6 +10,7 @@ public class GeneralSpec {
     private double defaultAttackSpeed = 4.0D;
     private double defaultMoveSpeed = 0.1D;
     private double defaultFlySpeed = 0.2D;
+    private long potionApplyInterval = 60L;
 
     public boolean debug() {
         return debug;
@@ -73,5 +74,13 @@ public class GeneralSpec {
 
     public void setDefaultFlySpeed(double defaultFlySpeed) {
         this.defaultFlySpeed = defaultFlySpeed;
+    }
+
+    public long potionApplyInterval() {
+        return potionApplyInterval;
+    }
+
+    public void setPotionApplyInterval(long potionApplyInterval) {
+        this.potionApplyInterval = potionApplyInterval;
     }
 }

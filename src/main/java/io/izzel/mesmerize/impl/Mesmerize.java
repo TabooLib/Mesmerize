@@ -7,6 +7,7 @@ import io.izzel.mesmerize.impl.config.spec.ConfigSpec;
 import io.izzel.mesmerize.impl.event.AttributeListener;
 import io.izzel.mesmerize.impl.event.CombatListener;
 import io.izzel.mesmerize.impl.event.EntityStatsCacheListener;
+import io.izzel.mesmerize.impl.event.PotionApplyTask;
 import io.izzel.mesmerize.impl.event.ProjectileListener;
 import io.izzel.mesmerize.impl.service.SimpleStatsService;
 import io.izzel.mesmerize.impl.util.Updater;
@@ -70,6 +71,7 @@ public class Mesmerize extends Plugin {
             LOGGER.info(TLocale.asString("load.paper.absent"));
             this.getServer().getPluginManager().registerEvents(new EntityStatsCacheListener.Spigot(), this);
         }
+        new PotionApplyTask().runTaskTimer(this, 0, ConfigSpec.spec().general().potionApplyInterval());
         Updater.start();
         LOGGER.info(TLocale.asString("general.load", (System.currentTimeMillis() - begin) / 1000D));
     }

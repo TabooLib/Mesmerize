@@ -5,6 +5,7 @@ import io.izzel.mesmerize.api.display.DisplayPane;
 import io.izzel.mesmerize.api.display.Element;
 import io.izzel.mesmerize.api.visitor.StatsHolder;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
@@ -31,6 +32,8 @@ public interface ElementFactory {
     Element createDurationElement(Duration duration);
 
     Element createDateElement(Instant instant);
+
+    Element createPotionElement(PotionEffectType potionEffectType);
 
     static ElementFactory instance() {
         return StatsService.instance().getElementFactory();

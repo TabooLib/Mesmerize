@@ -50,6 +50,7 @@ stats:
   tracing: '&6追踪: {0}'
   accelerate: '&6弓箭速度: {0}'
   slot: '&f装备为 {0} 时'
+  wearing_potion: '获得状态 Lv.{0} {1}'
 permission_name: {}
 slot_name:
   main_hand: '主手'

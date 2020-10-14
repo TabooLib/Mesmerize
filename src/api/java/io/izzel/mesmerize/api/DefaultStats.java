@@ -4,6 +4,7 @@ import io.izzel.mesmerize.api.data.MarkerValue;
 import io.izzel.mesmerize.api.data.NumberValue;
 import io.izzel.mesmerize.api.data.RangeNumberValue;
 import io.izzel.mesmerize.api.data.StatsNumber;
+import io.izzel.mesmerize.api.data.complex.PotionValue;
 import io.izzel.mesmerize.api.data.complex.StatsSetValue;
 import io.izzel.mesmerize.api.data.UUIDValue;
 import io.izzel.mesmerize.api.data.stats.PermissionStats;
@@ -54,6 +55,7 @@ public final class DefaultStats {
     public static final Stats<List<StatsSetValue>> STATS_SET = StatsSetValue.STATS;
     public static final Stats<Map<String, StatsValue<?>>> SLOT = SlotStats.STATS;
     public static final Stats<List<StatsSetValue>> HIDDEN_SET = StatsSetValue.HIDDEN;
+    public static final Stats<List<PotionValue>> WEARING_POTION = PotionValue.stats("wearing_potion");
 
     @SuppressWarnings("deprecation")
     private static NamespacedKey key(String id) {

@@ -25,6 +25,8 @@ general:
   defaultAttackSpeed: 4.0
   defaultMoveSpeed: 0.2
   defaultFlySpeed: 0.1
+  # 药水效果应用间隔（游戏刻）
+  potionApplyInterval: 60
 
 # 关于生命值的设定
 health:

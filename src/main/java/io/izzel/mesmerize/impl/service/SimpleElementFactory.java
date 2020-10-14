@@ -11,9 +11,11 @@ import io.izzel.mesmerize.api.visitor.VisitMode;
 import io.izzel.mesmerize.impl.config.spec.ConfigSpec;
 import io.izzel.mesmerize.impl.element.DisplayVisitor;
 import io.izzel.mesmerize.impl.element.SimplePane;
+import io.izzel.taboolib.module.i18n.I18n;
 import io.izzel.taboolib.module.locale.TLocale;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
@@ -89,5 +91,10 @@ public class SimpleElementFactory implements ElementFactory {
     public Element createDateElement(Instant instant) {
         // todo
         return Element.of(instant.toString());
+    }
+
+    @Override
+    public Element createPotionElement(PotionEffectType potionEffectType) {
+        return Element.of(I18n.get().getName(potionEffectType));
     }
 }
